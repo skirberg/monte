@@ -1,0 +1,345 @@
+/* ---------------------------------------------------------------
+   Monte skin for the study engine.
+   engine-base.css keeps the artifact's layout; this file gives it the
+   new identity. Clay means the number. Ink means the action.
+   --------------------------------------------------------------- */
+.engine {
+  --base-size-2: 2px; --base-size-4: 4px; --base-size-8: 8px; --base-size-12: 12px; --base-size-16: 16px;
+  --base-size-24: 24px; --base-size-32: 32px; --base-size-44: 44px; --base-size-48: 48px; --base-size-64: 64px;
+  --text-12: 12px; --text-14: 14px; --text-16: 16px; --text-20: 20px; --text-24: 24px; --text-32: 32px;
+  --line-body: 1.55; --line-title: 1.1;
+  --weight-regular: 400; --weight-semibold: 600;
+  --radius-xs: 6px; --radius-sm: 12px; --radius-md: 18px; --radius-full: 9999px;
+  --border-thin: 1px; --border-thick: 2px; --bar: 8px; --pip: 12px; --token: 76px;
+  --width-reading: 760px; --width-wide: 1200px; --width-side: 300px; --width-rail: 320px; --width-term: 220px;
+  --width-input: 240px; --width-meter: 64px; --width-num: 28px;
+  --motion: 150ms;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --font-sans: var(--font-geologica), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-num), var(--font-geologica), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-head: var(--font-bricolage), var(--font-geologica), ui-sans-serif, sans-serif;
+
+  --bg: var(--paper);
+  --bg-subtle: var(--sand);
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --border: var(--line);
+  --border-control: var(--line-strong);
+  --accent: var(--clay);
+  --accent-fg: var(--paper);
+  --accent-tint: var(--clay-tint);
+
+  background: transparent;
+  min-height: 70vh;
+}
+
+/* Before boot: three grains settle while the engine mounts. */
+.engine:empty {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  background:
+    radial-gradient(circle, var(--clay) 5px, transparent 5.5px) calc(50% - 18px) 50% / 12px 12px no-repeat,
+    radial-gradient(circle, var(--clay) 5px, transparent 5.5px) 50% 50% / 12px 12px no-repeat,
+    radial-gradient(circle, var(--clay) 5px, transparent 5.5px) calc(50% + 18px) 50% / 12px 12px no-repeat;
+  animation: grains 900ms var(--ease-settle) infinite alternate;
+}
+@keyframes grains { from { opacity: 0.25 } to { opacity: 1 } }
+
+/* ---------- type ---------- */
+.engine h1, .engine h2, .engine h3 {
+  font-family: var(--font-head);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  font-optical-sizing: auto;
+}
+.engine h1 { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); font-variation-settings: "wdth" 88; line-height: 1.02; }
+.engine h2 { font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.6rem); }
+.engine h3 { font-size: 1.2rem; }
+.engine .lead { font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem); line-height: 1.5; }
+.engine code, .engine .code-rows code { font-family: var(--font-mono); font-size: 13px; }
+
+/* Labels read like a scoreboard: mono, small caps feel. */
+.engine .eyebrow,
+.engine .stat .k,
+.engine .side .side-title,
+.engine .qmeta,
+.engine .topics .st,
+.engine .draw .st {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Terms can hold Greek (σ, μ); uppercasing would turn μ into M, so these stay in sentence case. */
+.engine .label,
+.engine .formulas dt,
+.engine .sheet-rows .t,
+.engine .code-rows .t,
+.engine .pairs dt {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+}
+.engine .qmeta .timer { text-transform: none; letter-spacing: 0; }
+
+/* Numbers measure: mono, tabular. */
+.engine .big-num,
+.engine .stat .v,
+.engine .score,
+.engine .kpi b,
+.engine .timer,
+.engine .qtext.big,
+.engine .pct,
+.engine .progress-list .n,
+.engine .topics .n,
+.engine .draw .n,
+.engine .jt,
+.engine .barrow,
+.engine .bands b,
+.engine .field label b,
+.engine .val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.engine .big-num { font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
+.engine .score { font-size: clamp(40px, 6vw, 64px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+.engine .stat .v { font-size: 28px; font-weight: 500; letter-spacing: -0.03em; }
+.engine .timer { font-size: 22px; font-weight: 500; }
+
+/* ---------- surfaces ---------- */
+.engine .card,
+.engine .qcard,
+.engine .box,
+.engine .result,
+.engine .stats,
+.engine .framed,
+.engine .draw,
+.engine .side .topics {
+  border-radius: var(--radius-md);
+  border-color: var(--line);
+}
+.engine .qcard { background: var(--paper); box-shadow: 0 1px 0 var(--line), 0 12px 32px -24px color-mix(in oklch, var(--ink) 30%, transparent); }
+.engine .card { background: var(--sand); border-color: transparent; }
+.engine .result, .engine .box.subtle { background: var(--sand); border-color: transparent; }
+.engine .stats { background: var(--paper); }
+.engine .empty { border-radius: var(--radius-md); }
+
+/* ---------- controls ---------- */
+.engine .btn {
+  border-radius: var(--radius-full);
+  padding-inline: 20px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-weight: 550;
+  transition: background var(--motion) var(--ease-settle), border-color var(--motion), transform var(--motion) var(--ease-settle);
+}
+.engine .btn:hover { background: var(--sand); border-color: var(--ink); }
+.engine .btn:active { transform: translateY(1px); }
+.engine .btn.primary-btn { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.engine .btn.primary-btn:hover { background: color-mix(in oklch, var(--ink) 86%, var(--clay)); }
+
+.engine .link-btn { color: var(--clay-ink); text-underline-offset: 4px; }
+.engine .link-btn:hover { text-decoration: underline; }
+.engine a { color: var(--clay-ink); text-underline-offset: 3px; }
+
+.engine .seg {
+  border-radius: var(--radius-full);
+  background: var(--sand);
+  border-color: transparent;
+  padding: 3px;
+  gap: 2px;
+}
+.engine .seg button {
+  margin: 0;
+  border-radius: var(--radius-full);
+  min-height: 44px;
+  padding-inline: 16px;
+  transition: background var(--motion), color var(--motion);
+}
+.engine .seg button[aria-selected="true"],
+.engine .seg button[aria-pressed="true"] {
+  background: var(--paper);
+  border-color: transparent;
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 18%, transparent), 0 0 0 1px var(--line);
+  color: var(--ink);
+}
+
+.engine .chip {
+  border-radius: var(--radius-full);
+  background: transparent;
+  border-color: var(--line-strong);
+  transition: background var(--motion), color var(--motion), border-color var(--motion);
+}
+.engine .chip:hover { border-color: var(--ink); }
+.engine .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.engine a.chip { color: var(--ink); text-decoration: none; }
+.engine a.chip:hover { background: var(--ink); color: var(--paper); }
+
+.engine input[type="text"],
+.engine input[type="search"],
+.engine select {
+  border-radius: var(--radius-sm);
+  border-color: var(--line-strong);
+  background: var(--paper);
+  transition: border-color var(--motion), box-shadow var(--motion);
+}
+.engine input[type="text"]:focus,
+.engine input[type="search"]:focus,
+.engine select:focus {
+  outline: none;
+  border-color: var(--clay);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--clay) 25%, transparent);
+}
+.engine .answer-row input { font-family: var(--font-mono); font-size: 18px; }
+.engine input[type="range"] { accent-color: var(--clay); }
+.engine .check input { accent-color: var(--clay); }
+.engine :focus-visible { outline-color: var(--clay); }
+
+/* ---------- data marks: clay ---------- */
+.engine .val {
+  background: var(--clay-tint);
+  color: var(--ink);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+.engine mark { background: var(--clay-tint); color: var(--ink); border-radius: 4px; }
+.engine .bar, .engine .meter { background: var(--sand-2); border-color: transparent; }
+.engine .bar > i, .engine .meter > i { background: var(--clay); }
+.engine .track { background: var(--sand-2); border-color: transparent; border-radius: 4px; }
+.engine .progress-list .won .pct,
+.engine .topics .st.won,
+.engine .draw .won .st { color: var(--clay-ink); }
+.engine .step { background: var(--sand); border-left-color: var(--line-strong); }
+.engine .step.final { background: var(--clay-tint); border-left-color: var(--clay); }
+.engine .bands .mid { background: var(--clay-tint); }
+.engine .coin { background: var(--clay-tint); border-color: var(--clay); font-family: var(--font-mono); }
+.engine .die { border-color: var(--ink); border-radius: 16px; }
+.engine .pip { background: var(--ink); }
+.engine .viz text { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-muted); }
+.engine .status.ok { color: var(--success); }
+.engine .status.no { color: var(--danger); }
+
+/* ---------- lists ---------- */
+.engine .progress-list a,
+.engine .topics a,
+.engine .draw a,
+.engine .tool-rows a {
+  transition: background var(--motion);
+}
+.engine .progress-list a:hover,
+.engine .topics a:hover,
+.engine .draw a:hover,
+.engine .tool-rows a:hover { background: var(--sand); }
+.engine .topics a[aria-current="true"] { background: var(--ink); color: var(--paper); }
+.engine .topics a[aria-current="true"] .n,
+.engine .topics a[aria-current="true"] .st,
+.engine .topics a[aria-current="true"] .hit { color: color-mix(in oklch, var(--paper) 75%, transparent); }
+.engine .tool-rows b,
+.engine .source-list b,
+.engine .links a b { color: var(--ink); font-weight: 600; }
+.engine .source-list a:hover b,
+.engine .links a:hover b { color: var(--clay-ink); }
+
+.engine .steps li::before {
+  border-color: var(--ink);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.engine .numbered li::before { font-family: var(--font-mono); color: var(--clay-ink); }
+.engine .pg { border-radius: var(--radius-sm); transition: border-color var(--motion), background var(--motion); }
+.engine .pg:hover { border-color: var(--ink); background: var(--sand); }
+
+.engine .jt th, .engine .jt td { border-color: var(--line); }
+.engine .jt thead th, .engine .jt tfoot td { background: var(--sand); }
+
+/* ---------- page rhythm ---------- */
+.engine .hero { padding-block: 40px 32px; }
+.engine .hero h1 { font-size: clamp(2.4rem, 1.4rem + 4vw, 4.4rem); max-width: 16ch; font-variation-settings: "wdth" 82; }
+.engine .subbar { padding-block: 20px; }
+.engine .page-head h1 { margin-bottom: 4px; }
+.engine footer.foot {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-top: 32px;
+}
+
+@media (min-width: 48em) {
+  .engine .hero { padding-block: 64px 48px; }
+  .engine .qcard { padding: 28px; }
+}
+
+html:has(.engine) { scroll-padding-top: 120px; }
+@media (min-width: 64em) { html:has(.engine) { scroll-padding-top: 88px; } }
+
+/* Switches are actions, so they are ink, not clay. */
+.engine .switch[aria-checked="true"] .track { background: var(--ink); border-color: var(--ink); }
+.engine .switch[aria-checked="true"] .track::after { background: var(--paper); }
+
+/* Highlighted solver answers are text, so they use the darker clay (4.5:1 or better). */
+.engine .srows li.hl .sa { color: var(--clay-ink); }
+
+/* ---------- getting around (2026-10-02) ---------- */
+/* The header is one row on phones now; the tab bar lives at the bottom. */
+html:has(.engine) { scroll-padding-top: 72px; }
+@media (max-width: 63.99em) {
+  .engine { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Sticky chip rows (Solve, Formula sheet) sit right under the header. */
+.engine .solve-nav,
+.engine .sheet-jump {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 56px);
+  z-index: 5;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: -16px;
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--paper) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.engine .solve-nav::-webkit-scrollbar,
+.engine .sheet-jump::-webkit-scrollbar { display: none; }
+.engine .solve-nav .chip,
+.engine .sheet-jump .chip { flex: none; }
+.engine .solve-nav a.chip[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.engine .sheet-jump .n { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); margin-right: 2px; }
+@media (min-width: 48em) {
+  .engine .solve-nav, .engine .sheet-jump { margin-inline: -24px; padding-inline: 24px; }
+}
+@media (min-width: 64em) {
+  .engine .solve-nav, .engine .sheet-jump { top: 64px; }
+}
+
+/* Solve: one solver at a time, at a comfortable width. */
+.engine .solve-head { margin-bottom: 0; padding-bottom: 8px; }
+.engine .solve { grid-template-columns: minmax(0, 1fr) !important; max-width: 980px; padding-top: 20px; }
+.engine .solve .span2 { grid-column: auto; }
+
+/* Formula sheet: a jump lands the heading just below the sticky chip row (adds to the page's scroll padding). */
+.engine [data-sheet] > h2 { scroll-margin-top: 62px; }
+@media (min-width: 64em) { .engine [data-sheet] > h2 { scroll-margin-top: 72px; } }
+
+/* Quick math: each trick folds open. */
+.engine .tricks > li { display: block; padding-block: 0; }
+.engine .tricks summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+}
+.engine .tricks summary::-webkit-details-marker { display: none; }
+.engine .tricks summary svg { width: 16px; height: 16px; flex: none; color: var(--fg-muted); transition: transform var(--motion); }
+.engine .tricks details[open] summary svg { transform: rotate(180deg); }
+.engine .tricks .trick-body { display: grid; gap: 8px; justify-items: start; padding-bottom: 18px; }

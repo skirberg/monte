@@ -1,0 +1,171 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------
+   Monte tokens. Source of truth: DESIGN.md
+   Clay means the number. Ink means the action.
+   --------------------------------------------------------------- */
+:root {
+  --paper: oklch(0.975 0.008 75);
+  --sand: oklch(0.945 0.016 75);
+  --sand-2: oklch(0.915 0.02 72);
+  --ink: oklch(0.2 0.012 50);
+  --ink-muted: oklch(0.47 0.016 55);
+  --line: oklch(0.87 0.016 70);
+  --line-strong: oklch(0.62 0.02 60);
+  --clay: oklch(0.6 0.165 45);
+  --clay-ink: oklch(0.5 0.15 42);
+  --clay-tint: oklch(0.935 0.032 55);
+  --danger: oklch(0.5 0.19 22);
+  --success: oklch(0.5 0.12 150);
+
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-ui: 150ms;
+  --dur-enter: 240ms;
+
+  /* shadcn mapping */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sand);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--sand);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--clay);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --paper: oklch(0.17 0.01 50);
+  --sand: oklch(0.215 0.012 50);
+  --sand-2: oklch(0.255 0.014 50);
+  --ink: oklch(0.95 0.01 75);
+  --ink-muted: oklch(0.74 0.015 70);
+  --line: oklch(0.32 0.012 55);
+  --line-strong: oklch(0.5 0.015 60);
+  --clay: oklch(0.72 0.15 48);
+  --clay-ink: oklch(0.78 0.13 50);
+  --clay-tint: oklch(0.29 0.05 45);
+  --danger: oklch(0.7 0.17 22);
+  --success: oklch(0.75 0.14 150);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-sand-2: var(--sand-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-clay: var(--clay);
+  --color-clay-ink: var(--clay-ink);
+  --color-clay-tint: var(--clay-tint);
+  --color-success: var(--success);
+
+  --font-display: var(--font-bricolage), var(--font-geologica), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geologica), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-num), var(--font-geologica), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01" on;
+  }
+  ::selection {
+    background: var(--clay);
+    color: var(--paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 2px;
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The court baseline: a hairline that anchors a section, like a court line. */
+@utility baseline {
+  background-image: linear-gradient(var(--line), var(--line));
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 0.6s var(--ease-settle) both; }
+
+/* Fun or Focus (lib/mode.ts). Fun-only extras disappear in Focus, and the reverse. */
+html[data-mode="focus"] .fun-only { display: none !important; }
+html:not([data-mode="focus"]) .focus-only { display: none !important; }
