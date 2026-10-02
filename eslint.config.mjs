@@ -14,6 +14,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // The study engine is carried verbatim from the original artifact.
     "lib/engine/engine.js",
+    // Local-only folders (git-ignored): brand studies, screenshots, deploy copies.
+    "brand/**",
+    "screenshots/**",
+    "deploy/**",
   ]),
 ]);
 

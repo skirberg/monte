@@ -17,7 +17,10 @@ Business statistics, one idea at a time. Thirteen topics with labs, timed drills
 npm install
 npm run dev      # http://localhost:3000
 npm run build    # static site in out/
+npm run smoke    # serves out/ and checks it in headless Chrome
 ```
+
+`npm run smoke` loads every route at desktop and phone sizes and fails on page errors, sideways scrolling, display type tracked tight enough for glyphs to collide, a hero film that does not start without a click, a closing mark that does not finish, reduced-motion behavior, study analytics, and share links that point at another host. Run it after `npm run build` and before every deploy. It needs Google Chrome (set `CHROME_PATH` to use another Chromium).
 
 ## How it is built
 
@@ -32,4 +35,4 @@ npm run build    # static site in out/
 
 Import this repository on Vercel; it detects Next.js and needs no settings. The public URL lives in one place, `lib/seo.ts` (used for canonical links, social cards, robots and the sitemap). Change it there if the site moves to its own domain.
 
-Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics.
+Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. The study app routes with `#` hashes, so `components/study/route-analytics.tsx` reports each section as its own page (`/study/practice/drill/`) and a finished drill as `/study/practice/drill/finished/`; only route words are sent, never anything a visitor types.

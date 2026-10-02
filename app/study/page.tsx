@@ -6,6 +6,7 @@ import { TOPICS } from "@/lib/site-data";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 import { Celebrations } from "@/components/study/celebrations";
 import { StudyBottomNav } from "@/components/study/bottom-nav";
+import { StudyRouteAnalytics } from "@/components/study/route-analytics";
 import "./engine-base.css";
 import "./engine-skin.css";
 
@@ -35,6 +36,7 @@ export default function StudyPage() {
       <EngineMount />
       <Celebrations />
       <StudyBottomNav />
+      <StudyRouteAnalytics />
     </>
   );
 }

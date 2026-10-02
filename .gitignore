@@ -43,3 +43,8 @@ next-env.d.ts
 # local tool folders (keep .github)
 /.*/
 !/.github/
+
+# local only: brand studies, screenshots, deploy zip and the GitHub upload copy
+/brand/
+/screenshots/
+/deploy/
