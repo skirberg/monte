@@ -3,7 +3,9 @@
 // tracked so tight the glyphs collide, a closing mark that never finishes, page errors, sideways
 // scrolling on phones, and share links that point at a different host.
 //
-//   npm run build && npm run smoke        (CHROME_PATH=/path/to/chrome to use another browser)
+//   npm run build && npm run smoke                     checks out/ on a local server
+//   npm run smoke -- https://monte-ecru.vercel.app     checks a deployed site instead
+//   CHROME_PATH=/path/to/chrome                        uses another Chromium
 
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
@@ -49,8 +51,9 @@ const server = createServer(async (req, res) => {
   res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
   res.end(await readFile(file));
 });
-await new Promise((r) => server.listen(0, "127.0.0.1", r));
-const ORIGIN = `http://127.0.0.1:${server.address().port}`;
+const REMOTE = process.argv[2]?.replace(/\/$/, "");
+if (!REMOTE) await new Promise((r) => server.listen(0, "127.0.0.1", r));
+const ORIGIN = REMOTE ?? `http://127.0.0.1:${server.address().port}`;
 
 // ---------- headless Chrome over the DevTools protocol ----------
 const profile = await mkdtemp(join(tmpdir(), "monte-smoke-"));
@@ -146,8 +149,11 @@ try {
   check(await waitFor(`${filmCount} > 0`, 10000), "hero film plays without a click", `grains counted: ${await evaluate(filmCount)}`);
   const share = await evaluate(`({ og: document.querySelector('meta[property="og:image"]')?.content, canonical: document.querySelector('link[rel=canonical]')?.href })`);
   const sameHost = Boolean(share.og && share.canonical) && new URL(share.og).host === new URL(share.canonical).host;
-  const ogFile = await resolveFile(new URL(share.og ?? "http://x/missing").pathname);
-  check(sameHost && Boolean(ogFile), "share image and canonical URL agree", `${share.og}`);
+  const ogExists = REMOTE
+    ? await fetch(share.og ?? "", { method: "HEAD" }).then((r) => r.ok).catch(() => false)
+    : Boolean(await resolveFile(new URL(share.og ?? "http://x/missing").pathname));
+  const onThisHost = !REMOTE || (share.canonical ?? "").startsWith(REMOTE);
+  check(sameHost && ogExists && onThisHost, "share image and canonical URL agree", `${share.og}`);
   await evaluate(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); h?.parentElement.querySelector('svg')?.scrollIntoView({ block: 'center' }); return true; })()`);
   const closingDone = await waitFor(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); const c = [...(h?.parentElement.querySelector('svg')?.querySelectorAll('circle') ?? [])]; const g = c[3]; return c.length === 4 && getComputedStyle(g).opacity === '1' && getComputedStyle(g).transform === 'none'; })()`, 8000);
   check(closingDone, "closing mark finishes (grain under the last cup)");
@@ -181,7 +187,7 @@ try {
 } finally {
   ws.close();
   chrome.kill();
-  server.close();
+  if (server.listening) server.close();
 }
 
 console.log(failures.length ? `\n${failures.length} check(s) failed.\n` : "\nAll checks passed.\n");
