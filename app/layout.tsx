@@ -41,7 +41,14 @@ export const metadata: Metadata = {
     images: [{ url: "/og.png", width: 1200, height: 630, alt: `${SITE_NAME}: drop enough grains and the shape appears.` }],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
-  icons: { apple: "/apple-touch-icon.png" },
+  // Listed explicitly: an icons object replaces the automatic app/icon.svg link, so the favicon must be named here.
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   manifest: "/manifest.webmanifest",
 };
 
