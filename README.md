@@ -15,9 +15,14 @@ Business statistics, one idea at a time. Thirteen topics with labs, timed drills
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # static site in out/
-npm run smoke    # serves out/ and checks it in headless Chrome
+npm run dev        # http://localhost:3000
+npm run build      # static site in out/
+npm run check      # build, then contrast, qa and smoke: run before every deploy
+npm run contrast   # WCAG contrast for every color pair, light and dark (app/globals.css)
+npm run qa         # every route at 375, 768, 1024, 1440 px, light and dark: axe, sideways scroll, tap targets
+npm run smoke      # behavior: hero film, closing mark, reduced motion, analytics, share links, favicon
+npm run shots      # full-page screenshots of every route into screenshots/review/ for design review
+npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in public/og/
 ```
 
 `npm run smoke` loads every route at desktop and phone sizes and fails on page errors, sideways scrolling, display type tracked tight enough for glyphs to collide, a hero film that does not start without a click, a closing mark that does not finish, reduced-motion behavior, study analytics, and share links that point at another host. Run it after `npm run build` and before every deploy. It needs Google Chrome (set `CHROME_PATH` to use another Chromium).

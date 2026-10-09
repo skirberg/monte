@@ -38,7 +38,7 @@ export function StudyBottomNav({ site = false }: { site?: boolean }) {
   return (
     <>
       <nav
-        aria-label={site ? "Main" : "Study"}
+        aria-label={site ? "Study shortcuts" : "Study"}
         className="fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-paper/92 px-1 backdrop-blur-md print:hidden lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >

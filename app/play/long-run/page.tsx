@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { LongRun } from "@/components/play/long-run";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/long-run/" },
   title: "The long run",
   description: "98 years of real S&P 500, small cap, Treasury and T-bill returns. Volatility drag and a Monte Carlo of 2,000 futures.",
+  ...gameShare("long-run", "The long run", "98 years of real S&P 500, small cap, Treasury and T-bill returns. Volatility drag and a Monte Carlo of 2,000 futures."),
 };
 
 export default function Page() {

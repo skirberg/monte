@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { HouseEdge } from "@/components/play/house-edge";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/house-edge/" },
   title: "The house edge",
   description: "Roulette, expected value and the law of large numbers. Spin a thousand times, then simulate a thousand players.",
+  ...gameShare("house-edge", "The house edge", "Roulette, expected value and the law of large numbers. Spin a thousand times, then simulate a thousand players."),
 };
 
 export default function Page() {

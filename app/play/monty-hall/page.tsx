@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { MontyHall } from "@/components/play/monty-hall";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/monty-hall/" },
   title: "Three doors",
   description: "The Monty Hall problem. Play it, then simulate 1,000 games each way.",
+  ...gameShare("monty-hall", "Three doors", "The Monty Hall problem. Play it, then simulate 1,000 games each way."),
 };
 
 export default function Page() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { FakeCoin } from "@/components/play/fake-coin";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/fake-coin/" },
   title: "Can you fake a coin?",
   description: "Type 50 flips that look random, then see how they compare with 20,000 real ones.",
+  ...gameShare("fake-coin", "Can you fake a coin?", "Type 50 flips that look random, then see how they compare with 20,000 real ones."),
 };
 
 export default function Page() {

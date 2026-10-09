@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { GuessR } from "@/components/play/guess-r";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/correlation/" },
   title: "Guess the correlation",
   description: "Ten scatter plots. Call r by eye. A game for the correlation coefficient.",
+  ...gameShare("correlation", "Guess the correlation", "Ten scatter plots. Call r by eye. A game for the correlation coefficient."),
 };
 
 export default function Page() {

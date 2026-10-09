@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { Options } from "@/components/play/options";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/options/" },
   title: "Price an option",
   description: "Monte Carlo option pricing next to the Black-Scholes formula. The normal distribution at work in finance.",
+  ...gameShare("options", "Price an option", "Monte Carlo option pricing next to the Black-Scholes formula. The normal distribution at work in finance."),
 };
 
 export default function Page() {

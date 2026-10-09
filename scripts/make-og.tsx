@@ -1,8 +1,13 @@
-// Renders the social share card to public/og.png. Run from the project root: npx tsx scripts/make-og.tsx
+// Renders the social share cards: public/og.png for the site and public/og/<game>.png for each game,
+// drawn with that game's own art. Run from the project root: npx tsx scripts/make-og.tsx
 // Fonts come from Google Fonts at run time (Satori needs TTF, so ask without a browser user agent).
 import { writeFileSync } from "node:fs";
 import { ImageResponse } from "next/og";
 import * as React from "react";
+import { mkdirSync } from "node:fs";
+import { renderToStaticMarkup } from "react-dom/server";
+import { GameArt } from "@/components/play/game-art";
+import { GAMES } from "@/lib/site-data";
 
 const PAPER = "#faf6f1", SAND = "#f3ece1", INK = "#1b1511", MUTED = "#625952", CLAY = "#cd5811";
 const h = React.createElement;
@@ -63,5 +68,34 @@ async function main() {
   });
   writeFileSync("public/og.png", Buffer.from(await res.arrayBuffer()));
   console.log("wrote public/og.png");
+
+  // One card per game: its number and topic, its name, its one line, and its art on the sand panel.
+  const fonts = [
+    { name: "Bricolage", data: display, weight: 700 as const, style: "normal" as const },
+    { name: "Azeret", data: mono, weight: 500 as const, style: "normal" as const },
+  ];
+  const TOKENS: Record<string, string> = { "--clay": CLAY, "--ink": INK, "--paper": PAPER, "--sand": SAND, "--sand-2": "#ebe2d5", "--line": "#dbd3c9", "--line-strong": "#9a8f85", "--ink-muted": MUTED, "--clay-ink": "#a63d02" };
+  mkdirSync("public/og", { recursive: true });
+  for (const [i, g] of GAMES.entries()) {
+    const art = renderToStaticMarkup(React.createElement(GameArt, { slug: g.slug }))
+      .replace(/var\((--[\w-]+)\)/g, (_, v) => TOKENS[v] ?? INK)
+      .replace(/ class="[^"]*"/, "")
+      .replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352"');
+    const gcard = h("div", { style: { width: "100%", height: "100%", display: "flex", background: PAPER, padding: 64 } },
+      h("div", { style: { display: "flex", flexDirection: "column", justifyContent: "space-between", width: 600 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 14 } },
+          h("img", { src: uri(MARK), width: 60, height: 60 }),
+          h("span", { style: { fontFamily: "Bricolage", fontSize: 38, color: INK, letterSpacing: -1.5 } }, "Monte")),
+        h("div", { style: { display: "flex", flexDirection: "column", gap: 22 } },
+          h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: "#a63d02", letterSpacing: 2, textTransform: "uppercase" } }, `Play ${String(i + 1).padStart(2, "0")} · ${g.topicName}`),
+          h("span", { style: { fontFamily: "Bricolage", fontSize: g.name.length > 18 ? 74 : 86, lineHeight: 0.98, letterSpacing: -2.5, color: INK } }, g.name),
+          h("span", { style: { fontFamily: "Bricolage", fontSize: 30, lineHeight: 1.25, color: MUTED } }, g.line)),
+        h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED, letterSpacing: 2, textTransform: "uppercase" } }, "monte.markets")),
+      h("div", { style: { display: "flex", flex: 1, alignItems: "center", justifyContent: "center", background: SAND, borderRadius: 36, marginLeft: 32 } },
+        h("img", { src: uri(art), width: 440, height: 352 })));
+    const r = new ImageResponse(gcard, { width: 1200, height: 630, fonts });
+    writeFileSync(`public/og/${g.slug}.png`, Buffer.from(await r.arrayBuffer()));
+    console.log(`wrote public/og/${g.slug}.png`);
+  }
 }
 main();

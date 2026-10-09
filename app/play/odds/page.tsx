@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { Odds } from "@/components/play/odds";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/odds/" },
   title: "Read the odds",
   description: "Convert betting lines and prediction market prices into probabilities and find the bookmaker's cut.",
+  ...gameShare("odds", "Read the odds", "Convert betting lines and prediction market prices into probabilities and find the bookmaker's cut."),
 };
 
 export default function Page() {

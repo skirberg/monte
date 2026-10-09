@@ -38,6 +38,23 @@ function pricePaths(T: number, r: number, s: number) {
 type Est = { n: number; sum: number; sq: number; trail: { n: number; m: number; se: number }[] };
 const empty = (): Est => ({ n: 0, sum: 0, sq: 0, trail: [] });
 
+/** Adds `batches` x BATCH discounted payoffs to the running estimate and records the trail. */
+function addBatches(e: Est, batches: number, kind: Kind, K: number, T: number, rate: number, sigma: number): Est {
+  const out = { ...e, trail: [...e.trail] };
+  for (let b = 0; b < batches && out.n < MAX; b++) {
+    for (let i = 0; i < BATCH; i++) {
+      const ST = terminal(T, rate, sigma);
+      const pay = Math.exp(-rate * T) * Math.max(kind === "call" ? ST - K : K - ST, 0);
+      out.sum += pay;
+      out.sq += pay * pay;
+    }
+    out.n += BATCH;
+    const m = out.sum / out.n;
+    out.trail.push({ n: out.n, m, se: Math.sqrt(Math.max(out.sq / out.n - m * m, 0) / out.n) });
+  }
+  return out;
+}
+
 function PathsChart({ paths, K, kind }: { paths: number[][]; K: number; kind: Kind }) {
   const W = 560;
   const H = 240;
@@ -106,30 +123,23 @@ export function Options() {
   const T = months / 12;
   const bs = blackScholes(kind, S0, K, T, rate, sigma);
 
-  const change = (fn: () => void) => {
-    fn();
-    setEst(empty());
-    setPaths([]);
-  };
+  const change = (fn: () => void) => fn();
 
   const simulate = (batches: number) => {
     setPaths(pricePaths(T, rate, sigma));
-    setEst((e) => {
-      const out = { ...e, trail: [...e.trail] };
-      for (let b = 0; b < batches && out.n < MAX; b++) {
-        for (let i = 0; i < BATCH; i++) {
-          const ST = terminal(T, rate, sigma);
-          const pay = Math.exp(-rate * T) * Math.max(kind === "call" ? ST - K : K - ST, 0);
-          out.sum += pay;
-          out.sq += pay * pay;
-        }
-        out.n += BATCH;
-        const m = out.sum / out.n;
-        out.trail.push({ n: out.n, m, se: Math.sqrt(Math.max(out.sq / out.n - m * m, 0) / out.n) });
-      }
-      return out;
-    });
+    setEst((e) => addBatches(e, batches, kind, K, T, rate, sigma));
   };
+
+  // Open with a first batch already run, and re-run it whenever a setting changes, so the charts are
+  // never empty boxes above the controls. Random draws stay in effects (static export hydration).
+  React.useEffect(() => {
+    // Next frame, so a slider drag runs one simulation per frame instead of one per input event.
+    const id = requestAnimationFrame(() => {
+      setPaths(pricePaths(T, rate, sigma));
+      setEst(addBatches(empty(), 1, kind, K, T, rate, sigma));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [kind, K, T, rate, sigma]);
 
   const last = est.trail[est.trail.length - 1];
   const fields = [
@@ -189,7 +199,7 @@ export function Options() {
         </dl>
         <div className="flex flex-wrap gap-3">
           <button type="button" onClick={() => simulate(1)} disabled={est.n >= MAX} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85 disabled:opacity-50">
-            Simulate {BATCH.toLocaleString()} paths
+            Add {BATCH.toLocaleString()} paths
           </button>
           <button type="button" onClick={() => simulate(MAX / BATCH)} disabled={est.n >= MAX} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand disabled:opacity-50">
             Go to {MAX.toLocaleString()}

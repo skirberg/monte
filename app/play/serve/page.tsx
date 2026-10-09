@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { ServeMath } from "@/components/play/serve-math";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/serve/" },
   title: "Serve math",
   description: "How a small edge on serve points compounds into games and sets. Probability with a tennis racket.",
+  ...gameShare("serve", "Serve math", "How a small edge on serve points compounds into games and sets. Probability with a tennis racket."),
 };
 
 export default function Page() {

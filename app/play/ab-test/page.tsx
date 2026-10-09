@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { AbTest } from "@/components/play/ab-test";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/play/ab-test/" },
   title: "Don't peek",
   description: "Why checking an A/B test every day finds winners that are not there. Hypothesis testing by simulation.",
+  ...gameShare("ab-test", "Don't peek", "Why checking an A/B test every day finds winners that are not there. Hypothesis testing by simulation."),
 };
 
 export default function Page() {

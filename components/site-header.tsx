@@ -103,6 +103,14 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
     <>
       <a
         href="#main"
+        onClick={(e) => {
+          // Move focus without changing the hash: in the study app every hash is a route.
+          const main = document.getElementById("main");
+          if (!main) return;
+          e.preventDefault();
+          main.focus();
+          main.scrollIntoView();
+        }}
         className="sr-only z-50 rounded-md bg-paper px-3 py-2 text-ink focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:ring-2 focus:ring-clay"
       >
         Skip to content

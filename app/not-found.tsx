@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { studyHref } from "@/lib/site-data";
+
+export const metadata: Metadata = { title: "Page not found", robots: { index: false, follow: true } };
 
 export default function NotFound() {
   return (
