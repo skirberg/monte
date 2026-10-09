@@ -4,7 +4,7 @@
 // scrolling on phones, and share links that point at a different host.
 //
 //   npm run build && npm run smoke                     checks out/ on a local server
-//   npm run smoke -- https://monte-ecru.vercel.app     checks a deployed site instead
+//   npm run smoke -- https://monte.markets          checks a deployed site instead
 //   CHROME_PATH=/path/to/chrome                        uses another Chromium
 
 import { createServer } from "node:http";
