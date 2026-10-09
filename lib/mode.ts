@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { MODE_EVENT, MODE_KEY } from "@/lib/mode-script";
 
 /**
@@ -25,6 +26,7 @@ export function setMode(mode: Mode) {
     localStorage.setItem(KEY, mode);
   } catch {}
   window.dispatchEvent(new Event(EVENT));
+  track("Mode switched", { mode });
 }
 
 export function useMode(): Mode {

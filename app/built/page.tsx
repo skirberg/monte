@@ -132,8 +132,8 @@ export default function Built() {
         <Block title="Access and privacy">
           <p className="max-w-[62ch]">
             Text meets WCAG 2.1 AA contrast in light and dark, every control is reachable by keyboard and at least 44 pixels to tap, and all
-            motion stops when your device asks for reduced motion. There are no accounts and no cookies. Page visits are counted anonymously
-            with Vercel Web Analytics, which stores nothing on your device. Your progress stays in this browser.
+            motion stops when your device asks for reduced motion. There are no accounts and no cookies. Page visits and a few anonymous actions (a drill finished, a game played)
+            are counted with Vercel Web Analytics, which stores nothing on your device. Your progress stays in this browser.
           </p>
         </Block>
 

@@ -1,3 +1,4 @@
+import { GamePlayed } from "@/components/play/game-played";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -55,7 +56,7 @@ export function GameShell({
           </p>
         </header>
 
-        {children}
+        <GamePlayed game={slug}>{children}</GamePlayed>
 
         <section aria-labelledby="explain-t" className="mt-16 grid gap-6 border-t border-line pt-10 md:grid-cols-12 md:pt-14">
           <h2 id="explain-t" className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-1.5">

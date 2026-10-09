@@ -162,15 +162,23 @@ try {
   const closingDone = await waitFor(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); const c = [...(h?.parentElement.querySelector('svg')?.querySelectorAll('circle') ?? [])]; const g = c[3]; return c.length === 4 && getComputedStyle(g).opacity === '1' && getComputedStyle(g).transform === 'none'; })()`, 8000);
   check(closingDone, "closing mark finishes (grain under the last cup)");
 
-  console.log("\nStudy analytics (page views queued for Vercel)");
+  console.log("\nAnalytics (page views and custom events queued for Vercel)");
   const queued = "(window.vaq ?? []).filter((c) => c[0] === 'pageview').map((c) => c[1].path)";
+  const events = "(window.vaq ?? []).filter((c) => c[0] === 'event').map((c) => c[1].name + ' ' + JSON.stringify(c[1].data ?? {}))";
   await load("/study/#practice/drill");
   check(await waitFor(`${queued}.includes('/study/practice/drill/')`, 4000), "a study section counts as its own page");
   await evaluate("location.hash = '#learn/topics/Typed Search'; true");
   await waitFor(`${queued}.includes('/study/learn/topics/')`, 3000);
   check(!(await evaluate(`${queued}.some((p) => /Typed|Search|\\s/.test(p))`)), "typed text never reaches analytics", JSON.stringify(await evaluate(queued)));
-  await evaluate("document.getElementById('drill-result').hidden = false; true");
-  check(await waitFor(`${queued}.includes('/study/practice/drill/finished/')`, 3000), "a finished drill is counted");
+  await evaluate("location.hash = '#practice/drill'; true");
+  await waitFor("!!document.querySelector('button[data-start=\"ten\"]')", 3000);
+  await evaluate("document.querySelector('button[data-start=\"ten\"]').click(); true");
+  check(await waitFor(`${events}.some((e) => e.startsWith('Drill started') && e.includes('ten'))`, 3000), "event: drill started, with its mode");
+  await evaluate("document.getElementById('r-score').textContent = '90%'; document.getElementById('drill-result').hidden = false; true");
+  check(await waitFor(`${events}.some((e) => e.startsWith('Drill finished') && e.includes('80-100'))`, 3000), "event: drill finished, with a score band", JSON.stringify(await evaluate(events)));
+  await load("/play/monty-hall/");
+  await evaluate("document.querySelector('main button')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); true");
+  check(await waitFor(`${events}.some((e) => e.startsWith('Game played') && e.includes('monty-hall'))`, 3000), "event: game played, with its name");
 
   console.log("\nReduced motion");
   await media([{ name: "prefers-reduced-motion", value: "reduce" }]);
