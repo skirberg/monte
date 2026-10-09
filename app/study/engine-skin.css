@@ -343,3 +343,10 @@ html:has(.engine) { scroll-padding-top: 72px; }
 .engine .tricks summary svg { width: 16px; height: 16px; flex: none; color: var(--fg-muted); transition: transform var(--motion); }
 .engine .tricks details[open] summary svg { transform: rotate(180deg); }
 .engine .tricks .trick-body { display: grid; gap: 8px; justify-items: start; padding-bottom: 18px; }
+
+/* Phones: all thirteen topics start selected, so the start buttons come right after the title
+   instead of below a full screen of topic chips. Chips stay below for anyone narrowing the mix. */
+@media (max-width: 47.99em) {
+  .engine #drill-setup > :first-child { order: -2; }
+  .engine #drill-setup > .row { order: -1; }
+}

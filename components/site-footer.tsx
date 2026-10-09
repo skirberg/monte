@@ -1,5 +1,6 @@
 import { Wordmark } from "@/components/brand/logo";
 import { playHref, studyHref } from "@/lib/site-data";
+import { StudyBottomNav } from "@/components/study/bottom-nav";
 
 export function SiteFooter() {
   return (
@@ -33,6 +34,9 @@ export function SiteFooter() {
           </a>
         </div>
       </div>
+      {/* Phones: room for the tab bar so it never covers the footer. */}
+      <div aria-hidden className="h-[calc(57px+env(safe-area-inset-bottom,0px))] lg:hidden" />
+      <StudyBottomNav site />
     </footer>
   );
 }
