@@ -473,3 +473,21 @@ html:has(.engine) { scroll-padding-top: 72px; }
 .engine .links .watch svg { width: 14px; height: 14px; }
 .engine .yt { margin: 4px 0 8px; aspect-ratio: 16 / 9; border-radius: var(--radius-md); overflow: hidden; background: var(--sand-2); }
 .engine .yt iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Topic path: read it, practice it, win it. Checks fill in as you go. */
+.engine .tpath { list-style: none; margin: 16px 0 20px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.engine .tpath li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--sand); }
+.engine .tpath .dot { flex: none; display: grid; place-items: center; width: 22px; height: 22px; margin-top: 1px; border-radius: 50%; border: 1.5px solid var(--line-strong); }
+.engine .tpath .dot svg { width: 13px; height: 13px; }
+.engine .tpath li.done .dot { background: var(--clay); border-color: var(--clay); color: var(--paper); }
+.engine .tpath b { display: block; font-size: 14px; }
+.engine .tpath b + span { display: block; font-size: 12.5px; color: var(--ink-muted); line-height: 1.3; }
+@media (max-width: 29.99em) { .engine .tpath b + span { display: none; } .engine .tpath li { padding: 8px 10px; } }
+
+/* Monte Daily result */
+.engine .daily-share { display: grid; gap: 10px; justify-items: start; padding: 20px; margin-bottom: 20px; border-radius: var(--radius-md); background: var(--sand); }
+.engine .daily-grid { font-size: 34px; letter-spacing: 6px; line-height: 1; }
+
+/* Monte Daily result */
+.engine .daily-share { display: grid; gap: 10px; justify-items: start; padding: 20px; margin-bottom: 20px; border-radius: var(--radius-md); background: var(--sand); }
+.engine .daily-grid { font-size: 34px; letter-spacing: 6px; line-height: 1; }

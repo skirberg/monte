@@ -10,6 +10,7 @@ import { STUDY_NAV, playHref, studyHref } from "@/lib/site-data";
 import { useHydrated } from "@/lib/hooks";
 import { useHashPage } from "@/lib/use-hash-page";
 import { setMode, useMode } from "@/lib/mode";
+import { ProgressButton } from "@/components/progress";
 
 function ThemeButton() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -143,6 +144,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
                 ⌘K
               </kbd>
             </button>
+            <ProgressButton />
             <ModeToggle />
             <ThemeButton />
             {!study && (

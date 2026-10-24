@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { MODE_SCRIPT } from "@/lib/mode-script";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
+import { ProgressBridge } from "@/components/progress";
 
 // Speaks: headlines. Reads: body, with Greek for σ μ x̄. Measures: numbers. See DESIGN.md.
 const bricolage = Bricolage_Grotesque({
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </ThemeProvider>
         {/* Vercel Web Analytics: anonymous page counts, no cookies. Inactive until enabled in the Vercel project. */}
+        <ProgressBridge />
         <Analytics />
       </body>
     </html>

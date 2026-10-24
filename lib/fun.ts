@@ -99,3 +99,38 @@ export function celebrate(text = "Game, set, match.") {
   const w = window.innerWidth;
   [0.2, 0.5, 0.8].forEach((f, i) => setTimeout(() => burst(w * f, 150, 22), i * 180));
 }
+
+/** Confetti for real milestones only (level up, daily goal, a badge): clay, ink and sand paper
+ *  falling from the top. Quiet in Focus mode and with reduced motion, like everything here. */
+export function confetti(n = 70) {
+  if (quiet()) return;
+  const colors = ["var(--clay)", "var(--ink)", "var(--clay-ink)", "var(--line-strong)"];
+  const w = window.innerWidth;
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("span");
+    p.setAttribute("aria-hidden", "true");
+    const pw = 6 + Math.random() * 6;
+    Object.assign(p.style, {
+      position: "fixed",
+      left: `${Math.random() * w}px`,
+      top: "-16px",
+      width: `${pw}px`,
+      height: `${pw * (0.4 + Math.random() * 0.5)}px`,
+      background: colors[i % colors.length],
+      borderRadius: "1px",
+      pointerEvents: "none",
+      zIndex: "60",
+    });
+    document.body.appendChild(p);
+    const drift = (Math.random() - 0.5) * 220;
+    const fall = window.innerHeight * (0.55 + Math.random() * 0.5);
+    const spin = (Math.random() - 0.5) * 900;
+    p.animate(
+      [
+        { transform: "translate(0,0) rotate(0deg)", opacity: 1 },
+        { transform: `translate(${drift}px, ${fall}px) rotate(${spin}deg)`, opacity: 0 },
+      ],
+      { duration: 1400 + Math.random() * 1100, delay: Math.random() * 250, easing: "cubic-bezier(.25,.6,.4,1)", fill: "forwards" },
+    ).onfinish = () => p.remove();
+  }
+}
