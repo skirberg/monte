@@ -9,7 +9,7 @@
  *   and are never money.
  * - Badges for real milestones.
  *
- * Anything (React or the legacy study engine) can award XP by dispatching
+ * Anything (study pages via lib/study/events.ts, games, /decide/) can award XP by dispatching
  * `window.dispatchEvent(new CustomEvent("monte:xp", { detail: { xp, reason } }))`;
  * <ProgressBridge /> listens and calls addXp. Every change fires "monte:progress".
  */

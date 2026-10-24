@@ -7,7 +7,7 @@ import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, bump, daysTo, exportProgress, get
 import { callout, confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-/** Turns events from anywhere (the study engine, games) into progress, and celebrates real milestones. */
+/** Turns events from anywhere (study pages, games, /decide/) into progress, and celebrates real milestones. */
 export function ProgressBridge() {
   React.useEffect(() => {
     const onXp = (e: Event) => {
