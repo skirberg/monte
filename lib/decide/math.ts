@@ -7,6 +7,13 @@
  *   (-110 / -110 adds to 104.76%, so the margin is 4.76%.)
  * - Option time is calendar days over 365.
  * - Option odds use a lognormal model with no drift (rate 0), the risk-neutral approximation.
+ * - A test result: chances are per case tested; the 1,000 grid rounds by largest remainder so it always adds to 1,000.
+ * - Warranty: expected cost is over the whole plan. With the plan you pay its price, plus the deductible if the bad thing happens.
+ * - Goal: monthly steps. Each month the balance grows by a lognormal factor whose average is (1 + yearly return)^(1/12),
+ *   then the monthly saving is added at the end of the month. "Reaching the goal" means at the end of the last year.
+ * - A/B test: the z test pools both groups; the 95% range for the difference does not (the usual textbook pair).
+ *   Sample size is per version, two-sided 5% level, 80% power.
+ * - Staffing: arrivals in one hour are Poisson. Overload means more arrive in the hour than the team can serve in it.
  */
 
 /* ---------------- shared ---------------- */
@@ -214,6 +221,179 @@ export function modelPrice(kind: "call" | "put", S: number, K: number, sigma: nu
   const d1 = (Math.log(S / K) + (sigma * sigma * T) / 2) / sd;
   const d2 = d1 - sd;
   return kind === "call" ? S * Phi(d1) - K * Phi(d2) : K * Phi(-d2) - S * Phi(-d1);
+}
+
+/* ---------------- 5. A test result (base rates, Bayes) ---------------- */
+
+/**
+ * The four groups as shares of everyone tested, for a thing with base rate `base`, a test that catches it with chance `catches`
+ * and false-alarms with chance `falseAlarm` (all 0 to 1), and the two chances people actually want.
+ */
+export function testResult(base: number, catches: number, falseAlarm: number) {
+  const tp = base * catches;
+  const fn = base * (1 - catches);
+  const fp = (1 - base) * falseAlarm;
+  const tn = (1 - base) * (1 - falseAlarm);
+  const pos = tp + fp;
+  const neg = fn + tn;
+  return { tp, fn, fp, tn, pos, neg, realIfPos: pos > 0 ? tp / pos : NaN, realIfNeg: neg > 0 ? fn / neg : NaN, falseShare: pos > 0 ? fp / pos : NaN };
+}
+
+/** Whole counts from shares that add to 1, rounded by largest remainder so they add to exactly n. */
+export function wholeCounts(shares: number[], n: number) {
+  const raw = shares.map((s) => s * n);
+  const out = raw.map(Math.floor);
+  let left = n - out.reduce((a, b) => a + b, 0);
+  const order = raw.map((r, i) => [r - Math.floor(r), i] as const).sort((a, b) => b[0] - a[0]);
+  for (let j = 0; left > 0 && j < order.length; j++, left--) out[order[j][1]]++;
+  return out;
+}
+
+/* ---------------- 6. A warranty or insurance ---------------- */
+
+/**
+ * Expected cost of each choice over the plan. Skip it: the chance times the loss. Buy it: the price,
+ * plus the deductible when the bad thing happens. Break-even is the chance where the two are equal.
+ */
+export function warranty(price: number, chanceOf: number, loss: number, deductible = 0) {
+  const skip = chanceOf * loss;
+  const buy = price + chanceOf * deductible;
+  const covered = loss - deductible;
+  // times: the price over the average loss the plan pays for, the plan's markup. 2 means you pay $2 for every $1 it pays out on average.
+  const avgPaid = chanceOf * covered;
+  return { skip, buy, extra: buy - skip, breakEven: covered > 0 ? price / covered : Infinity, times: avgPaid > 0 ? price / avgPaid : Infinity };
+}
+
+/* ---------------- 7. A savings goal ---------------- */
+
+/** One standard normal draw from two uniforms (Box-Muller). `rand` returns a number in [0, 1). */
+export function randn(rand: () => number) {
+  let u = 0;
+  while (u === 0) u = rand();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
+}
+
+/** Monthly log-return mean and spread for a yearly return r and yearly volatility sigma, so the average monthly factor is (1 + r)^(1/12). */
+export function monthlyStep(r: number, sigma: number) {
+  const sd = sigma / Math.sqrt(12);
+  return { mu: Math.log(1 + r) / 12 - (sd * sd) / 2, sd };
+}
+
+/**
+ * One possible future, month by month: grow, then add the monthly saving. Writes the balance at the start and at
+ * each year end into `out` from `at` (years + 1 numbers) and returns the final balance.
+ */
+export function goalPath(start: number, monthly: number, years: number, mu: number, sd: number, rand: () => number, out?: Float64Array, at = 0) {
+  let w = start;
+  if (out) out[at] = w;
+  for (let y = 1; y <= years; y++) {
+    for (let m = 0; m < 12; m++) w = w * Math.exp(mu + sd * randn(rand)) + monthly;
+    if (out) out[at + y] = w;
+  }
+  return w;
+}
+
+/** The exact average final balance, for checking the simulation: start grown at r, plus each month's saving grown for the months left. */
+export function goalMean(start: number, monthly: number, years: number, r: number) {
+  const n = years * 12;
+  const g = (1 + r) ** (1 / 12);
+  return start * (1 + r) ** years + (Math.abs(g - 1) < 1e-12 ? monthly * n : (monthly * (g ** n - 1)) / (g - 1));
+}
+
+/** What you put in by the end of each year, start included. */
+export const putIn = (start: number, monthly: number, year: number) => start + monthly * 12 * year;
+
+/* ---------------- 8. An A/B test ---------------- */
+
+/** Two-sided z values used below: 95% (1.96) and 80% power (0.84). */
+export const Z95 = 1.959964;
+export const Z80 = 0.841621;
+
+/**
+ * Rates, lift, the pooled two-proportion z test and its two-sided p-value, and the unpooled 95% range for B − A.
+ * p uses 2·Φ(−|z|) so small p-values keep their digits.
+ */
+export function abTest(nA: number, xA: number, nB: number, xB: number) {
+  const pA = xA / nA;
+  const pB = xB / nB;
+  const diff = pB - pA;
+  const pool = (xA + xB) / (nA + nB);
+  const sePool = Math.sqrt(pool * (1 - pool) * (1 / nA + 1 / nB));
+  const z = sePool > 0 ? diff / sePool : 0;
+  const p = sePool > 0 ? Math.min(1, Math.max(0, 2 * Phi(-Math.abs(z)))) : 1;
+  const se = Math.sqrt((pA * (1 - pA)) / nA + (pB * (1 - pB)) / nB);
+  return { pA, pB, diff, lift: pA > 0 ? diff / pA : NaN, z, p, se, lo: diff - Z95 * se, hi: diff + Z95 * se };
+}
+
+/** Visitors needed in each version to detect a change from pA to pB 80% of the time at the two-sided 5% level. */
+export function abSampleSize(pA: number, pB: number) {
+  if (!(pA !== pB)) return Infinity;
+  const bar = (pA + pB) / 2;
+  const top = Z95 * Math.sqrt(2 * bar * (1 - bar)) + Z80 * Math.sqrt(pA * (1 - pA) + pB * (1 - pB));
+  return Math.ceil((top * top) / (pB - pA) ** 2);
+}
+
+/* ---------------- 9. Staffing ---------------- */
+
+/** Chance of exactly k arrivals in an hour when lam arrive on average. Terms are built by multiplying, so it works up to lam ≈ 700. */
+export function poissonPmf(k: number, lam: number) {
+  if (k < 0 || !(lam > 0)) return k === 0 ? 1 : 0;
+  let t = Math.exp(-lam);
+  for (let i = 1; i <= k; i++) t *= lam / i;
+  return t;
+}
+
+/** Chance of k or fewer arrivals. */
+export function poissonCdf(k: number, lam: number) {
+  if (k < 0) return 0;
+  if (!(lam > 0)) return 1;
+  let t = Math.exp(-lam);
+  let sum = t;
+  for (let i = 1; i <= k; i++) {
+    t *= lam / i;
+    sum += t;
+  }
+  return Math.min(1, sum);
+}
+
+/** Chance of more than k arrivals. Past the average it adds up the tail itself, so tiny chances keep their digits. */
+export function poissonOver(k: number, lam: number) {
+  if (!(lam > 0)) return 0;
+  if (k < 0) return 1;
+  if (k < lam) return Math.max(0, 1 - poissonCdf(k, lam));
+  let t = poissonPmf(k, lam);
+  let tail = 0;
+  for (let i = k + 1; i < k + 100000; i++) {
+    t *= lam / i;
+    tail += t;
+    if (t <= tail * 1e-17) break;
+  }
+  return tail;
+}
+
+/** Smallest k with at least a share q of hours at or below it. */
+export function poissonQuantile(q: number, lam: number) {
+  let t = Math.exp(-lam);
+  let sum = t;
+  let k = 0;
+  while (sum < q && k < 100000) {
+    k++;
+    t *= lam / k;
+    sum += t;
+  }
+  return k;
+}
+
+/** How many a team of `staff` can serve in an hour: whole people only. */
+export const capacity = (staff: number, perPerson: number) => Math.floor(staff * perPerson + 1e-9);
+
+/** Chance an hour brings more than `staff` people can serve. */
+export const overload = (lam: number, perPerson: number, staff: number) => poissonOver(capacity(staff, perPerson), lam);
+
+/** The fewest staff that keep the overload chance at or under `target`, up to `max`. NaN if none do. */
+export function fewestStaff(lam: number, perPerson: number, target: number, max = 200) {
+  for (let s = 1; s <= max; s++) if (overload(lam, perPerson, s) <= target) return s;
+  return NaN;
 }
 
 /* ---------------- running in frames ---------------- */

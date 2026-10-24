@@ -327,3 +327,13 @@ export function aChance(v: number, digits = 1) {
   // Read aloud, 8, 80-something, 11, 18, "under" and "over" all start with a vowel sound.
   return `${/^(8|1[18](\D|$)|under|over)/.test(t) ? "an" : "a"} ${t}`;
 }
+
+/** A small chance as "1 in 9,800": two significant figures past 20, so it reads like a count. */
+export function oneIn(v: number) {
+  if (!(v > 0)) return "none";
+  const n = 1 / v;
+  if (n < 1.5) return "almost all";
+  if (n < 20) return `1 in ${Math.round(n)}`;
+  const p = 10 ** (Math.floor(Math.log10(n)) - 1);
+  return `1 in ${(Math.round(n / p) * p).toLocaleString("en-US")}`;
+}
