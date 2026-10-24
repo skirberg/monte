@@ -54,7 +54,12 @@ export function levelOf(xp: number) {
   return { level: n, into: xp - start, span: next - start };
 }
 
-const today = () => new Date().toLocaleDateString("en-CA");
+/** Local calendar day as YYYY-MM-DD, built by hand so no locale can change the format. */
+export function localDay(t = Date.now()) {
+  const d = new Date(t);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+const today = () => localDay();
 const dayDiff = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
 
 function blank(): Progress {
@@ -94,12 +99,15 @@ export function addXp(amount: number, reason = "") {
 
   if (p.lastDay !== d) {
     const gap = p.lastDay ? dayDiff(p.lastDay, d) : 1;
-    if (gap === 1) p.streak += 1;
-    else if (gap === 2 && p.freezes > 0) {
-      p.freezes -= 1;
+    if (gap <= 0) {
+      // The clock moved back (travel, a changed setting): keep the streak as it is.
+    } else if (gap === 1) p.streak += 1;
+    else if (gap - 1 <= p.freezes) {
+      // Each freeze covers one missed day.
+      p.freezes -= gap - 1;
       p.streak += 1;
     } else p.streak = 1;
-    p.lastDay = d;
+    if (gap > 0) p.lastDay = d;
     if (p.streak > 0 && p.streak % 7 === 0) p.freezes = Math.min(2, p.freezes + 1);
     if (p.streak >= 7) giveBadge(p, "streak-7", ev);
   }

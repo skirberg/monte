@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { gameShare } from "@/lib/seo";
 import { GameShell } from "@/components/play/game-shell";
 import { Election } from "@/components/play/election";
+import { RealRace } from "@/components/play/election-real";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/play/election/" },
@@ -31,6 +32,11 @@ export default function Page() {
             the wrong leader rate falls to about 8%. Ten polls bring it near 2%.
           </p>
           <p>
+            Saying <b>how sure</b> you are is scored with the <b>Brier score</b>, <code>(outcome − p)²</code>, where outcome is 1 if A wins and 0 if not.
+            It is a proper scoring rule: your best average score comes from saying exactly what you believe, so shading a 70% hunch up to 95% costs
+            you over many races. Chips are the same score moved so that 50% pays nothing: <code>100 × (1 − Brier) − 75</code>.
+          </p>
+          <p>
             The formula only counts <b>sampling error</b>, the luck of who gets picked. Real polls also miss because of who answers, who actually
             turns out to vote and how questions are worded. Those errors tend to push every poll the same way, so averaging cannot cancel them.
             That is why real elections miss the polls by more than the margin of error says.
@@ -38,7 +44,10 @@ export default function Page() {
         </>
       }
     >
-      <Election />
+      <div className="space-y-10">
+        <Election />
+        <RealRace />
+      </div>
     </GameShell>
   );
 }

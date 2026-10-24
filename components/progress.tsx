@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Flame, Snowflake, Trophy } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { BADGES, DAILY_GOAL, addXp, bump, getProgress, levelOf, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { BADGES, DAILY_GOAL, addXp, bump, getProgress, levelOf, localDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
 import { callout, confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
@@ -74,13 +74,14 @@ export function ProgressButton() {
   const [open, setOpen] = React.useState(false);
   const [now] = React.useState(() => Date.now());
   if (!p) return <span className="size-11" aria-hidden />;
-  const day = new Date(now).toLocaleDateString("en-CA");
+  const day = localDay(now);
   const todayXp = p.days[day] ?? 0;
   const lv = levelOf(p.xp);
-  const live = p.lastDay === day || (p.lastDay && Date.parse(day) - Date.parse(p.lastDay) <= 864e5);
+  const gap = p.lastDay ? Math.round((Date.parse(day) - Date.parse(p.lastDay)) / 864e5) : 99;
+  const live = gap <= 1 || gap - 1 <= p.freezes;
   const streak = live ? p.streak : 0;
   const last7 = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(now - (6 - i) * 864e5).toLocaleDateString("en-CA");
+    const d = localDay(now - (6 - i) * 864e5);
     return { d, xp: p.days[d] ?? 0, label: new Date(d + "T12:00").toLocaleDateString("en-US", { weekday: "narrow" }) };
   });
   return (

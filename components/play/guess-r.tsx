@@ -151,7 +151,7 @@ export function GuessR() {
           {[
             ["Round", `${Math.min(i + 1, ROUNDS)}/${ROUNDS}`],
             ["Streak", String(streak)],
-            ["Best avg miss", best === null ? "–" : best.toFixed(2)],
+            ["Best avg miss", best === null ? "?" : best.toFixed(2)],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-4">
               <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>

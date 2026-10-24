@@ -154,12 +154,12 @@ export function AbTest() {
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line" aria-live="polite">
           <div className="bg-paper p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Checked once, day {DAYS}</p>
-            <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{rates ? pct(rates.end, 1) : "–"}</p>
+            <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{rates ? pct(rates.end, 1) : "?"}</p>
             <p className="mt-1 text-xs text-ink-muted">{aa ? "false winners" : "tests that found the lift"}</p>
           </div>
           <div className="bg-paper p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Peeked every day</p>
-            <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{rates ? pct(rates.peek, 1) : "–"}</p>
+            <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{rates ? pct(rates.peek, 1) : "?"}</p>
             <p className="mt-1 text-xs text-ink-muted">{aa ? "false winners" : "tests that ever looked significant"}</p>
           </div>
         </div>

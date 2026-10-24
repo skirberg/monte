@@ -6,6 +6,7 @@ import { cn } from "cn";
 import { Phi } from "@/lib/site-data";
 import { burstFrom, callout } from "@/lib/fun";
 import { useStoredString } from "@/lib/hooks";
+import { START_CHIPS, addChips, addXp, refillChips, unlockBadge, useProgress } from "@/lib/progress";
 import { binom, chunked, pct } from "@/lib/play/sim";
 
 const SIZES = [400, 1000, 2500] as const;
@@ -14,6 +15,7 @@ const Z = 1.96;
 const RUNS = 1000;
 const AVERAGES = [5, 10] as const;
 const BEST_KEY = "monteElectionStreak";
+const HIST_KEY = "monteElectionCalls";
 
 type Size = (typeof SIZES)[number];
 type Side = "A" | "B";
@@ -156,46 +158,97 @@ function PollChart({ polls, truth }: { polls: Poll[]; truth: number | null }) {
   );
 }
 
-function verdict(right: boolean, clear: boolean, polls: number) {
+function verdict(right: boolean, clear: boolean, polls: number, sure: number) {
+  if (sure === 0.5) return clear ? "Your polls were clear of a tie, so leaning in would have paid." : "With the polls this close, staying near 50% was fair.";
   if (right && clear) return polls === 1 ? "One poll and a clear read. Bold, and it held." : "Your polls together were clear of a tie, and they were right.";
   if (right) return "Right, and a little lucky. Your polls together could not rule out a tie.";
   if (clear) return "The polls pointed the wrong way even though they cleared the tie line. A 95% interval still misses about 1 time in 20.";
-  return "A fair miss. Your polls together could not rule out a tie, so this call was close to a coin flip.";
+  return "A fair miss. Your polls together could not rule out a tie, so a number near 50% was the safe call.";
+}
+
+/** One finished race: how sure you were that A wins (0 to 1), and whether A won (1) or not (0). */
+type Race = { p: number; o: 0 | 1 };
+
+/** Brier score: the squared gap between what you said and what happened. 0 is perfect, 0.25 is always saying 50%. */
+const brier = (r: Race) => (r.o - r.p) ** 2;
+/** Chips for one race: 0 at 50%, +24 for a right call at 90%, −56 for a wrong one. Saying what you believe earns the most on average. */
+const chipsFor = (p: number, o: number) => Math.round(100 * (1 - (o - p) ** 2) - 75);
+const signed = (v: number) => (v > 0 ? `+${v}` : v < 0 ? `−${Math.abs(v)}` : "0");
+/** How sure you were of the side you leaned to, so a 30% call on A counts as a 70% call on B. */
+const lean = (p: number) => Math.max(p, 1 - p);
+
+const CAL_AFTER = 10;
+const BUCKETS = [
+  { label: "50 to 60%", lo: 0.5, hi: 0.6 },
+  { label: "60 to 70%", lo: 0.6, hi: 0.7 },
+  { label: "70 to 80%", lo: 0.7, hi: 0.8 },
+  { label: "80 to 95%", lo: 0.8, hi: 0.951 },
+];
+
+function readHistory(raw: string | null): Race[] {
+  try {
+    const v = raw ? JSON.parse(raw) : [];
+    return Array.isArray(v) ? v.filter((r) => typeof r?.p === "number" && (r.o === 0 || r.o === 1)) : [];
+  } catch {
+    return [];
+  }
 }
 
 export function Election() {
   // The truth is drawn on the client and stays hidden until the call, so server and client never show different numbers.
   const [truth, setTruth] = React.useState(() => makeTruth());
   const [polls, setPolls] = React.useState<Poll[]>([]);
-  const [call, setCall] = React.useState<Side | null>(null);
-  const [played, setPlayed] = React.useState(0);
-  const [right, setRight] = React.useState(0);
+  const [sure, setSure] = React.useState(50);
+  const [locked, setLocked] = React.useState<number | null>(null);
+  const [delta, setDelta] = React.useState(0);
   const [streak, setStreak] = React.useState(0);
   const stored = useStoredString(BEST_KEY);
   const [bestNow, setBest] = React.useState<number | null>(null);
   const best = bestNow ?? (stored ? +stored : 0);
+  const storedHist = useStoredString(HIST_KEY);
+  const [histNow, setHist] = React.useState<Race[] | null>(null);
+  const history = React.useMemo(() => histNow ?? readHistory(storedHist), [histNow, storedHist]);
+  const progress = useProgress();
+  const [refill, setRefill] = React.useState<"done" | "used" | null>(null);
   const resultRef = React.useRef<HTMLParagraphElement>(null);
   const firstPoll = React.useRef<HTMLButtonElement>(null);
 
   const winner: Side = truth > 0.5 ? "A" : "B";
-  const called = call !== null;
+  const outcome: 0 | 1 = winner === "A" ? 1 : 0;
+  const called = locked !== null;
   const last = polls[polls.length - 1];
   const all = pool(polls);
   const allMoe = polls.length ? moe(all.a, all.n) : 0;
   const allClear = polls.length > 0 && Math.abs(all.a - 0.5) > allMoe;
+  const p = sure / 100;
+  const right = locked !== null && locked !== 0.5 && locked > 0.5 === (outcome === 1);
+  const rightCount = history.filter((r) => r.p !== 0.5 && r.p > 0.5 === (r.o === 1)).length;
+  const avgBrier = history.length ? history.reduce((s, r) => s + brier(r), 0) / history.length : null;
+  const chips = progress?.chips ?? null;
 
   const commission = (n: number) => {
     if (called || polls.length >= MAX_POLLS) return;
-    setPolls((p) => [...p, poll(truth, n)]);
+    setPolls((ps) => [...ps, poll(truth, n)]);
   };
 
-  const makeCall = (side: Side) => {
+  const lockIn = () => {
     if (called || !polls.length) return;
-    setCall(side);
-    setPlayed((v) => v + 1);
-    if (side === winner) {
+    const d = chipsFor(p, outcome);
+    const good = p !== 0.5 && p > 0.5 === (outcome === 1);
+    const next = [...history, { p, o: outcome }].slice(-200);
+    setLocked(p);
+    setDelta(d);
+    setHist(next);
+    try {
+      localStorage.setItem(HIST_KEY, JSON.stringify(next));
+    } catch {}
+    addChips(d, "election");
+    addXp(5 + (good ? 5 : 0), "election");
+    const avg = next.reduce((s, r) => s + brier(r), 0) / next.length;
+    if (next.length >= CAL_AFTER && avg < 0.2) unlockBadge("calibrated");
+
+    if (good) {
       const s = streak + 1;
-      setRight((v) => v + 1);
       setStreak(s);
       if (s > best) {
         setBest(s);
@@ -203,18 +256,22 @@ export function Election() {
           localStorage.setItem(BEST_KEY, String(s));
         } catch {}
       }
-      requestAnimationFrame(() => burstFrom(resultRef.current));
-      if (s >= 3) callout(`${s} races in a row.`);
-      else if (polls.length === 1) callout("Called it on one poll.");
-    } else setStreak(0);
+      if (d > 0) requestAnimationFrame(() => burstFrom(resultRef.current, 8));
+      if (d >= 20) callout(`Sure and right. ${signed(d)} chips.`);
+    } else if (p !== 0.5) setStreak(0);
   };
 
   const nextElection = () => {
     setTruth(makeTruth());
     setPolls([]);
-    setCall(null);
+    setLocked(null);
+    setSure(50);
     requestAnimationFrame(() => firstPoll.current?.focus());
   };
+
+  const askRefill = () => setRefill(refillChips() ? "done" : "used");
+
+  const sideText = (v: number) => `${Math.round(v * 100)}% A · ${Math.round((1 - v) * 100)}% B`;
 
   return (
     <div className="space-y-10">
@@ -224,9 +281,9 @@ export function Election() {
             <PollChart polls={polls} truth={called ? truth : null} />
           </div>
           <ol className="sr-only">
-            {polls.map((p, i) => (
+            {polls.map((q, i) => (
               <li key={i}>
-                Poll {i + 1}, {p.n.toLocaleString()} people: A {share(p.a)}, B {share(1 - p.a)}, margin plus or minus {pts(moe(p.a, p.n))} points.
+                Poll {i + 1}, {q.n.toLocaleString()} people: A {share(q.a)}, B {share(1 - q.a)}, margin plus or minus {pts(moe(q.a, q.n))} points.
               </li>
             ))}
           </ol>
@@ -254,18 +311,38 @@ export function Election() {
         </div>
 
         <div className="flex flex-col gap-6 lg:col-span-5">
-          <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl bg-line font-mono tabular">
+          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line font-mono tabular sm:grid-cols-4 lg:grid-cols-2">
             {[
-              ["Right calls", played ? `${right}/${played}` : "0"],
-              ["Streak", String(streak)],
-              ["Best streak", String(best)],
-            ].map(([k, v]) => (
+              ["Chips", chips === null ? "…" : chips.toLocaleString(), "play chips, not money"],
+              ["Brier", avgBrier === null ? "?" : avgBrier.toFixed(3), "lower is better"],
+              ["Right", history.length ? `${rightCount}/${history.length}` : "0", "calls on the winner"],
+              ["Streak", String(streak), `best ${best}`],
+            ].map(([k, v, sub]) => (
               <div key={k} className="bg-paper p-4">
                 <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
                 <dd className="mt-1 text-xl">{v}</dd>
+                <dd className="text-[11px] text-ink-muted">{sub}</dd>
               </div>
             ))}
           </dl>
+
+          {chips === 0 && (
+            <div className="space-y-3 rounded-2xl bg-sand p-4" aria-live="polite">
+              <p>Out of chips. They are play chips, so you can start again.</p>
+              {refill === "used" ? (
+                <p className="text-sm text-ink-muted">You already refilled today. Keep playing for the Brier score, and come back tomorrow for chips.</p>
+              ) : (
+                <button type="button" onClick={askRefill} className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85">
+                  Refill to {START_CHIPS.toLocaleString()} chips
+                </button>
+              )}
+            </div>
+          )}
+          {refill === "done" && chips !== 0 && (
+            <p className="text-sm text-ink-muted" aria-live="polite">
+              Refilled to {START_CHIPS.toLocaleString()} chips. One refill a day.
+            </p>
+          )}
 
           <div aria-live="polite" className="space-y-2">
             <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">{last ? `Poll ${polls.length} · ${last.n.toLocaleString()} people` : "Latest poll"}</p>
@@ -279,40 +356,70 @@ export function Election() {
                 </p>
               </>
             ) : (
-              <p className="text-ink-muted">A hidden share of voters backs A. Poll as many times as you like, up to {MAX_POLLS}, then call the winner. Fewer polls is a bolder call.</p>
+              <p className="text-ink-muted">
+                A hidden share of voters backs A. Poll up to {MAX_POLLS} times, then say how sure you are that A wins. Chips reward being right about how sure you are, not just being right.
+              </p>
             )}
           </div>
 
-          <div aria-live="polite">
-            {!called ? (
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-3">
-                  {(["A", "B"] as const).map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => makeCall(s)}
-                      disabled={!polls.length}
-                      className="inline-flex h-12 items-center justify-center rounded-full bg-ink px-5 font-medium text-paper hover:bg-ink/85 disabled:opacity-50 disabled:hover:bg-ink"
-                    >
-                      Call it for {s}
-                    </button>
-                  ))}
-                </div>
-                {!polls.length && <p className="text-sm text-ink-muted">Run at least one poll before you call it.</p>}
+          {!called ? (
+            <div className="space-y-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <label htmlFor="el-sure" className="text-ink-muted">
+                  How sure are you that A wins?
+                </label>
+                <span className="font-mono text-lg tabular" aria-hidden="true">
+                  {sure}%
+                </span>
               </div>
-            ) : (
+              <input
+                id="el-sure"
+                type="range"
+                min={5}
+                max={95}
+                step={5}
+                value={sure}
+                onChange={(e) => setSure(+e.target.value)}
+                aria-valuetext={sure === 50 ? "50%, no lean" : `${sure}% A wins, ${100 - sure}% B wins`}
+                aria-describedby="el-sure-hint"
+                className="h-11 w-full accent-[var(--clay)]"
+              />
+              <div className="flex justify-between font-mono text-xs text-ink-muted" aria-hidden="true">
+                <span>Sure B wins</span>
+                <span>50/50</span>
+                <span>Sure A wins</span>
+              </div>
+              <p id="el-sure-hint" className="font-mono text-sm tabular text-ink-muted">
+                {sure === 50 ? "50/50: no chips either way." : `If A wins ${signed(chipsFor(p, 1))} chips · if B wins ${signed(chipsFor(p, 0))}`}
+              </p>
+              <button
+                type="button"
+                onClick={lockIn}
+                disabled={!polls.length}
+                className="inline-flex h-12 w-full items-center justify-center rounded-full bg-ink px-5 font-medium text-paper hover:bg-ink/85 disabled:opacity-50 disabled:hover:bg-ink"
+              >
+                Lock in {sideText(p)}
+              </button>
+              {!polls.length && <p className="text-sm text-ink-muted">Run at least one poll before you lock in.</p>}
+            </div>
+          ) : null}
+
+          <div aria-live="polite">
+            {called && (
               <div className="space-y-4 rounded-2xl border border-line p-5">
-                <p ref={resultRef} className={cn("font-display text-4xl font-[680]", call === winner ? "text-clay-ink" : "text-ink")}>
-                  {call === winner ? "Right call." : "Wrong call."}
+                <p ref={resultRef} className={cn("font-display text-4xl font-[680]", right ? "text-clay-ink" : "text-ink")}>
+                  {locked === 0.5 ? "No lean." : right ? "Good call." : "Wrong way."}
                 </p>
                 <p className="font-mono text-sm tabular">
-                  {winner} won with {share(winner === "A" ? truth : 1 - truth)} · you polled {all.n.toLocaleString()} people
+                  {winner} won with {share(winner === "A" ? truth : 1 - truth)} · you said {sideText(locked)}
+                </p>
+                <p className="font-mono text-sm tabular">
+                  Brier {brier({ p: locked, o: outcome }).toFixed(3)} · chips {signed(delta)}
                 </p>
                 <p className="text-ink-muted">
                   All {polls.length} poll{polls.length > 1 ? "s" : ""} together: A {share(all.a)}, ±{pts(allMoe)}.{" "}
                   {polls.length > 1 && "That margin is smaller than any single poll's. "}
-                  {verdict(call === winner, allClear, polls.length)}
+                  {verdict(right, allClear, polls.length, locked)}
                 </p>
                 <button type="button" onClick={nextElection} autoFocus className="inline-flex h-11 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
                   Next election
@@ -323,8 +430,92 @@ export function Election() {
         </div>
       </div>
 
+      <Calibration history={history} avg={avgBrier} />
+
       <ThousandElections />
     </div>
+  );
+}
+
+function Calibration({ history, avg }: { history: Race[]; avg: number | null }) {
+  const left = CAL_AFTER - history.length;
+  const rows = BUCKETS.map((b) => {
+    const in_ = history.filter((r) => r.p !== 0.5 && lean(r.p) >= b.lo && lean(r.p) < b.hi);
+    const hit = in_.filter((r) => r.p > 0.5 === (r.o === 1)).length;
+    const said = in_.length ? in_.reduce((s, r) => s + lean(r.p), 0) / in_.length : null;
+    return { ...b, n: in_.length, hit, said };
+  });
+  const sureRows = rows.filter((r) => r.n >= 3 && r.said !== null);
+  const over = sureRows.filter((r) => r.hit / r.n < r.said! - 0.1).length;
+  const under = sureRows.filter((r) => r.hit / r.n > r.said! + 0.1).length;
+
+  return (
+    <section aria-labelledby="cal-t" className="grid gap-6 rounded-[28px] bg-sand p-5 sm:p-7 lg:grid-cols-12">
+      <div className="space-y-3 lg:col-span-5">
+        <h2 id="cal-t" className="font-display text-2xl font-[650]">
+          How often were your 70% calls right?
+        </h2>
+        <p className="text-ink-muted">
+          Being <b className="font-semibold text-ink">calibrated</b> means your 70% calls come true about 70% of the time. Right more often than that and you could have said a
+          bigger number. Right less often and you were too sure.
+        </p>
+        <p className="text-ink-muted">
+          The <b className="font-semibold text-ink">Brier score</b> is the squared gap between what you said and what happened, averaged over races. Always saying 50% scores 0.25.
+          A perfect seer scores 0. Saying exactly what you believe earns the most chips on average, so honesty pays.
+        </p>
+      </div>
+      <div className="space-y-3 lg:col-span-7" aria-live="polite">
+        {left > 0 ? (
+          <p className="rounded-2xl bg-paper p-5 text-ink-muted">
+            Your report appears after {CAL_AFTER} races. {left} to go.
+            {avg !== null && ` Brier so far ${avg.toFixed(3)}.`}
+          </p>
+        ) : (
+          <>
+            <div className="overflow-hidden rounded-2xl bg-paper">
+              <table className="w-full text-left font-mono text-sm tabular">
+                <caption className="sr-only">Your calls grouped by how sure you were, with how many came true</caption>
+                <thead className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                  <tr className="border-b border-line">
+                    <th scope="col" className="p-3 font-normal sm:p-4">
+                      You said
+                    </th>
+                    <th scope="col" className="p-3 font-normal sm:p-4">
+                      Calls
+                    </th>
+                    <th scope="col" className="p-3 font-normal sm:p-4">
+                      Came true
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr key={r.label} className="border-b border-line last:border-0">
+                      <th scope="row" className="p-3 font-normal sm:p-4">
+                        {r.label}
+                      </th>
+                      <td className="p-3 sm:p-4">{r.n}</td>
+                      <td className="p-3 sm:p-4">{r.n ? `${r.hit} of ${r.n} · ${Math.round((r.hit / r.n) * 100)}%` : "none yet"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-ink-muted">
+              {avg !== null && `Brier ${avg.toFixed(3)} over ${history.length} races. `}
+              {avg !== null && avg < 0.2 ? "Under 0.2: the Well calibrated badge is yours. " : "Get under 0.2 for the Well calibrated badge. "}
+              {sureRows.length === 0
+                ? "Play more races to fill the rows. A row needs a few calls before it says much."
+                : over > under
+                  ? "Your sure calls came true less often than you said. Try smaller numbers when the polls are close."
+                  : under > over
+                    ? "Your calls came true more often than you said. You can lean in harder when the polls are clear."
+                    : "Your calls came true about as often as you said. That is calibration."}
+            </p>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -333,6 +524,8 @@ function ThousandElections() {
   const [n, setN] = React.useState<Size>(1000);
   const [rates, setRates] = React.useState<number[] | null>(null);
   const [busy, setBusy] = React.useState(0);
+  // A change of lead or size cancels the run in flight, so old numbers never land under new labels.
+  const runId = React.useRef(0);
 
   const p = 0.5 + lead / 200;
   // Normal approximation of the same question, for comparison: P(the average of k polls shows B ahead).
@@ -340,6 +533,7 @@ function ThousandElections() {
   const ks = [1, ...AVERAGES];
 
   const run = async () => {
+    const id = ++runId.current;
     const miss = ks.map(() => 0);
     setBusy(0.001);
     await chunked(
@@ -358,13 +552,18 @@ function ThousandElections() {
           }
         }
       },
-      (done) => setBusy(done / RUNS),
+      (done) => {
+        if (id === runId.current) setBusy(done / RUNS);
+      },
     );
+    if (id !== runId.current) return;
     setRates(miss.map((m) => m / RUNS));
     setBusy(0);
   };
 
   const changed = (fn: () => void) => {
+    runId.current++;
+    setBusy(0);
     fn();
     setRates(null);
   };
