@@ -9,6 +9,7 @@ import { stripTags } from "@/lib/study/math";
 import { norm } from "@/lib/study/search";
 import { useLearnQuery } from "@/components/study/learn-bar";
 import { PageHead, blockTitle, btn, chip, lead } from "@/components/study/ui";
+import { sym } from "@/lib/study/symbols";
 
 type Row = { t: string; f: string; x: string };
 type Section = { id: string; title: string; jump: React.ReactNode; caption?: string; kw: string; rows: Row[] };
@@ -90,9 +91,9 @@ export function FormulaSheet() {
               <div className="divide-y divide-line border-y border-line">
                 {s.rows.map((r) => (
                   <div key={r.t + r.f} className="grid gap-1 py-3 md:grid-cols-[220px_minmax(0,1fr)_minmax(0,1fr)] md:items-baseline md:gap-x-4">
-                    <span className="text-sm font-semibold">{r.t}</span>
-                    <span className="font-semibold tabular-nums [overflow-wrap:anywhere]">{r.f}</span>
-                    <span className="text-sm text-ink-muted [overflow-wrap:anywhere]">{r.x}</span>
+                    <span className="text-sm font-semibold">{sym(r.t)}</span>
+                    <span className="font-semibold tabular-nums [overflow-wrap:anywhere]">{sym(r.f)}</span>
+                    <span className="text-sm text-ink-muted [overflow-wrap:anywhere]">{sym(r.x)}</span>
                   </div>
                 ))}
               </div>

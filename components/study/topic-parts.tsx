@@ -174,7 +174,10 @@ export function WatchHere({ url, title }: { url: string; title: string }) {
   );
 }
 
-/** Remembers this as the last topic open, and marks it read once its last block scrolls into view (XP once). */
+/**
+ * Remembers this as the last topic open, and marks it read (XP once) when its last block is in view
+ * after at least 8 seconds on the page, so scrolling straight to the bottom does not count.
+ */
 export function ReadMarker({ id }: { id: TopicId }) {
   const ref = React.useRef<HTMLSpanElement>(null);
   const read = !!useStudyProgress().read?.[id];
@@ -182,19 +185,34 @@ export function ReadMarker({ id }: { id: TopicId }) {
   React.useEffect(() => {
     const el = ref.current?.parentElement;
     if (read || !el || !("IntersectionObserver" in window)) return;
+    const shownAt = Date.now();
+    let visible = false, timer = 0;
+    const mark = () => {
+      if (!visible) return;
+      const wait = 8000 - (Date.now() - shownAt);
+      if (wait > 0) {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(mark, wait + 50);
+        return;
+      }
+      io.disconnect();
+      updateStudyProgress((p) => {
+        p.read = { ...p.read, [id]: 1 };
+      });
+      awardXp(5, "read topic");
+    };
     const io = new IntersectionObserver(
       (es) => {
-        if (!es[0].isIntersecting) return;
-        io.disconnect();
-        updateStudyProgress((p) => {
-          p.read = { ...p.read, [id]: 1 };
-        });
-        awardXp(5, "read topic");
+        visible = es[0].isIntersecting;
+        mark();
       },
       { threshold: 0.6 },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      window.clearTimeout(timer);
+    };
   }, [id, read]);
   return <span ref={ref} hidden />;
 }

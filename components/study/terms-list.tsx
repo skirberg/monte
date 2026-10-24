@@ -8,6 +8,7 @@ import { studyHref } from "@/lib/site-data";
 import { norm } from "@/lib/study/search";
 import { useLearnQuery } from "@/components/study/learn-bar";
 import { PageHead, blockTitle, btn, lead } from "@/components/study/ui";
+import { sym } from "@/lib/study/symbols";
 
 /** The glossary: every key word in plain English with a quick example, grouped by topic. */
 export function TermsList() {
@@ -41,10 +42,10 @@ export function TermsList() {
           <dl className="divide-y divide-line border-y border-line">
             {rows.map(([term, , meaning, example]) => (
               <div key={term} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,15rem)_1fr] md:gap-6">
-                <dt className="font-semibold">{term}</dt>
+                <dt className="font-semibold">{sym(term)}</dt>
                 <dd className="grid max-w-[62ch] gap-0.5">
-                  <span>{meaning}</span>
-                  <span className="text-sm text-ink-muted">{example}</span>
+                  <span>{sym(meaning)}</span>
+                  <span className="text-sm text-ink-muted">{sym(example)}</span>
                 </dd>
               </div>
             ))}

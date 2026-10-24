@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/site-header";
-import { EngineMount } from "@/components/study/engine-mount";
+import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
-import { TOPICS } from "@/lib/site-data";
+import { StudyShell } from "@/components/study/study-shell";
+import { Today } from "@/components/study/today";
+import { OldHashRedirect } from "@/components/study/old-hash-redirect";
+import { btn, lead } from "@/components/study/ui";
+import { DATA, TOPICS } from "@/lib/study/data";
+import { study } from "@/lib/study/routes";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
-import { Celebrations } from "@/components/study/celebrations";
-import { StudyBottomNav } from "@/components/study/bottom-nav";
-import { StudyRouteAnalytics } from "@/components/study/route-analytics";
-import "./engine-base.css";
-import "./engine-skin.css";
 
 export const metadata: Metadata = {
   title: "Study",
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function StudyPage() {
   return (
-    <>
+    <StudyShell>
       <JsonLd
         data={{
           "@type": "LearningResource",
@@ -32,11 +31,28 @@ export default function StudyPage() {
           isPartOf: { "@type": "WebSite", name: SITE_NAME, url: `${SITE_URL}/` },
         }}
       />
-      <SiteHeader mode="study" />
-      <EngineMount />
-      <Celebrations />
-      <StudyBottomNav />
-      <StudyRouteAnalytics />
-    </>
+      <OldHashRedirect />
+      <section aria-labelledby="hero-t" className="grid gap-5 pt-10 md:pt-16">
+        <h1
+          id="hero-t"
+          className="max-w-[22ch] font-display text-[clamp(2.4rem,1.4rem+4vw,4.4rem)] font-[650] leading-[0.98] tracking-[-0.02em] [font-variation-settings:'wdth'_82]"
+        >
+          Learn business statistics one idea at a time.
+        </h1>
+        <p className={`${lead} max-w-[62ch] text-ink-muted`}>{DATA.copy.heroSub}</p>
+        <div className="flex flex-wrap gap-2">
+          <Link href={study.topic(TOPICS[0].id)} className={btn.primary}>
+            Start with topic 1
+          </Link>
+          <Link href={study.drill} className={btn.ghost}>
+            Practice now
+          </Link>
+          <Link href={study.solve()} className={btn.ghost}>
+            Solve a problem
+          </Link>
+        </div>
+      </section>
+      <Today />
+    </StudyShell>
   );
 }

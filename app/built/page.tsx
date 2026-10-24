@@ -97,10 +97,11 @@ export default function Built() {
           <p className="text-sm text-ink-muted">All three are free under the SIL Open Font License and served from this site, not a font CDN.</p>
         </Block>
 
-        <Block title="The study engine">
+        <Block title="The study app">
           <p className="max-w-[62ch]">
-            Learn, Practice and Solve run on the study engine Monte grew out of (it began as a class study app called Sigma Sandbox), in plain JavaScript: question generators that make fresh numbers
-            every time, thirteen interactive labs, eleven solvers that show the work, a timed mock exam and spaced review of missed questions.
+            Monte began as a class study app called Sigma Sandbox. Learn, Practice and Solve are now typed React pages, one real address each: question generators that make fresh numbers
+            every time, thirteen interactive labs, eleven solvers that show the work, a timed mock exam and spaced review of missed questions. Topics, formulas and terms are rendered
+            ahead of time, so they load as plain pages and read well in search.
           </p>
         </Block>
 

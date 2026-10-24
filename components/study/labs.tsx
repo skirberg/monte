@@ -7,6 +7,7 @@ import { Phi, PhiInv, Z, binom, fmt, gauss, mean, pois, r2, r3, sd } from "@/lib
 import { BarRow, Chart, Select, Slider, area, curve } from "@/components/study/chart";
 import { btn } from "@/components/study/ui";
 import { useHydrated } from "@/lib/hooks";
+import { sym } from "@/lib/study/symbols";
 
 // Labs: drag a control until the number makes sense. Each one is a small component on the shared
 // <Chart> primitive. Labs that start from random draws only show them after hydration, so the
@@ -458,7 +459,7 @@ function EveryLab() {
   const c = L.every, v = c.vals, N = v.length, mu = mean(v), s2 = v.reduce((a, x) => a + (x - mu) ** 2, 0) / N;
   const [n, setN] = React.useState(2);
   const [k, setK] = React.useState("mean");
-  const isVar = k === "s2" || k === "v", target = isVar ? s2 : mu, sym = isVar ? "σ²" : "μ";
+  const isVar = k === "s2" || k === "v", target = isVar ? s2 : mu, letter = isVar ? "σ²" : "μ";
   const stat = (a: number[]) => {
     const m = mean(a);
     if (k === "mean") return m;
@@ -515,7 +516,7 @@ function EveryLab() {
                   <line x1={tx} y1={top - 6} x2={tx} y2={base} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="5 4" />
                   <text x={tx} y={12} textAnchor={unb ? "middle" : E < target ? "start" : "end"}>
                     {unb ? "average = " : ""}
-                    {sym} = {fmt(target)}
+                    {letter} = {fmt(target)}
                   </text>
                   {!unb && (
                     <>
@@ -536,14 +537,14 @@ function EveryLab() {
           "One value has no spread, and dividing by n − 1 = 0 is undefined. Raise n to 2 or more."
         ) : (
           <>
-            <b>{n0(tot)} possible samples</b> of n = {n} (4 choices per draw, so 4<sup>{n}</sup>). The {name} average <b>{fmt(r3(E))}</b> against a target of {sym} = {fmt(target)}:{" "}
+            <b>{n0(tot)} possible samples</b> of n = {n} (4 choices per draw, so 4<sup>{n}</sup>). The {name} average <b>{fmt(r3(E))}</b> against a target of {letter} = {fmt(target)}:{" "}
             {unb ? <b>unbiased</b> : <><b>biased</b>, {fmt(r3(Math.abs(E - target)))}{E < target ? " too low" : " too high"} on average</>}. Spread across samples (SD): <b>{fmt(r3(sdS))}</b>
             {k === "mean"
               ? `, exactly σ / √n = √${fmt(s2)} / √${n}.`
               : k === "med"
                 ? n < 3
                   ? ". With one or two values the median is the mean. Try n = 3."
-                  : `. x̄ has SD ${fmt(r3(Math.sqrt(s2 / n)))} at this n and sits on target, so x̄ is the more efficient estimator.`
+                  : sym(`. x̄ has SD ${fmt(r3(Math.sqrt(s2 / n)))} at this n and sits on target, so x̄ is the more efficient estimator.`)
                 : k === "v"
                   ? n < 2
                     ? ". One value always has a spread of 0."
@@ -576,7 +577,7 @@ function TestLab() {
   const crit = side === "two" ? PhiInv(1 - al / 2) : PhiInv(1 - al), rej = p < al;
   return (
     <Lab title={c.title} sub={c.sub} label="Hypothesis test lab">
-      <Slider id="tsx" label="Sample mean x̄ =" value={xb} show={xb.toFixed(1)} unit=" ml" min={244} max={256} step={0.1} onChange={setXb} />
+      <Slider id="tsx" label={sym("Sample mean x̄ =")} value={xb} show={xb.toFixed(1)} unit=" ml" min={244} max={256} step={0.1} onChange={setXb} />
       <Slider id="tsn" label="Sample size n =" value={n} min={4} max={100} step={1} onChange={setN} />
       <div className="grid grid-cols-2 gap-3">
         <Select id="tss" label="H₁" value={side} onChange={setSide} options={[["two", "μ ≠ 250, two-sided"], ["less", "μ < 250, pours short"], ["greater", "μ > 250, pours long"]]} />

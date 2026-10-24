@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ArrowUpRight, Moon, Search, Sparkles, Sun, Target } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "cn";
@@ -8,7 +9,7 @@ import { Wordmark } from "@/components/brand/logo";
 import { CommandMenu } from "@/components/command-menu";
 import { STUDY_NAV, playHref, studyHref } from "@/lib/site-data";
 import { useHydrated } from "@/lib/hooks";
-import { useHashPage } from "@/lib/use-hash-page";
+import { useStudySection } from "@/lib/use-hash-page";
 import { setMode, useMode } from "@/lib/mode";
 import { ProgressButton } from "@/components/progress";
 
@@ -70,7 +71,8 @@ type Item = { key: string; label: string; href: string; active: boolean; funOnly
 
 export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
   const study = mode === "study";
-  const active = useHashPage(study);
+  const section = useStudySection();
+  const active = study ? section : null;
   const [open, setOpen] = React.useState(false);
 
   const items: Item[] = [
@@ -84,7 +86,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
   ];
 
   const navLink = (n: Item, extra?: string) => (
-    <a
+    <Link
       key={n.key}
       href={n.href}
       aria-current={n.active ? "page" : undefined}
@@ -97,7 +99,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
       )}
     >
       {n.label}
-    </a>
+    </Link>
   );
 
   return (
@@ -121,11 +123,9 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 md:h-16 md:px-6">
-          {/* A full page load on purpose: the study engine binds window listeners that must not outlive /study. */}
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/" className="mr-2 flex min-h-11 items-center rounded-md" aria-label="Monte home">
+          <Link href="/" className="mr-2 flex min-h-11 items-center rounded-md" aria-label="Monte home">
             <Wordmark />
-          </a>
+          </Link>
 
           <nav aria-label="Main" className={cn("hidden self-stretch", study ? "lg:flex" : "md:flex")}>
             {items.map((n) => navLink(n, "self-stretch"))}

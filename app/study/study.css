@@ -3,3 +3,9 @@
 /* Labs: a coin flips, a die shakes. */
 @keyframes coin-spin { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
 @keyframes die-shake { 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+
+/* x̄ and p̂ (lib/study/symbols.tsx): the bar and the hat drawn by CSS, since fonts misplace the combining
+   marks. Both sit just above the x-height, measured up from the bottom of the letter's own box. */
+.sym-bar, .sym-hat { position: relative; }
+.sym-bar::after { content: ""; position: absolute; left: 0.06em; right: 0.06em; bottom: 0.84em; border-top: 0.08em solid currentColor; pointer-events: none; }
+.sym-hat-mark { position: absolute; left: 50%; bottom: 0.3em; transform: translateX(-50%); font-size: 0.9em; line-height: 1; pointer-events: none; }

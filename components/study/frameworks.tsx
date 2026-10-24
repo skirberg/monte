@@ -8,6 +8,7 @@ import { study } from "@/lib/study/routes";
 import { norm } from "@/lib/study/search";
 import { useLearnQuery } from "@/components/study/learn-bar";
 import { PageHead, blockTitle, btn, lead } from "@/components/study/ui";
+import { sym } from "@/lib/study/symbols";
 
 // "Which formula?": a few plain questions that end at the formula and its topic.
 const CH: Record<string, { q: string; opts: [label: string, next: string][] }> = {
@@ -101,7 +102,7 @@ function Chooser() {
                 onClick={() => setPath([...path, { label, node: next }])}
                 className="min-h-12 rounded-xl border border-line-strong px-4 py-2.5 text-left transition-colors hover:border-ink hover:bg-sand"
               >
-                {label}
+                {sym(label)}
               </button>
             ))}
           </div>
@@ -110,7 +111,7 @@ function Chooser() {
       ) : (
         <div className="grid gap-3 rounded-[14px] bg-sand p-5">
           <p className="font-display text-xl font-[650] tracking-[-0.02em]">{res[0]}</p>
-          <p className="tabular-nums">{res[1]}</p>
+          <p className="tabular-nums">{sym(res[1])}</p>
           <div className="flex flex-wrap gap-2">
             <Link href={study.topic(res[2])} className={btn.primary}>
               Open the topic
@@ -184,7 +185,7 @@ export function Frameworks() {
             hit(b, s) ? (
               <li key={b} className={listRow}>
                 <b>{b}</b>
-                <span className="text-sm text-ink-muted">{s}</span>
+                <span className="text-sm text-ink-muted">{sym(s)}</span>
               </li>
             ) : null,
           )}
@@ -206,7 +207,7 @@ export function Frameworks() {
             hit(words, move, go) ? (
               <div key={words} className={threeCol}>
                 <span className="text-sm font-semibold">If it says: {words}</span>
-                <span className="font-semibold">{move}</span>
+                <span className="font-semibold">{sym(move)}</span>
                 <span className="text-sm text-ink-muted">Go to {go}</span>
               </div>
             ) : null,

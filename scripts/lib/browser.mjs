@@ -83,15 +83,21 @@ export async function launch() {
     png: async ({ full = false } = {}) => Buffer.from((await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: full })).data, "base64"),
   };
   // Remove the throwaway profile once Chrome has exited; each one is about 60 MB.
-  const cleanup = () => rmSync(profile, { recursive: true, force: true });
+  // Chrome can still be writing as it exits; retry briefly, and never fail a run over cleanup.
+  const cleanup = () => {
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {}
+  };
   return { page, close: () => { ws.close(); chrome.once("exit", cleanup); process.once("exit", cleanup); chrome.kill(); } };
 }
 
-// Every route worth checking. Study sections still in the legacy engine are listed by #hash.
+// Every route worth checking.
 export const ROUTES = [
   "/", "/study/", "/study/learn/", "/study/learn/topics/data/", "/study/learn/topics/normal/", "/study/learn/topics/clt/", "/study/learn/topics/test/",
-  "/study/learn/formulas/", "/study/learn/frameworks/", "/study/learn/terms/", "/study/#practice/cards",
-  "/study/#practice/drill", "/study/#practice/math", "/study/#solve/normal", "/study/#solve/samp", "/study/#solve/test", "/study/#tools", "/study/#sources",
+  "/study/learn/formulas/", "/study/learn/frameworks/", "/study/learn/terms/", "/study/practice/cards/",
+  "/study/practice/drill/", "/study/practice/math/", "/study/solve/tree/", "/study/solve/normal/", "/study/solve/samp/", "/study/solve/test/", "/study/solve/data/",
+  "/study/tools/excel/", "/study/tools/sql/", "/study/sources/",
   "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",
-  "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/built/", "/missing-page/",
+  "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/decide/", "/built/", "/missing-page/",
 ];

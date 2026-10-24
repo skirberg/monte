@@ -1,4 +1,4 @@
-import raw from "@/lib/engine/data.json";
+import raw from "./data.json";
 
 // Types for the study content. JSON imports widen tuples to arrays, so the shapes are stated here
 // once and the file is asserted through them. scripts/check-data.mjs checks the file against them.

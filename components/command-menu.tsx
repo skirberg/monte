@@ -3,6 +3,7 @@
 import * as React from "react";
 import { BookOpen, Calculator, Compass, Gamepad2, Moon, Sparkles, Sun, Target, Timer, Wrench } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import {
   Command,
   CommandDialog,
@@ -13,21 +14,9 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { GAMES, SOLVERS, STUDY_NAV, STUDY_PATH, TOOLS, TOPICS, playHref, studyHref } from "@/lib/site-data";
+import { GAMES, SOLVERS, STUDY_NAV, TOOLS, TOPICS, playHref, studyHref } from "@/lib/site-data";
 import { setMode, useMode } from "@/lib/mode";
 
-/** Full page load on purpose: /study binds window listeners that must not leak into other pages. */
-function go(path: string) {
-  window.location.assign(path);
-}
-
-/** Go to a study view by its hash name. Engine views on /study only change the hash so the engine keeps its state. */
-export function goStudy(hash: string) {
-  if (typeof window === "undefined") return;
-  const to = studyHref(hash);
-  if (to.startsWith(STUDY_PATH + "#") && window.location.pathname.replace(/\/?$/, "/") === STUDY_PATH) window.location.hash = hash;
-  else window.location.href = to;
-}
 
 /** Every word typed must appear somewhere in the item. Fuzzy letter matching found "bayes" in every topic. */
 function match(value: string, search: string) {
@@ -38,6 +27,9 @@ function match(value: string, search: string) {
 export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const { resolvedTheme, setTheme } = useTheme();
   const mode = useMode();
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
+  const goStudy = (hash: string) => go(studyHref(hash));
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {

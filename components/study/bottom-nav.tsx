@@ -4,7 +4,7 @@ import * as React from "react";
 import { BookOpen, Calculator, FileText, Gamepad2, House, Info, LibraryBig, MoreHorizontal, Timer, Wrench, X } from "lucide-react";
 import { cn } from "cn";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useHashPage } from "@/lib/use-hash-page";
+import { useStudySection } from "@/lib/use-hash-page";
 import { playHref, studyHref } from "@/lib/site-data";
 
 const TABS = [
@@ -15,13 +15,13 @@ const TABS = [
 ] as const;
 
 /**
- * Phone-only tab bar: the four study places people go most, plus More for the rest. On /study the
- * tabs are hash links inside the engine; with `site` (home, Play, How it's built) they link into /study
- * and nothing is marked current, so every page on a phone has a way into the study app.
+ * Phone-only tab bar: the four study places people go most, plus More for the rest. On study pages
+ * the current section is marked; with `site` (home, Play, How it's built) nothing is, so every page
+ * on a phone has a way into the study app.
  */
 export function StudyBottomNav({ site = false }: { site?: boolean }) {
-  const hashPage = useHashPage(true);
-  const active = site ? null : hashPage;
+  const section = useStudySection();
+  const active = site ? null : section;
   const to = (hash: string) => studyHref(hash);
   const [open, setOpen] = React.useState(false);
   const moreActive = active === "tools" || active === "sources";

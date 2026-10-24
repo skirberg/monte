@@ -1,12 +1,12 @@
 # Monte: design source of truth
 
-A study site for business statistics students, with games. It began as a class study app called Sigma Sandbox; its engine still powers /study.
+A study site for business statistics students, with games. It began as a class study app called Sigma Sandbox; /study is that app, rebuilt as typed React pages.
 
 ## Concept
 
 **Statistics is a sandbox: drop enough grains and the shape appears.**
 
-Proof: every data point is a grain of sand. Pour enough of them through chance and they pile into a bell curve (a Galton board, the Central Limit Theorem). The tennis thread comes from the study engine: thirteen topics are thirteen matches in "the draw", won by scoring 80% on a fresh timed drill. Sand plus tennis means clay, the court surface made of crushed brick.
+Proof: every data point is a grain of sand. Pour enough of them through chance and they pile into a bell curve (a Galton board, the Central Limit Theorem). The tennis thread comes from the study app: fourteen topics are fourteen matches in "the draw", won by scoring 80% on a fresh timed drill. Sand plus tennis means clay, the court surface made of crushed brick.
 
 ## Name
 

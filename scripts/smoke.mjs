@@ -17,7 +17,7 @@ import { extname, join, normalize } from "node:path";
 const OUT = join(process.cwd(), "out");
 const CHROME = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const GAMES = ["correlation", "monty-hall", "fake-coin", "serve", "house-edge", "odds", "ab-test", "long-run", "options", "election"];
-const ROUTES = ["/", "/study/", "/study/learn/", "/study/learn/topics/normal/", "/study/learn/formulas/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/story/", "/built/"];
+const ROUTES = ["/", "/study/", "/study/learn/", "/study/learn/topics/normal/", "/study/learn/formulas/", "/study/practice/drill/", "/study/practice/math/", "/study/practice/cards/", "/study/solve/tree/", "/study/tools/excel/", "/study/sources/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/story/", "/built/"];
 // Requests that only resolve on Vercel (analytics) or that browsers make on their own.
 const IGNORE = [/\/_vercel\//, /favicon\.ico/];
 // Tightest tracking a display heading may use before condensed glyphs start to touch.
@@ -166,7 +166,7 @@ try {
   console.log("\nAnalytics (page views and custom events queued for Vercel)");
   const queued = "(window.vaq ?? []).filter((c) => c[0] === 'pageview').map((c) => c[1].path)";
   const events = "(window.vaq ?? []).filter((c) => c[0] === 'event').map((c) => c[1].name + ' ' + JSON.stringify(c[1].data ?? {}))";
-  await load("/study/#practice/drill");
+  await load("/study/practice/drill/");
   check(await waitFor(`${queued}.includes('/study/practice/drill/')`, 4000), "a study section counts as its own page");
   await load("/study/learn/topics/normal/");
   check(await waitFor(`${queued}.includes('/study/learn/topics/normal/')`, 4000), "a topic page counts as its own page");
@@ -177,12 +177,29 @@ try {
   const landed = await waitFor("location.pathname === '/study/learn/'", 6000);
   await sleep(600);
   check(landed && !(await evaluate(`${queued}.some((p) => /Typed|Search|\\s/.test(p))`)), "an unknown topic falls back to Learn, and typed text never reaches analytics", JSON.stringify(await evaluate(queued)));
-  await load("/study/#practice/drill");
+  await load("/study/#practice/drill/mock");
+  check(await waitFor("location.pathname === '/study/practice/drill/' && !location.search && !!document.querySelector('[role=timer]')", 6000), "an old mock exam link opens the drill page with the mock running");
+  await load("/study/practice/drill/");
   await waitFor("!!document.querySelector('button[data-start=\"ten\"]')", 3000);
   await evaluate("document.querySelector('button[data-start=\"ten\"]').click(); true");
   check(await waitFor(`${events}.some((e) => e.startsWith('Drill started') && e.includes('ten'))`, 3000), "event: drill started, with its mode");
-  await evaluate("document.getElementById('r-score').textContent = '90%'; document.getElementById('drill-result').hidden = false; true");
-  check(await waitFor(`${events}.some((e) => e.startsWith('Drill finished') && e.includes('80-100'))`, 3000), "event: drill finished, with a score band", JSON.stringify(await evaluate(events)));
+  // Answer the first question right (read back from the shown answer), then end the set.
+  await waitFor("!!document.getElementById('d-in')", 3000);
+  await evaluate(`(async () => {
+    const set = (el, v) => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(el, v); el.dispatchEvent(new Event("input", { bubbles: true })); };
+    set(document.getElementById("d-in"), "1");
+    [...document.querySelectorAll("button")].find((b) => b.textContent === "Check").click();
+    await new Promise((r) => setTimeout(r, 300));
+    [...document.querySelectorAll("button")].find((b) => b.textContent === "End this drill").click();
+    return true;
+  })()`);
+  check(await waitFor(`${events}.some((e) => e.startsWith('Drill finished') && e.includes('ten') && /\\d+-\\d+/.test(e))`, 3000), "event: drill finished, with a score band", JSON.stringify(await evaluate(events)));
+  check(await waitFor("!!document.getElementById('r-score')", 2000), "a finished drill shows the score");
+  await load("/study/solve/normal/");
+  await evaluate("document.querySelector('[data-act=\"new\"]').click(); true");
+  await waitFor("!document.querySelector('[data-act=\"show\"]')?.hidden", 2000);
+  await evaluate("document.querySelector('[data-act=\"show\"]').click(); true");
+  check(await waitFor(`${events}.some((e) => e.startsWith('Solver used') && e.includes('normal') && e.includes('new problem')) && ${events}.some((e) => e.includes('show answers'))`, 3000), "event: solver used, new problem and show answers", JSON.stringify(await evaluate(events)));
   await load("/play/monty-hall/");
   await evaluate("document.querySelector('main button')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); true");
   check(await waitFor(`${events}.some((e) => e.startsWith('Game played') && e.includes('monty-hall'))`, 3000), "event: game played, with its name");
@@ -206,7 +223,12 @@ try {
 } finally {
   ws.close();
   // Delete the throwaway Chrome profile (about 60 MB) even when the script exits early.
-  process.once("exit", () => rmSync(profile, { recursive: true, force: true }));
+  // Chrome can still be writing as it exits; retry briefly, and never fail a run over cleanup.
+  process.once("exit", () => {
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {}
+  });
   chrome.kill();
   if (server.listening) server.close();
 }

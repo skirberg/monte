@@ -12,6 +12,7 @@ import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 import { TopicLab } from "@/components/study/labs";
 import { Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
 import { Box, Html, blockTitle, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
+import { sym } from "@/lib/study/symbols";
 
 export const dynamicParams = false;
 export const generateStaticParams = () => TOPICS.map((t) => ({ topic: t.id }));
@@ -64,13 +65,13 @@ export default async function TopicPage({ params }: Props) {
           <h2 id="why-t" className="sr-only">
             Why it matters
           </h2>
-          <p className="text-pretty font-display text-[clamp(1.2rem,1.05rem+0.6vw,1.5rem)] font-semibold leading-tight tracking-[-0.015em]">{t.why.click}</p>
-          <p className="max-w-[62ch] text-ink-muted">{t.why.care}</p>
+          <p className="text-pretty font-display text-[clamp(1.2rem,1.05rem+0.6vw,1.5rem)] font-semibold leading-tight tracking-[-0.015em]">{sym(t.why.click)}</p>
+          <p className="max-w-[62ch] text-ink-muted">{sym(t.why.care)}</p>
           <ul className="mt-1 grid gap-2.5 md:grid-cols-3 md:gap-4">
             {t.why.uses.map(([field, use]) => (
               <li key={field} className="grid content-start gap-0.5 border-l-2 border-clay pl-3.5">
                 <b className="text-sm">{field}</b>
-                <span className="text-[15px]">{use}</span>
+                <span className="text-[15px]">{sym(use)}</span>
               </li>
             ))}
           </ul>
@@ -102,8 +103,8 @@ export default async function TopicPage({ params }: Props) {
         <dl className="divide-y divide-line border-y border-line">
           {[...t.formulas, ["Remember it", t.hook] as const].map(([name, f]) => (
             <div key={name} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,14rem)_1fr] md:gap-6">
-              <dt className="text-sm font-semibold">{name}</dt>
-              <dd className="tabular-nums">{f}</dd>
+              <dt className="text-sm font-semibold">{sym(name)}</dt>
+              <dd className="tabular-nums">{sym(f)}</dd>
             </div>
           ))}
         </dl>

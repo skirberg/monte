@@ -7,7 +7,12 @@ Business statistics, one idea at a time. Fourteen topics with labs, timed drills
 | Route | What it is |
 |---|---|
 | `/` | Landing page with the interactive hero board (`components/landing/hero-board.tsx`): tap to drop grains, hold to pour |
-| `/study/` | The study app: Learn, Practice, Solve, Tools, Sources (hash routes such as `#learn/topics/normal`) |
+| `/study/` | Study home (Today): what is due, topics won, every way in |
+| `/study/learn/`, `/study/learn/topics/<id>/` | The fourteen topics, each a page with its lesson, labs, quiz, formulas and videos |
+| `/study/learn/formulas/`, `/study/learn/terms/`, `/study/learn/frameworks/` | Formula sheet (prints), glossary, "which formula?" chooser |
+| `/study/practice/drill/`, `/study/practice/math/`, `/study/practice/cards/` | Timed drills, mock exam, Due today and Monte Daily (`?go=start\|mock\|due\|daily`, `?topic=<id>`); quick math; flashcards |
+| `/study/solve/<id>/` | Eleven solvers that show the work |
+| `/study/tools/<id>/`, `/study/sources/` | Excel, R, Python, Power Query and SQL guides; free sources |
 | `/play/` | Nine games: correlation, Monty Hall, fake a coin, tennis serve math, house edge, betting odds, A/B peeking, 98 years of market returns, option pricing |
 | `/built/` | How it's built: stack, fonts, data sources and the math behind each game |
 
@@ -30,7 +35,7 @@ npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in p
 ## How it is built
 
 - Next.js static export (`output: "export"`), Tailwind CSS 4, shadcn/ui on Base UI, Motion. The hero board is SVG plus one canvas, no video engine.
-- The study engine in `lib/engine/` is carried from the original Sigma Sandbox study app Monte grew out of: math, question generators, labs and solvers. It mounts once on `/study/` (`components/study/engine-mount.tsx`) and is skinned by `app/study/engine-skin.css`.
+- The study app is typed React on real routes. Content lives in `lib/study/data.json` (typed by `lib/study/data.ts`); math, drill generators, quick-math tricks and solvers are pure modules in `lib/study/`; pages are in `app/study/`, components in `components/study/` (labs share one chart primitive, `chart.tsx`). Routes are mapped in `lib/study/routes.ts`; the old `/study/#hash` links redirect there (`components/study/old-hash-redirect.tsx`).
 - Fun or Focus mode (`lib/mode.ts`): Fun shows Play and celebrates right answers; Focus hides both and shows the hero pile finished.
 - Brand rules (concept, voice, type, color, motion) live in `DESIGN.md`.
 - App icons come from `scripts/make-icons.tsx` and the share card from `scripts/make-og.tsx` (`npx tsx scripts/<name>.tsx`); the favicon is `app/icon.svg`.
@@ -40,4 +45,4 @@ npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in p
 
 Import this repository on Vercel; it detects Next.js and needs no settings. The public URL lives in one place, `lib/seo.ts` (used for canonical links, social cards, robots and the sitemap). Change it there if the site moves to its own domain.
 
-Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. The study app routes with `#` hashes, so `components/study/route-analytics.tsx` reports each section as its own page (`/study/practice/drill/`) and sends custom events (Vercel Pro): Drill started and Drill finished (mode, score band), Solver used, Quick math started, Formula sheet printed, Game played (`components/play/game-played.tsx`) and Mode switched. Only route words and the engine's own button ids are sent, never anything a visitor types.
+Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. Every study view is its own page, so page views need no extra code. Custom events (Vercel Pro), sent from the components that cause them: Drill started and Drill finished (mode, score band), Solver used, Quick math started, Formula sheet printed, Game played (`components/play/game-played.tsx`) and Mode switched. Only fixed names are sent, never anything a visitor types.

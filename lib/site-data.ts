@@ -1,7 +1,7 @@
-import DATA from "@/lib/engine/data.json";
+import DATA from "@/lib/study/data.json";
 import { pathForHash } from "@/lib/study/routes";
 
-// Everything the landing page and the ⌘K menu show comes from the engine's own data,
+// Everything the landing page and the ⌘K menu show comes from the study app's own data,
 // so the marketing copy can never drift from what the study app teaches.
 
 const stripTags = (s: string) => s.replace(/<[^>]+>/g, "");
@@ -45,13 +45,10 @@ export const STUDY_NAV = [
 ] as const;
 
 export const STUDY_PATH = "/study/";
-/** Study sections already served as real routes; the rest still live in the legacy engine at /study/#... */
-export const PORTED_SECTIONS: readonly string[] = ["learn"];
-/** Link to a study view by its old hash name (#learn/topics/normal). Ported sections resolve to their real path. */
-export const studyHref = (hash: string) =>
-  PORTED_SECTIONS.includes(hash.replace(/^#\/?/, "").split("/")[0]) ? pathForHash(hash) : `${STUDY_PATH}${hash}`;
+/** Link to a study page by its view name, spelled like the old hash routes (#learn/topics/normal). */
+export const studyHref = (hash: string) => pathForHash(hash);
 
-/** Normal CDF, same approximation the engine uses (Abramowitz and Stegun 7.1.26). */
+/** Normal CDF, same approximation the study app uses (Abramowitz and Stegun 7.1.26). */
 export function Phi(z: number) {
   const s = z < 0 ? -1 : 1;
   const x = Math.abs(z) / Math.SQRT2;

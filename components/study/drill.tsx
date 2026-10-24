@@ -1,0 +1,438 @@
+"use client";
+
+import * as React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
+import { Check, X } from "lucide-react";
+import { cn } from "cn";
+import { DATA, TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
+import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
+import { mt, plural, shuffle } from "@/lib/study/math";
+import { study } from "@/lib/study/routes";
+import { getStudyProgress, isWon, statsFor, touchStreak, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { awardBadge, awardXp } from "@/lib/study/events";
+import { burstFrom, callout, celebrate } from "@/lib/fun";
+import { blockTitle, btn, chip, eyebrow, input, linkBtn } from "@/components/study/ui";
+import { sym } from "@/lib/study/symbols";
+
+type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
+type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
+type Result = { pct: number; correct: number; n: number; answered: number; mock: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
+
+const scoreBand = (pct: number) => (pct >= 80 ? "80-100" : pct >= 60 ? "60-79" : pct >= 40 ? "40-59" : "0-39");
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+const NOTHING_DUE = "Nothing is due yet. Run a drill first; any question you miss comes back here.";
+
+function newRun(mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[]): Run {
+  const qs = fixed ?? shuffle(Array.from({ length: count }, (_, i) => generate(mods[i % mods.length])));
+  return { qs, i: 0, correct: 0, missed: [], end: Date.now() + seconds * 1000, mode, mock, answered: false, ok: null };
+}
+
+/** The set a link asks for (?go=start, mock, due, daily or ?topic=id), built as the page first renders. */
+function fromLink(params: URLSearchParams): { run?: Run; msg?: string } | null {
+  const go = params.get("go"), topic = params.get("topic");
+  if (go === "start") return { run: newRun("ten", TOPIC_IDS, 10, 600, false) };
+  if (go === "mock") return { run: newRun("mock", TOPIC_IDS, 20, 1800, true) };
+  if (go === "daily") return { run: newRun("daily", TOPIC_IDS, 5, 600, false, dailyQuestions()) };
+  if (go === "due") {
+    const list = getStudyProgress().due;
+    return list.length ? { run: newRun("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate)) } : { msg: NOTHING_DUE };
+  }
+  if (isTopicId(topic)) return { run: newRun("topic", [topic], 8, 480, false) };
+  return go || topic ? {} : null;
+}
+
+function Meter({ k, v, bar, c }: { k: string; v: string; bar?: number; c?: string }) {
+  return (
+    <div className="grid content-start gap-1.5 p-4">
+      <span className={eyebrow}>{k}</span>
+      <span className="font-mono text-[28px] font-medium tabular-nums tracking-[-0.03em]">{v}</span>
+      {bar != null ? (
+        <span className="h-2 overflow-hidden rounded-full bg-sand-2">
+          <i className="block h-full bg-clay" style={{ width: `${bar}%` }} />
+        </span>
+      ) : (
+        <span className="text-xs text-ink-muted">{c}</span>
+      )}
+    </div>
+  );
+}
+
+/** Practice > Drill: timed sets with fresh numbers, the mock exam, Due today and Monte Daily. */
+export function Drill() {
+  const p = useStudyProgress();
+  const router = useRouter();
+  const params = useSearchParams();
+  const [mix, setMix] = React.useState<Set<TopicId>>(() => new Set(TOPIC_IDS));
+  // Links like /study/practice/drill/?go=mock start a set as the page opens; see `fromLink`.
+  const [link] = React.useState(() => fromLink(params));
+  const [run, setRun] = React.useState<Run | null>(link?.run ?? null);
+  const [result, setResult] = React.useState<Result | null>(null);
+  const [msg, setMsg] = React.useState(link?.msg ?? "");
+  const [value, setValue] = React.useState("");
+  const [now, setNow] = React.useState(() => Date.now());
+  const inRef = React.useRef<HTMLInputElement>(null);
+  const nextRef = React.useRef<HTMLButtonElement>(null);
+  const cardRef = React.useRef<HTMLElement>(null);
+
+  const due = p.due.length, won = wonCount(p), ready = Math.round((p.mock || 0) * 100);
+
+  const focusCard = () =>
+    requestAnimationFrame(() => {
+      cardRef.current?.scrollIntoView({ block: "nearest" });
+      inRef.current?.focus({ preventScroll: true });
+    });
+
+  const start = (mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[]) => {
+    touchStreak();
+    setMsg("");
+    setResult(null);
+    setValue("");
+    setRun(newRun(mode, mods, count, seconds, mock, fixed));
+    setNow(Date.now());
+    track("Drill started", { mode });
+    focusCard();
+  };
+
+  const startDue = () => {
+    const list = getStudyProgress().due;
+    if (!list.length) {
+      setRun(null);
+      setResult(null);
+      setMsg(NOTHING_DUE);
+      return;
+    }
+    updateStudyProgress((s) => {
+      s.due = list.slice(10);
+    });
+    start("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate));
+  };
+
+  // A set started from a link: count the day, use up the due list, report it, and tidy the address.
+  React.useEffect(() => {
+    if (!link) return;
+    if (link.run) {
+      touchStreak();
+      if (link.run.mode === "due") updateStudyProgress((s) => void (s.due = s.due.slice(10)));
+      track("Drill started", { mode: link.run.mode });
+      focusCard();
+    }
+    router.replace(study.drill, { scroll: false });
+  }, [link, router]);
+
+  const finish = React.useCallback((r: Run) => {
+    const n = r.qs.length, answered = r.correct + r.missed.length, pc = n ? r.correct / n : 0;
+    const per: Partial<Record<TopicId, { a: number; c: number }>> = {};
+    r.qs.forEach((q) => (per[q.mod] ??= { a: 0, c: 0 }));
+    r.qs.slice(0, answered).forEach((q) => {
+      per[q.mod]!.a++;
+      if (!r.missed.includes(q)) per[q.mod]!.c++;
+    });
+    let daily: Result["daily"];
+    updateStudyProgress((s) => {
+      (Object.keys(per) as TopicId[]).forEach((id) => {
+        const d = { ...statsFor(s, id) };
+        d.asked += per[id]!.a;
+        d.correct += per[id]!.c;
+        if (per[id]!.a >= 4) d.best = Math.max(d.best, per[id]!.c / per[id]!.a);
+        s.drill[id] = d;
+      });
+      if (r.mock) s.mock = Math.max(s.mock || 0, pc);
+      if (r.mode === "daily") {
+        const grid = r.qs.map((q, i) => (i < answered && !r.missed.includes(q) ? "🟧" : "⬜")).join(""), dk = dayKey();
+        s.daily ??= {};
+        const first = !s.daily[dk];
+        if (first) s.daily[dk] = { c: r.correct, g: grid };
+        daily = { grid, first, firstScore: s.daily[dk].c, share: `Monte Daily ${dk}  ${r.correct}/${n}\n${grid}\nmonte.markets${study.drillStart("daily")}` };
+      }
+      s.due = [...s.due, ...r.missed.map((q) => q.mod)].slice(-40);
+    });
+    // A set ended before any answer earns nothing.
+    if (answered) {
+      awardXp(answered >= n ? 20 : 5, "drill finished");
+      awardBadge("first-drill");
+      if (pc >= 0.8 && n >= 8) {
+        awardBadge("topic-won");
+        if (r.mock) awardBadge("mock-pass");
+      }
+      if (wonCount(getStudyProgress()) === TOPICS.length) awardBadge("all-topics");
+    }
+    if (daily?.first) awardXp(15, "daily");
+    track("Drill finished", { mode: r.mode, score: scoreBand(Math.round(pc * 100)) });
+    if (pc >= 0.8) celebrate();
+    setRun(null);
+    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mock: r.mock, missed: r.missed, daily });
+  }, []);
+
+  // The clock: tick twice a second, finish when it runs out.
+  React.useEffect(() => {
+    if (!run) return;
+    const id = window.setInterval(() => {
+      setNow(Date.now());
+      if (Date.now() >= run.end) finish(run);
+    }, 500);
+    return () => window.clearInterval(id);
+  }, [run, finish]);
+
+  const check = () => {
+    if (!run || run.answered || !value.trim()) return;
+    const q = run.qs[run.i], ok = isCorrect(q, value.trim());
+    setRun({ ...run, answered: true, ok, correct: run.correct + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, q] });
+    awardXp(ok ? 10 : 2, "drill");
+    if (ok) {
+      burstFrom(inRef.current);
+      callout();
+    }
+    requestAnimationFrame(() => nextRef.current?.focus({ preventScroll: true }));
+  };
+  const next = () => {
+    if (!run) return;
+    if (run.i + 1 >= run.qs.length) return finish(run);
+    setRun({ ...run, i: run.i + 1, answered: false, ok: null });
+    setValue("");
+    requestAnimationFrame(() => inRef.current?.focus({ preventScroll: true }));
+  };
+
+  const left = run ? Math.max(0, Math.round((run.end - now) / 1000)) : 0;
+  const q = run?.qs[run.i];
+  const done = run ? run.correct + run.missed.length : 0;
+  const card = "grid gap-5 rounded-[18px] border border-line bg-paper p-5 shadow-[0_1px_0_var(--line),0_12px_32px_-24px_color-mix(in_oklch,var(--ink)_30%,transparent)] md:p-7";
+  const resultMsg = result
+    ? `${result.correct} of ${result.n} correct${result.answered < result.n ? ` (${result.n - result.answered} unanswered when time ran out)` : ""}. ${
+        result.pct >= 80 ? "Match won. That topic counts toward readiness." : result.pct >= 60 ? "Close. One more set and you have it." : "Warm-up set. Read the misses below, then go again."
+      }${result.mock ? ` ${DATA.copy.mockSaved}` : ""}`
+    : "";
+
+  return (
+    <div className="grid gap-6 pb-8">
+      <div className="flex flex-wrap gap-2">
+        <button type="button" data-start="due" className={btn.ghost} onClick={startDue}>
+          Due today ({due})
+        </button>
+        <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
+          Timed closed-book mock
+        </button>
+        <button type="button" data-start="daily" className={btn.ghost} onClick={() => start("daily", TOPIC_IDS, 5, 600, false, dailyQuestions())}>
+          Monte Daily
+        </button>
+      </div>
+
+      <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
+        <Meter k="Topics won" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
+        <Meter k="Exam readiness" v={`${ready}%`} bar={ready} />
+        <Meter k="Study streak" v={plural(p.streak.count || 0, "day")} c="Practice once a day to keep it" />
+        <Meter k="Due today" v={String(due)} c="Missed questions come back" />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10">
+        <div className="grid content-start gap-4">
+          {!run && !result && (
+            <section aria-labelledby="ds-t" className={card}>
+              <div className="grid gap-2 max-md:-order-2">
+                <h2 id="ds-t" className={blockTitle}>
+                  Start a drill
+                </h2>
+                <p className="text-sm text-ink-muted">{DATA.copy.drillIntro}</p>
+              </div>
+              <div className="grid gap-2">
+                <p className="text-sm text-ink-muted" id="mix-label">
+                  Topics in the mix
+                </p>
+                <div role="group" aria-labelledby="mix-label" className="flex flex-wrap gap-2">
+                  {TOPICS.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      aria-pressed={mix.has(t.id)}
+                      className={chip}
+                      onClick={() => setMix((m) => new Set(m.has(t.id) ? [...m].filter((x) => x !== t.id) : [...m, t.id]))}
+                    >
+                      {t.n}. {t.short}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Phones: the start buttons come before a full screen of topic chips. */}
+              <div className="flex flex-wrap gap-2 max-md:-order-1">
+                <button type="button" data-start="ten" className={btn.primary} onClick={() => start("ten", mix.size ? [...mix] : TOPIC_IDS, 10, 600, false)}>
+                  Start 10 questions
+                </button>
+                <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
+                  Mock exam, 20 questions, 30 minutes
+                </button>
+                <button type="button" data-start="full" className={btn.ghost} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
+                  Full mock, 20 questions, 2 hours
+                </button>
+              </div>
+              <p role="status" className="text-sm empty:hidden">
+                {msg}
+              </p>
+              <p className="text-sm text-ink-muted">Answers are checked to within 2% or 0.01, whichever is looser. Type decimals like 0.42, not 42%.</p>
+            </section>
+          )}
+
+          {run && q && (
+            <section ref={cardRef} aria-labelledby="d-q" className={card}>
+              <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-muted">
+                <span>
+                  {run.mode === "daily" ? `Monte Daily, ${dayKey()}: ` : ""}Question {run.i + 1} of {run.qs.length}
+                  {done ? `, score ${run.correct} of ${done}` : ""}
+                </span>
+                <span role="timer" aria-label="Time left" className={cn("text-[22px] font-medium normal-case tracking-normal tabular-nums", left < 30 && "text-danger")}>
+                  {clock(left)}
+                </span>
+              </div>
+              <div className="grid gap-2">
+                <p className={eyebrow}>{topicById(q.mod)?.short}</p>
+                <p id="d-q" className="text-[clamp(1.15rem,1rem+0.6vw,1.4rem)] font-medium leading-snug">
+                  {sym(mt(q.q))}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <label htmlFor="d-in" className="sr-only">
+                  Your answer
+                </label>
+                <input
+                  ref={inRef}
+                  id="d-in"
+                  type="text"
+                  // The iOS decimal keypad has no letters and no minus key.
+                  inputMode={q.text || (q.a as number) < 0 ? "text" : "decimal"}
+                  autoComplete="off"
+                  placeholder={q.text ? "Type a word" : "Your answer"}
+                  value={value}
+                  disabled={run.answered}
+                  onChange={(e) => setValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter") return;
+                    e.preventDefault();
+                    if (!run.answered) check();
+                    else next();
+                  }}
+                  className={cn(input, "font-mono text-lg")}
+                />
+                {run.answered ? (
+                  <button ref={nextRef} type="button" className={cn(btn.primary, "flex-none")} onClick={next}>
+                    {run.i + 1 >= run.qs.length ? "See my score" : "Next question"}
+                  </button>
+                ) : (
+                  <button type="button" className={cn(btn.primary, "flex-none")} onClick={check}>
+                    Check
+                  </button>
+                )}
+              </div>
+              <div role="status" className="grid gap-1 empty:hidden">
+                {run.answered && (
+                  <>
+                    <p className={cn("flex items-center gap-1.5 font-semibold", run.ok ? "text-success" : "text-danger")}>
+                      {run.ok ? <Check className="size-4" aria-hidden /> : <X className="size-4" aria-hidden />}
+                      {run.ok ? "Correct" : "Not quite"}
+                    </p>
+                    <p className="text-sm text-ink-muted">
+                      Answer <span className="rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono font-semibold text-ink">{sym(mt(shownAnswer(q)))}</span>
+                    </p>
+                    <p className="text-sm text-ink-muted">{sym(mt(q.why))}</p>
+                    {!run.ok && <p className="text-sm text-ink-muted">This one comes back in Due today.</p>}
+                  </>
+                )}
+              </div>
+              <div>
+                <button type="button" className={linkBtn} onClick={() => finish(run)}>
+                  End this drill
+                </button>
+              </div>
+            </section>
+          )}
+
+          {result && (
+            <section aria-labelledby="r-score" className={card}>
+              <div className="grid gap-2">
+                <p id="r-score" className="font-mono text-[clamp(40px,6vw,64px)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+                  {result.pct}%
+                </p>
+                <p>{resultMsg}</p>
+              </div>
+              {result.daily && <DailyShare d={result.daily} correct={result.correct} n={result.n} />}
+              {result.missed.length > 0 && (
+                <div className="grid gap-3">
+                  <h2 className="text-sm text-ink-muted">Missed questions, back in Due today</h2>
+                  <ol className="divide-y divide-line border-y border-line">
+                    {result.missed.map((m, i) => (
+                      <li key={i} className="grid gap-1 py-3">
+                        <p>{sym(mt(m.q))}</p>
+                        <span className="justify-self-start rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono font-semibold">{sym(mt(shownAnswer(m)))}</span>
+                        <span className="text-sm text-ink-muted">{sym(mt(m.why))}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              <div>
+                <button type="button" className={btn.primary} onClick={() => setResult(null)}>
+                  Drill again
+                </button>
+              </div>
+            </section>
+          )}
+        </div>
+
+        <aside aria-labelledby="draw-t" className="grid content-start gap-3">
+          <div className="grid gap-1">
+            <h2 id="draw-t" className={blockTitle}>
+              The draw
+            </h2>
+            <p className="text-sm text-ink-muted">Fourteen matches. Tap one for an 8-question drill. Win it by scoring 80% on a timed drill. Reading doesn&apos;t count; only fresh questions move the meters.</p>
+          </div>
+          <ol className="overflow-hidden rounded-[18px] border border-line">
+            {TOPICS.map((t) => {
+              const d = statsFor(p, t.id), w = isWon(p, t.id), v = Math.round((d.best || 0) * 100);
+              return (
+                <li key={t.id} className="border-b border-line last:border-b-0">
+                  <button type="button" onClick={() => start("topic", [t.id], 8, 480, false)} className="grid min-h-11 w-full grid-cols-[1.5rem_minmax(0,1fr)_4rem] items-center gap-3 px-3 py-2 text-left text-[15px] transition-colors hover:bg-sand">
+                    <span className="font-mono text-xs tabular-nums text-ink-muted">{t.n}</span>
+                    <span className="grid">
+                      {t.short}
+                      {(w || d.asked > 0) && <span className={cn(eyebrow, w && "text-clay-ink")}>{w ? `Won, best ${v}%` : `Best ${v}%`}</span>}
+                    </span>
+                    <span aria-hidden className="h-1.5 overflow-hidden rounded-full bg-sand-2">
+                      <i className="block h-full bg-clay" style={{ width: `${v}%` }} />
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function DailyShare({ d, correct, n }: { d: NonNullable<Result["daily"]>; correct: number; n: number }) {
+  const [label, setLabel] = React.useState("Share result");
+  const share = async () => {
+    const flash = (m: string) => {
+      setLabel(m);
+      setTimeout(() => setLabel("Share result"), 1600);
+    };
+    if (navigator.share) return navigator.share({ text: d.share }).catch(() => {});
+    try {
+      await navigator.clipboard.writeText(d.share);
+      flash("Copied");
+    } catch {
+      flash("Copy failed");
+    }
+  };
+  return (
+    <div className="grid justify-items-start gap-2.5 rounded-[18px] bg-sand p-5">
+      <p className="text-[34px] leading-none tracking-[6px]" aria-label={`${correct} of ${n} right`}>
+        {d.grid}
+      </p>
+      <p className="text-sm text-ink-muted">{d.first ? "Same five questions for everyone today. New set tomorrow." : `Your first try today was ${d.firstScore} of ${n}. That one counts.`}</p>
+      <button type="button" className={btn.primary} onClick={share}>
+        {label}
+      </button>
+    </div>
+  );
+}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { cn } from "cn";
+import { symHtml } from "@/lib/study/symbols";
 
 // The study app's small kit, in Tailwind: pill buttons, chips, segmented links, boxes, the clay
 // value mark and the trusted-HTML span. Clay means the number. Ink means the action.
@@ -66,10 +67,10 @@ export function Val({ className, ...rest }: React.ComponentProps<"span">) {
 
 /**
  * Study content with a little trusted inline HTML (<mark>, <b>, <sup>). The strings come from
- * lib/engine/data.json, which only this repo writes, never from visitors.
+ * lib/study/data.json, which only this repo writes, never from visitors.
  */
 export function Html({ html, as: Tag = "span", className }: { html: string; as?: "span" | "p" | "div"; className?: string }) {
-  return <Tag className={cn("[&_mark]:rounded-[4px] [&_mark]:bg-clay-tint [&_mark]:px-1 [&_mark]:text-ink", className)} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <Tag className={cn("[&_mark]:rounded-[4px] [&_mark]:bg-clay-tint [&_mark]:px-1 [&_mark]:text-ink", className)} dangerouslySetInnerHTML={{ __html: symHtml(html) }} />;
 }
 
 export function PageHead({ title, children, as: Tag = "h1" }: { title: string; children?: React.ReactNode; as?: "h1" | "h2" }) {
