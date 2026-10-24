@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Flame, Snowflake, Trophy } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { BADGES, DAILY_GOAL, addXp, bump, getProgress, levelOf, localDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, bump, daysTo, exportProgress, getProgress, importProgress, levelOf, localDay, setExam, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
 import { callout, confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
@@ -175,9 +175,16 @@ export function ProgressButton() {
               </ul>
             </section>
 
+            <ExamCard exam={p.exam} now={now} />
+
+            <BackupCard />
+
             <section className="grid gap-1 text-sm text-ink-muted">
-              <h3 className="text-sm font-semibold text-ink">How XP works</h3>
-              <p>Right answer 10, a try 2, finished drill 20, flashcard 3, read a topic to the end 5, quick math 2, election call 5 to 10.</p>
+              <h3 className="text-sm font-semibold text-ink">How XP and chips work</h3>
+              <p>XP measures learning and never goes down: right answer 10, a try 2, finished drill 20, flashcard 3, read a topic to the end 5, quick math 2, election call 5 to 10.</p>
+              <p>
+                Chips are play money you spend in the games. Learning earns them: {CHIPS_FOR.goal} for the daily goal, {CHIPS_FOR.level} for each level, {CHIPS_FOR.badge} for each badge.
+              </p>
               <button
                 type="button"
                 className="mt-2 inline-flex min-h-11 items-center self-start text-sm text-clay-ink underline-offset-4 hover:underline"
@@ -196,5 +203,96 @@ export function ProgressButton() {
         </SheetContent>
       </Sheet>
     </>
+  );
+}
+
+function ExamCard({ exam, now }: { exam?: { date: string; name: string }; now: number }) {
+  const [date, setDate] = React.useState(exam?.date ?? "");
+  const [name, setName] = React.useState(exam?.name ?? "");
+  const left = exam ? daysTo(exam.date, now) : null;
+  return (
+    <section className="grid gap-2">
+      <h3 className="text-sm font-semibold">Exam countdown</h3>
+      {exam && left !== null && (
+        <p className="rounded-2xl bg-clay-tint p-3 text-sm">
+          <b className="font-display text-2xl font-[650] tabular-nums">{left > 0 ? left : left === 0 ? "Today" : "Done"}</b>
+          {left > 0 ? ` day${left === 1 ? "" : "s"} to ${exam.name || "your exam"}. ` : left === 0 ? `: ${exam.name || "your exam"}. Good luck. ` : ". "}
+          {left > 0 && "Do the Daily, clear Due today, and take one mock exam a week before."}
+        </p>
+      )}
+      <form
+        className="grid grid-cols-[1fr_auto] gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setExam(date ? { date, name } : null);
+        }}
+      >
+        <label className="sr-only" htmlFor="exam-name">Exam name</label>
+        <input id="exam-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Exam name (optional)" className="col-span-2 h-11 rounded-xl border border-line-strong bg-paper px-3 text-base" />
+        <label className="sr-only" htmlFor="exam-date">Exam date</label>
+        <input id="exam-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 rounded-xl border border-line-strong bg-paper px-3 text-base" />
+        <button type="submit" className="h-11 rounded-full bg-ink px-4 text-sm font-medium text-paper">
+          {date ? "Save" : "Clear"}
+        </button>
+      </form>
+    </section>
+  );
+}
+
+function BackupCard() {
+  const [msg, setMsg] = React.useState("");
+  const [code, setCode] = React.useState("");
+  return (
+    <section className="grid gap-2">
+      <h3 className="text-sm font-semibold">Back up or move your progress</h3>
+      <p className="text-xs text-ink-muted">
+        Progress lives in this browser, so clearing site data or switching phones starts you over. Copy a code here and paste it on any other device, or keep the file.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="inline-flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-medium hover:border-ink"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(exportProgress());
+              setMsg("Code copied. Paste it on your other device.");
+            } catch {
+              setMsg("Could not copy. Use Download instead.");
+            }
+          }}
+        >
+          Copy code
+        </button>
+        <button
+          type="button"
+          className="inline-flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-medium hover:border-ink"
+          onClick={() => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([exportProgress()], { type: "text/plain" }));
+            a.download = `monte-progress-${localDay()}.txt`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          }}
+        >
+          Download backup
+        </button>
+      </div>
+      <form
+        className="grid grid-cols-[1fr_auto] gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!code.trim()) return;
+          if (!window.confirm("Replace the progress in this browser with the pasted code?")) return;
+          const ok = importProgress(code);
+          setMsg(ok ? "Restored. Reloading." : "That code didn't work. Copy it again from your other device.");
+          if (ok) setTimeout(() => location.reload(), 600);
+        }}
+      >
+        <label className="sr-only" htmlFor="restore-code">Paste a progress code</label>
+        <input id="restore-code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Paste a code to restore" className="h-11 min-w-0 rounded-xl border border-line-strong bg-paper px-3 text-base" />
+        <button type="submit" className="h-11 rounded-full bg-ink px-4 text-sm font-medium text-paper">Restore</button>
+      </form>
+      <p className="text-xs text-ink-muted" aria-live="polite">{msg}</p>
+    </section>
   );
 }

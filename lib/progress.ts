@@ -19,6 +19,8 @@ import * as React from "react";
 const KEY = "monte-progress";
 export const DAILY_GOAL = 50;
 export const START_CHIPS = 1000;
+/** Learning pays chips, so the games are fuelled by studying: XP measures learning and can't be spent; chips can. */
+export const CHIPS_FOR = { goal: 100, level: 250, badge: 100 };
 
 export type Progress = {
   xp: number;
@@ -29,6 +31,8 @@ export type Progress = {
   chips: number;
   badges: string[];
   counts: Record<string, number>;
+  /** Optional exam the learner is working toward (local date YYYY-MM-DD and a name). */
+  exam?: { date: string; name: string };
 };
 
 export type ProgressEvent = { gained?: number; reason?: string; levelUp?: number; goalHit?: boolean; badge?: string; chips?: number };
@@ -86,6 +90,7 @@ function save(p: Progress, ev: ProgressEvent) {
 function giveBadge(p: Progress, id: string, ev: ProgressEvent) {
   if (!BADGES[id] || p.badges.includes(id)) return;
   p.badges.push(id);
+  p.chips += CHIPS_FOR.badge;
   ev.badge = ev.badge ?? id;
 }
 
@@ -115,9 +120,13 @@ export function addXp(amount: number, reason = "") {
   p.xp += amount;
   p.days[d] = (p.days[d] ?? 0) + amount;
   const after = levelOf(p.xp).level;
-  if (after > before) ev.levelUp = after;
+  if (after > before) {
+    ev.levelUp = after;
+    p.chips += CHIPS_FOR.level * (after - before);
+  }
   if (!hadGoal && p.days[d] >= DAILY_GOAL) {
     ev.goalHit = true;
+    p.chips += CHIPS_FOR.goal;
     giveBadge(p, "goal-hit", ev);
   }
   save(p, ev);
@@ -175,4 +184,53 @@ export function useProgress() {
     };
   }, []);
   return p;
+}
+
+export function setExam(exam: { date: string; name: string } | null) {
+  const p = getProgress();
+  if (exam && /^\d{4}-\d{2}-\d{2}$/.test(exam.date)) p.exam = { date: exam.date, name: exam.name.slice(0, 60) };
+  else delete p.exam;
+  save(p, {});
+}
+
+/** Days from today to the exam (0 on the day, negative after it). */
+export function daysTo(date: string, now = Date.now()) {
+  return Math.round((Date.parse(date) - Date.parse(localDay(now))) / 864e5);
+}
+
+// ---------- Backup and move: progress lives in this browser, so let people carry it.
+const KEYS = [KEY, "sigma", "monteElectionCalls"];
+
+/** Everything Monte saved in this browser, as one short code to paste on another device. */
+export function exportProgress() {
+  const data: Record<string, unknown> = {};
+  for (const k of KEYS) {
+    try {
+      const v = localStorage.getItem(k);
+      if (v) data[k] = JSON.parse(v);
+    } catch {}
+  }
+  const json = JSON.stringify({ app: "monte", v: 1, at: new Date().toISOString(), data });
+  return btoa(unescape(encodeURIComponent(json)));
+}
+
+/** Restore from a code or a backup file's text. Returns false if it isn't a Monte backup. */
+export function importProgress(text: string) {
+  let obj: { app?: string; data?: Record<string, unknown> } | null = null;
+  const raw = text.trim();
+  try {
+    obj = JSON.parse(raw.startsWith("{") ? raw : decodeURIComponent(escape(atob(raw))));
+  } catch {
+    return false;
+  }
+  if (!obj || obj.app !== "monte" || !obj.data) return false;
+  for (const k of KEYS) {
+    if (obj.data[k] !== undefined) {
+      try {
+        localStorage.setItem(k, JSON.stringify(obj.data[k]));
+      } catch {}
+    }
+  }
+  window.dispatchEvent(new CustomEvent("monte:progress", { detail: {} }));
+  return true;
 }
