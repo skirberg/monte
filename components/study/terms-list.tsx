@@ -7,7 +7,7 @@ import { study } from "@/lib/study/routes";
 import { studyHref } from "@/lib/site-data";
 import { norm } from "@/lib/study/search";
 import { useLearnQuery } from "@/components/study/learn-bar";
-import { PageHead, blockTitle, btn, lead } from "@/components/study/ui";
+import { Fold, PageHead, lead, linkBtn } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
 /** The glossary: every key word in plain English with a quick example, grouped by topic. */
@@ -20,38 +20,36 @@ export function TermsList() {
   }).filter((g) => g.rows.length);
 
   return (
-    <div className="grid gap-8 pb-8">
+    <div className="grid gap-6 pb-8">
       <PageHead title="Terms">
-        <p className={cn(lead, "max-w-[62ch] text-ink-muted")}>Every key word in plain English, with a quick example. Search above, or turn them into flashcards.</p>
+        <p className={cn(lead, "max-w-[62ch] text-ink-muted")}>Every key word in plain English, with a quick example.</p>
         <div className="print:hidden">
-          <a href={studyHref("#practice/cards")} className={btn.ghost}>
-            Study these as flashcards
+          <a href={studyHref("#practice/cards")} className={cn(linkBtn, "min-h-11 font-medium")}>
+            Study them as flashcards
           </a>
         </div>
       </PageHead>
-      {groups.map(({ t, rows }) => (
-        <section key={t.id} aria-labelledby={`tm-${t.id}`} className="grid gap-3">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 id={`tm-${t.id}`} className={blockTitle}>
-              {t.n}. {t.name}
-            </h2>
-            <Link href={study.topic(t.id)} className="inline-flex min-h-8 items-center text-sm text-clay-ink underline-offset-4 hover:underline">
+      {/* One row per topic. A search opens every topic it matches. */}
+      <div className="border-t border-line">
+        {groups.map(({ t, rows }) => (
+          <Fold key={t.id} id={`tm-${t.id}`} flat open={q ? true : undefined} title={`${t.n}. ${t.name}`}>
+            <dl className="divide-y divide-line border-y border-line">
+              {rows.map(([term, , meaning, example]) => (
+                <div key={term} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,15rem)_1fr] md:gap-6">
+                  <dt className="font-semibold">{sym(term)}</dt>
+                  <dd className="grid max-w-[62ch] gap-0.5">
+                    <span>{sym(meaning)}</span>
+                    <span className="text-sm text-ink-muted">{sym(example)}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <Link href={study.topic(t.id)} className={cn(linkBtn, "mt-2 min-h-11")}>
               Read the topic
             </Link>
-          </div>
-          <dl className="divide-y divide-line border-y border-line">
-            {rows.map(([term, , meaning, example]) => (
-              <div key={term} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,15rem)_1fr] md:gap-6">
-                <dt className="font-semibold">{sym(term)}</dt>
-                <dd className="grid max-w-[62ch] gap-0.5">
-                  <span>{sym(meaning)}</span>
-                  <span className="text-sm text-ink-muted">{sym(example)}</span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      ))}
+          </Fold>
+        ))}
+      </div>
       {!groups.length && <p className="rounded-[18px] border border-dashed border-line-strong p-4 text-sm text-ink-muted">No term matches that search.</p>}
     </div>
   );

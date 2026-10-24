@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, topicById } from "@/lib/study/data";
 import { plainText } from "@/lib/study/math";
@@ -11,7 +10,7 @@ import { JsonLd } from "@/components/json-ld";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 import { TopicLab } from "@/components/study/labs";
 import { Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
-import { Box, Html, blockTitle, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
+import { Box, Fold, Html, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
 export const dynamicParams = false;
@@ -94,43 +93,37 @@ export default async function TopicPage({ params }: Props) {
 
       <QuizList id={t.id} />
 
-      <Box subtle className="grid gap-2">
-        <p className={cn(label, "flex items-center gap-1.5")}>
-          <TriangleAlert className="size-4" aria-hidden /> Trap
-        </p>
-        <Html as="p" html={t.trap} />
-      </Box>
-
-      <section aria-labelledby="f-t" className="grid gap-3">
-        <h2 id="f-t" className={blockTitle}>
-          Formulas
-        </h2>
-        <dl className="divide-y divide-line border-y border-line">
-          {[...t.formulas, ["Remember it", t.hook] as const].map(([name, f]) => (
-            <div key={name} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,14rem)_1fr] md:gap-6">
-              <dt className="text-sm font-semibold">{sym(name)}</dt>
-              <dd className="tabular-nums">{sym(f)}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section aria-labelledby="g-t" className="grid gap-3">
-        <h2 id="g-t" className={blockTitle}>
-          Watch and go deeper
-        </h2>
-        <ul className="divide-y divide-line border-y border-line">
-          {t.links.map(([title, url, about]) => (
-            <li key={url} className="grid justify-items-start gap-1 py-3.5">
-              <a href={url} target="_blank" rel="noopener noreferrer" className="group grid gap-1">
-                <b className="font-semibold group-hover:text-clay-ink">{title}</b>
-                <span className="text-sm text-ink-muted">{about}</span>
-              </a>
-              <WatchHere url={url} title={title} />
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Reference material waits one tap away, so the lesson reads top to bottom without a wall of extras. */}
+      <div className="grid gap-3">
+        <Fold title="The trap" teaser="The mistake people make most on this one.">
+          <Html as="p" html={t.trap} className="max-w-[62ch]" />
+        </Fold>
+        <Fold title="Formulas" teaser={`${t.formulas.length} ${t.formulas.length === 1 ? "formula" : "formulas"} and a way to remember them.`}>
+          <dl className="divide-y divide-line border-y border-line">
+            {[...t.formulas, ["Remember it", t.hook] as const].map(([name, f]) => (
+              <div key={name} className="grid gap-1 py-3.5 md:grid-cols-[minmax(10rem,14rem)_1fr] md:gap-6">
+                <dt className="text-sm font-semibold">{sym(name)}</dt>
+                <dd className="tabular-nums">{sym(f)}</dd>
+              </div>
+            ))}
+          </dl>
+        </Fold>
+        {t.links.length > 0 && (
+          <Fold title="Watch and go deeper" teaser={`${t.links.length} free ${t.links.length === 1 ? "video or page" : "videos and pages"}.`}>
+            <ul className="divide-y divide-line border-y border-line">
+              {t.links.map(([title, url, about]) => (
+                <li key={url} className="grid justify-items-start gap-1 py-3.5">
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="group grid gap-1">
+                    <b className="font-semibold group-hover:text-clay-ink">{title}</b>
+                    <span className="text-sm text-ink-muted">{about}</span>
+                  </a>
+                  <WatchHere url={url} title={title} />
+                </li>
+              ))}
+            </ul>
+          </Fold>
+        )}
+      </div>
 
       <div className="grid gap-4">
         <ReadMarker id={t.id} />

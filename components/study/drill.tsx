@@ -9,12 +9,12 @@ import { DATA, TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/l
 import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
 import { mt, plural, shuffle } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
-import { getStudyProgress, isWon, mastersTopic, recall, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
 import { liveStreak, useProgress } from "@/lib/progress";
 import { useStoredString } from "@/lib/hooks";
 import { burstFrom, callout, celebrate } from "@/lib/fun";
-import { blockTitle, btn, chip, eyebrow, input, linkBtn } from "@/components/study/ui";
+import { Fold, blockTitle, btn, chip, eyebrow, input, linkBtn } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
 type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
@@ -90,6 +90,7 @@ export function Drill() {
   const cardRef = React.useRef<HTMLElement>(null);
 
   const due = p.due.length, won = wonCount(p), ready = Math.round((p.mock || 0) * 100);
+  const fresh = !hasAnyProgress(p);
   const streak = site ? liveStreak(site) : 0;
   // No timer: saved in this browser, read without a hydration mismatch, and changed here at once.
   const storedUntimed = useStoredString(UNTIMED_KEY) === "1";
@@ -233,80 +234,82 @@ export function Drill() {
 
   return (
     <div className="grid gap-6 pb-8">
-      <div className="flex flex-wrap gap-2">
-        <button type="button" data-start="due" className={btn.ghost} onClick={startDue}>
-          Due today ({due})
-        </button>
-        <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
-          Mock test
-        </button>
-        <button type="button" data-start="daily" className={btn.ghost} onClick={() => start("daily", TOPIC_IDS, 5, 600, false, dailyQuestions())}>
-          Monte Daily
-        </button>
-      </div>
-
-      <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
-        <Meter k="Topics mastered" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
-        <Meter k="Readiness" v={`${ready}%`} bar={ready} c="How ready you are for any test or interview on this, from your best mock test" />
-        <Meter k="Streak" v={plural(streak, "day")} c="Learn something each day to keep it" />
-        <Meter k="Due today" v={String(due)} c="Missed questions come back" />
-      </div>
+      {/* Meters only once there is something to measure. */}
+      {!fresh && (
+        <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
+          <Meter k="Topics mastered" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
+          <Meter k="Readiness" v={`${ready}%`} bar={ready} c="From your best mock test" />
+          <Meter k="Streak" v={plural(streak, "day")} c="Learn something each day" />
+          <Meter k="Due today" v={String(due)} c="Missed questions come back" />
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10">
-        <div className="grid content-start gap-4">
+        <div className="grid min-w-0 content-start gap-4">
           {!run && !result && (
             <section aria-labelledby="ds-t" className={card}>
-              <div className="grid gap-2 max-md:-order-2">
+              <div className="grid gap-1.5">
                 <h2 id="ds-t" className={blockTitle}>
                   Start a drill
                 </h2>
-                <p className="text-sm text-ink-muted">{DATA.copy.drillIntro}</p>
-              </div>
-              <div className="grid gap-2">
-                <p className="text-sm text-ink-muted" id="mix-label">
-                  Topics in the mix
+                <p className="text-sm text-ink-muted">
+                  10 questions with fresh numbers, {mix.size === TOPICS.length || !mix.size ? "from every topic" : `from ${plural(mix.size, "topic")}`}, {untimed ? "no timer" : "10 minutes on the clock"}.
                 </p>
-                <div role="group" aria-labelledby="mix-label" className="flex flex-wrap gap-2">
-                  {TOPICS.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      aria-pressed={mix.has(t.id)}
-                      className={chip}
-                      onClick={() => setMix((m) => new Set(m.has(t.id) ? [...m].filter((x) => x !== t.id) : [...m, t.id]))}
-                    >
-                      {t.n}. {t.short}
-                    </button>
-                  ))}
-                </div>
               </div>
-              {/* Phones: the start buttons come before a full screen of topic chips. */}
-              <div className="flex flex-wrap gap-2 max-md:-order-1">
+              <div>
                 <button type="button" data-start="ten" className={btn.primary} onClick={() => start("ten", mix.size ? [...mix] : TOPIC_IDS, 10, 600, false)}>
                   Start 10 questions
                 </button>
-                <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
-                  Mock test, 20 questions, 30 minutes
-                </button>
-                <button type="button" data-start="full" className={btn.ghost} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
-                  Full mock, 20 questions, 2 hours
-                </button>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 max-md:-order-1">
-                <button type="button" aria-pressed={untimed} aria-describedby="untimed-note" className={chip} onClick={toggleUntimed}>
-                  <span aria-hidden className={cn("grid size-4 place-items-center rounded-[4px] border-[1.5px]", untimed ? "border-ink bg-ink text-paper" : "border-line-strong")}>
-                    {untimed && <Check className="size-3" strokeWidth={3} />}
-                  </span>
-                  No timer
-                </button>
-                <span id="untimed-note" className="text-sm text-ink-muted">
-                  Take your time on every set. Mock tests keep their clock.
-                </span>
               </div>
               <p role="status" className="text-sm empty:hidden">
                 {msg}
               </p>
-              <p className="text-sm text-ink-muted">Answers are checked to within 2% or 0.01, whichever is looser. Type decimals like 0.42, not 42%.</p>
+              <div className="flex flex-wrap gap-x-5 gap-y-1">
+                <button type="button" data-start="mock" className={cn(linkBtn, "min-h-11 font-medium")} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
+                  Mock test
+                </button>
+                {due > 0 ? (
+                  <button type="button" data-start="due" className={cn(linkBtn, "min-h-11 font-medium")} onClick={startDue}>
+                    Due today ({due})
+                  </button>
+                ) : (
+                  <button type="button" data-start="daily" className={cn(linkBtn, "min-h-11 font-medium")} onClick={() => start("daily", TOPIC_IDS, 5, 600, false, dailyQuestions())}>
+                    Monte Daily
+                  </button>
+                )}
+              </div>
+              <Fold title="Choose topics and timer" teaser={mix.size === TOPICS.length || !mix.size ? "All topics" : plural(mix.size, "topic")} level="h3" className="-mx-1">
+                <div className="grid gap-4">
+                  <div role="group" aria-label="Topics in the mix" className="flex flex-wrap gap-2">
+                    {TOPICS.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        aria-pressed={mix.has(t.id)}
+                        className={chip}
+                        onClick={() => setMix((m) => new Set(m.has(t.id) ? [...m].filter((x) => x !== t.id) : [...m, t.id]))}
+                      >
+                        {t.n}. {t.short}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <button type="button" aria-pressed={untimed} aria-describedby="untimed-note" className={chip} onClick={toggleUntimed}>
+                      <span aria-hidden className={cn("grid size-4 place-items-center rounded-[4px] border-[1.5px]", untimed ? "border-ink bg-ink text-paper" : "border-line-strong")}>
+                        {untimed && <Check className="size-3" strokeWidth={3} />}
+                      </span>
+                      No timer
+                    </button>
+                    <span id="untimed-note" className="text-sm text-ink-muted">
+                      Mock tests keep their clock.
+                    </span>
+                  </div>
+                  <button type="button" data-start="full" className={cn(linkBtn, "min-h-11 justify-self-start")} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
+                    Full mock: 20 questions, 2 hours
+                  </button>
+                  <p className="text-sm text-ink-muted">Answers count within 2% or 0.01. Type decimals like 0.42, not 42%.</p>
+                </div>
+              </Fold>
             </section>
           )}
 
@@ -419,12 +422,12 @@ export function Drill() {
           )}
         </div>
 
-        <aside aria-labelledby="draw-t" className="grid content-start gap-3">
+        <aside aria-labelledby="draw-t" className="hidden content-start gap-3 lg:grid">
           <div className="grid gap-1">
             <h2 id="draw-t" className={blockTitle}>
               Your topics
             </h2>
-            <p className="text-sm text-ink-muted">{TOPICS.length} topics. Master each one. Tap a topic for an 8-question drill and score 80% to master it. Reading doesn&apos;t count; only fresh questions move the meters.</p>
+            <p className="text-sm text-ink-muted">Tap one for 8 questions. Score 80% to master it.</p>
           </div>
           <ol className="overflow-hidden rounded-[18px] border border-line">
             {TOPICS.map((t) => {

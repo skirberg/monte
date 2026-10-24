@@ -44,7 +44,7 @@ export default function Page() {
         </>
       }
     >
-      <div className="space-y-10">
+      <div className="space-y-3">
         <Election />
         <RealRace />
       </div>

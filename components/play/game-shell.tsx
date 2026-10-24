@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Motion } from "@/components/landing/motion-bits";
 import { GAMES, playHref, studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
+import { Fold } from "@/components/study/ui";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 
 /** Every game page: the game first, then what is going on, then where to learn it. */
@@ -58,35 +59,20 @@ export function GameShell({
 
         <GamePlayed game={slug}>{children}</GamePlayed>
 
-        <section aria-labelledby="explain-t" className="mt-16 grid gap-6 border-t border-line pt-10 md:grid-cols-12 md:pt-14">
-          <h2 id="explain-t" className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-1.5">
-            What&rsquo;s going on
-          </h2>
-          <div className="max-w-[62ch] space-y-4 text-[1.05rem] leading-relaxed md:col-span-9 [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em]">
-            {explain}
-          </div>
-        </section>
+        {/* The game is the page. The idea behind it waits one tap away, then one way on. */}
+        <Fold title="What’s going on" teaser="The real idea behind the game, in plain words." className="mt-12" bodyClassName="max-w-[62ch] space-y-4 text-[1.05rem] leading-relaxed [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em]">
+          {explain}
+        </Fold>
 
-        <nav aria-label="Next steps" className="mt-12 grid gap-3 sm:grid-cols-2">
-          <a
-            href={studyHref(`#learn/topics/${g.topic}`)}
-            className="group flex min-h-20 items-center justify-between gap-4 rounded-2xl bg-sand px-6 py-5 transition-colors hover:bg-sand-2"
-          >
-            <span>
-              <span className="block font-mono text-[11px] uppercase tracking-[0.1em] text-ink-muted">Learn the idea</span>
-              <span className="font-display text-xl font-[650]">{g.topicName}</span>
-            </span>
-            <BookOpen className="size-5 text-ink-muted transition-colors group-hover:text-ink" />
-          </a>
+        <nav aria-label="Next steps" className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <a
             href={playHref(next.slug)}
-            className="group flex min-h-20 items-center justify-between gap-4 rounded-2xl border border-line px-6 py-5 transition-colors hover:border-ink"
+            className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium transition-colors hover:border-ink hover:bg-sand"
           >
-            <span>
-              <span className="block font-mono text-[11px] uppercase tracking-[0.1em] text-ink-muted">Next game</span>
-              <span className="font-display text-xl font-[650]">{next.name}</span>
-            </span>
-            <ArrowRight className="size-5 text-ink-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
+            Next game: {next.name} <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </a>
+          <a href={studyHref(`#learn/topics/${g.topic}`)} className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-clay-ink underline-offset-4 hover:underline">
+            <BookOpen className="size-4" aria-hidden /> Learn the idea: {g.topicName}
           </a>
         </nav>
       </main>

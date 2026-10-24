@@ -610,7 +610,7 @@ function TestLab() {
         z = ({xb.toFixed(1)} − {c.mu}) / ({c.s} / √{n}) = <b>{fmt(r2(z))}</b>. p-value = <b>{fmt(r3(p))}</b>.{" "}
         {rej ? <><b>Reject H₀</b> at α = {al}: a sample this far out would be rare if the machine were fine.</> : <><b>Fail to reject H₀</b> at α = {al}: samples like this are common when the machine is fine.</>} Red is the rejection region, beyond z ={" "}
         {side === "two" ? "±" : side === "less" ? "−" : ""}
-        {fmt(r2(crit))}. A bigger n shrinks the standard error, so the same gap gets more surprising.
+        {fmt(r2(crit))}.
       </Note>
     </Lab>
   );

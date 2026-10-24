@@ -13,7 +13,7 @@ type Preset = { label: string; note: string; base: string; catches: string; fals
 const PRESETS: Preset[] = [
   {
     label: "A rare condition screening",
-    note: "A screening test for a condition about 1 in 100 people your age have. It catches 90% of real cases, and false-alarms on 9% of people who don't have it.",
+    note: "A screening test for a condition 1 in 100 people have. It catches 90% of real cases and false-alarms on 9% of the rest.",
     base: "1",
     catches: "90",
     falseAlarm: "9",
@@ -21,7 +21,7 @@ const PRESETS: Preset[] = [
   },
   {
     label: "A fraud alert on a card",
-    note: "About 1 in 200 purchases like this one (big, far from home, late at night) is fraud. The bank's alert catches 98% of fraud, and flags 3% of honest purchases.",
+    note: "About 1 in 200 purchases like this one is fraud. The alert catches 98% of fraud and flags 3% of honest purchases.",
     base: "0.5",
     catches: "98",
     falseAlarm: "3",
@@ -94,7 +94,7 @@ export function Bayes() {
           <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example tests" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
-            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them.</p>
+            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers.</p>
           </div>
           <div className="space-y-4">
             <NumField id="by-base" label="How common it is" suffix="%" value={base} onChange={edit(setBase)} invalid={!(b > 0 && b < 1)} describedBy="by-base-hint" />
@@ -142,7 +142,7 @@ export function Bayes() {
           )}
           <p className="text-ink-muted">
             {r && said
-              ? `Picture ${k(N)} ${words.who}: ${k(said[0] + said[1])} ${words.have}, and ${k(said[0])} of those ${words.flagged}. Of the ${k(said[2] + said[3])} ${words.others}, ${k(said[2])} ${words.flagged} too. So ${k(said[0] + said[2])} ${words.flagged} in all, and ${k(said[0])} of them really ${words.have}: about ${chance(r.realIfPos, 1)}.`
+              ? `Picture ${k(N)} ${words.who}: ${k(said[0] + said[1])} ${words.have}, and ${k(said[0])} of those ${words.flagged}. So do ${k(said[2])} of the ${k(said[2] + said[3])} ${words.others}. Only ${k(said[0])} of the ${k(said[0] + said[2])} flagged are real.`
               : "Fix the numbers to see what a yes means."}
           </p>
         </div>

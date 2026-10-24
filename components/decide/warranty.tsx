@@ -11,7 +11,7 @@ type Preset = { label: string; note: string; price: string; chance: string; loss
 const PRESETS: Preset[] = [
   {
     label: "Phone protection plan",
-    note: "Two years of cover for $180, or $7.50 a month. Say 1 in 5 people break or lose a phone in two years. A new one costs $800; with the plan you still pay a $99 deductible.",
+    note: "Two years of cover for $180. Say 1 in 5 phones break in that time. A new one costs $800; the plan still charges $99.",
     price: "180",
     chance: "20",
     loss: "800",
@@ -95,14 +95,14 @@ export function Warranty() {
   if (w) {
     read =
       cheaper === "skip"
-        ? `Skipping the plan costs ${cash(w.extra)} less on average. The plan only pays on average if the chance is above ${beShown ? chance(w.breakEven, 1) : "100%"}, and you put it at ${chance(p, 1)}.`
+        ? `Skipping costs ${cash(w.extra)} less on average. The plan only pays if the chance is above ${beShown ? chance(w.breakEven, 1) : "100%"}; you put it at ${chance(p, 1)}.`
         : cheaper === "buy"
           ? `The plan costs ${cash(-w.extra)} less on average, because your ${chance(p, 1)} chance is above the ${chance(w.breakEven, 1)} break-even. Plans priced this well are rare, so check the chance and the cost.`
           : "The two choices cost about the same on average.";
     if (hurts) {
-      read += ` But ${cash(L)} is more than the ${cash(cash0)} you could cover. If a bill that size would really hurt, paying a little extra to rule it out can be the right call. That is what insurance is for.`;
+      read += ` But ${cash(L)} is more than the ${cash(cash0)} you could cover, so the plan can still be worth it: that is what insurance is for.`;
     } else if (Number.isFinite(cash0) && cheaper !== "buy") {
-      read += ` You could pay ${cash(L)} from the ${cash(cash0)} you have, so this is a loss you can absorb. Skipping plans like this one and keeping the money tends to win across many of them.`;
+      read += ` You could cover ${cash(L)} from savings, so skipping is a safe bet.`;
     }
   }
 
@@ -113,7 +113,7 @@ export function Warranty() {
           <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example plans" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
-            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them.</p>
+            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers.</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <NumField id="wr-price" label="Price of the plan" prefix="$" value={price} onChange={edit(setPrice)} invalid={!(P >= 0)} describedBy="wr-hint" className="col-span-2" />

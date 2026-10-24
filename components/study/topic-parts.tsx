@@ -96,6 +96,10 @@ export function QuizList({ id }: { id: TopicId }) {
   const [chosen, setQuiz] = React.useState<boolean | null>(null);
   const quiz = chosen ?? stored !== "0";
   const [shown, setShown] = React.useState<Set<number>>(new Set());
+  // Three questions to start; the rest wait behind one button.
+  const [all, setAll] = React.useState(false);
+  const FIRST = 3;
+  const rest = t.qa.length - FIRST;
   const flip = () => {
     store("sigmaQuiz", quiz ? "0" : "1");
     setQuiz(!quiz);
@@ -116,7 +120,7 @@ export function QuizList({ id }: { id: TopicId }) {
         </button>
       </div>
       <ol className="divide-y divide-line border-y border-line">
-        {t.qa.map(([q, a, why], i) => {
+        {(all ? t.qa : t.qa.slice(0, FIRST)).map(([q, a, why], i) => {
           const open = !quiz || shown.has(i);
           return (
             <li key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4 gap-y-2 py-3.5">
@@ -142,6 +146,11 @@ export function QuizList({ id }: { id: TopicId }) {
           );
         })}
       </ol>
+      {!all && rest > 0 && (
+        <button type="button" onClick={() => setAll(true)} className={cn(linkBtn, "min-h-11 justify-self-start font-medium")}>
+          {rest} more {rest === 1 ? "question" : "questions"}
+        </button>
+      )}
     </section>
   );
 }

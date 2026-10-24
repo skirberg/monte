@@ -107,7 +107,7 @@ export function OptionTrade() {
           )}
           <p className="text-ink-muted">
             {ok
-              ? `With ${chance(sigma, 0)} volatility and ${d} day${d === 1 ? "" : "s"} to go, a typical move is about ${usd(move)} either way. The model gives the stock ${aChance(pStrike, 1)} chance of ending ${side} the ${usd(k)} strike, and ${aChance(pBe, 1)} chance of ending past the ${usd(be)} breakeven, where the ${kind} starts to make money.`
+              ? `A typical move is about ${usd(move)} either way. The stock has ${aChance(pStrike, 1)} chance of ending ${side} the ${usd(k)} strike, and ${chance(pBe, 1)} of passing the ${usd(be)} breakeven, where the ${kind} makes money.`
               : "Fix the numbers to see the odds."}
           </p>
         </div>

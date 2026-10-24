@@ -17,7 +17,7 @@ type Preset = { label: string; note: string; start: string; monthly: string; yea
 const PRESETS: Preset[] = [
   {
     label: "Emergency fund, savings account",
-    note: "$1,000 to start and $300 a month in a savings account paying about 4%. The rate can drift a little, so a 1% wobble. The goal: $12,000, about six months of costs, in three years.",
+    note: "$1,000 to start and $300 a month in savings paying about 4%. The goal: $12,000, six months of costs, in three years.",
     start: "1,000",
     monthly: "300",
     years: "3",
@@ -27,7 +27,7 @@ const PRESETS: Preset[] = [
   },
   {
     label: "Stock index plan",
-    note: "$5,000 to start and $500 a month in a broad stock index fund for 20 years. We assume 7% a year on average, with typical yearly swings of 15%. The goal: $250,000.",
+    note: "$5,000 to start and $500 a month in a stock index fund for 20 years, at 7% a year with 15% swings. The goal: $250,000.",
     start: "5,000",
     monthly: "500",
     years: "20",
@@ -37,7 +37,7 @@ const PRESETS: Preset[] = [
   },
   {
     label: "Riskier portfolio",
-    note: "$10,000 to start and $400 a month for 15 years in a handful of fast-growing stocks. We assume 10% a year on average, with swings of 30%. The goal: $200,000.",
+    note: "$10,000 to start and $400 a month for 15 years in a few fast-growing stocks, at 10% a year with 30% swings. The goal: $200,000.",
     start: "10,000",
     monthly: "400",
     years: "15",
@@ -193,8 +193,8 @@ export function Goal() {
 
   let read = ready ? "Playing out 5,000 futures…" : "Fix the numbers in red and the futures run again.";
   if (finished && fin) {
-    read = `${goalOk ? `In ${chance(hits / PATHS, 0)} of ${PATHS.toLocaleString()} futures you reach ${dollars(G)} after ${Y} year${Y === 1 ? "" : "s"}. ` : ""}The middle future ends at ${dollars(p50)}, and 8 in 10 end between ${dollars(p10)} and ${dollars(p90)}. You put in ${dollars(put)}.`;
-    if (mean > p50 * 1.05) read += ` The average, ${dollars(mean)}, is higher than the middle because a few lucky futures pull it up. Plan on the middle, not the average.`;
+    read = `${goalOk ? `In ${chance(hits / PATHS, 0)} of ${PATHS.toLocaleString()} futures you reach ${dollars(G)} after ${Y} year${Y === 1 ? "" : "s"}. ` : ""}The middle future ends at ${dollars(p50)}.`;
+    if (mean > p50 * 1.05) read += ` A few lucky futures pull the average up to ${dollars(mean)}, so plan on the middle.`;
   }
   // The one-line answer: null while the futures are still drawing, so the bar keeps the last answer instead of flashing.
   const bar: [string | null, string | null] = !ready

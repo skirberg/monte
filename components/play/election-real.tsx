@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Phi } from "@/lib/site-data";
+import { Fold } from "@/components/study/ui";
 import SNAPSHOT from "@/lib/play/data/markets.json";
 
 /**
@@ -137,16 +138,7 @@ export function RealRace() {
   const house = sources.map((s) => ({ name: s.name, p: s.house[POLL.leaderKey] }));
 
   return (
-    <section aria-labelledby="real-t" className="space-y-8 rounded-[28px] border border-line p-5 sm:p-7">
-      <div className="max-w-3xl space-y-3">
-        <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">US midterms · {ELECTION_DAY}</p>
-        <h2 id="real-t" className="font-display text-[clamp(1.8rem,1.3rem+2vw,2.6rem)] font-[680] leading-none tracking-[-0.02em]">
-          The real one
-        </h2>
-        <p className="text-ink-muted">
-          The game is a model. Here is a real race, read two ways: what prediction markets price for control of Congress, and what the polls say about the vote.
-        </p>
-      </div>
+    <Fold title="The real one" teaser={`US midterms, ${ELECTION_DAY}: what the markets and the polls say.`} bodyClassName="space-y-8">
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="space-y-4 lg:col-span-7">
@@ -204,7 +196,7 @@ export function RealRace() {
       </div>
 
       <PollToProbability markets={house} />
-    </section>
+    </Fold>
   );
 }
 

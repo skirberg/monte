@@ -154,7 +154,12 @@ export function Slider({
 /** A row of example chips; one can be picked. */
 export function Presets({ label, items, value, onChange }: { label: string; items: string[]; value: number; onChange: (i: number) => void }) {
   return (
-    <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-2">
+    // Phones: one row that scrolls sideways, edge to edge, instead of two or three wrapped rows. contain-inline-size keeps the row from widening the page.
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="-mx-4 flex gap-2 overflow-x-auto overscroll-x-contain px-4 [contain:inline-size] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 sm:[contain:none] [&::-webkit-scrollbar]:hidden"
+    >
       {items.map((p, i) => (
         <button
           key={p}
@@ -163,7 +168,7 @@ export function Presets({ label, items, value, onChange }: { label: string; item
           aria-checked={value === i}
           onClick={() => onChange(i)}
           className={cn(
-            "inline-flex min-h-11 items-center rounded-full border px-4 text-left text-sm leading-tight transition-colors",
+            "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full border px-4 text-left text-sm leading-tight transition-colors",
             value === i ? "border-ink bg-ink text-paper" : "border-line-strong hover:border-ink",
           )}
         >

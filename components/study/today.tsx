@@ -5,14 +5,7 @@ import { cn } from "cn";
 import { TOPICS, TOOLS } from "@/lib/study/data";
 import { study } from "@/lib/study/routes";
 import { hasAnyProgress, isWon, statsFor, useStudyProgress, wonCount } from "@/lib/study/progress";
-import { SourceList } from "@/components/study/sources";
-import { blockTitle, btn } from "@/components/study/ui";
-
-const STEPS = [
-  ["Learn", "Read the one-line idea, try the example, and drag the lab until the number makes sense."],
-  ["Practice", "Answer questions with fresh numbers. Score 80% on a topic to master it."],
-  ["Check", "Misses come back in Due today, and the timed mock test shows how ready you are."],
-];
+import { Fold, btn, linkBtn } from "@/components/study/ui";
 
 const FIRST = TOPICS[0];
 // Topic 1 has no lab of its own, so the lab step goes to the first topic that has one.
@@ -35,7 +28,7 @@ function FirstTen() {
         <h2 id="ft-t" className="font-display text-xl font-[650] tracking-[-0.02em]">
           Your first ten minutes
         </h2>
-        <p className="text-sm text-ink-muted">New here? Start with these three. No sign-up, nothing to install.</p>
+        <p className="text-sm text-ink-muted">Three short steps. No sign-up.</p>
       </div>
       <ol className="grid gap-2">
         {steps.map((s, i) => (
@@ -56,7 +49,7 @@ function FirstTen() {
   );
 }
 
-/** Today, the study home: where you stand, what is due, and every way in. A first visit gets a short path instead. */
+/** Today, the study home: one job. A first visit gets a three-step path; a returning visitor gets their next set. Lists wait in folds. */
 export function Today() {
   const p = useStudyProgress();
   // The static page (and the first paint) has no progress to read, so it shows the new-visitor path;
@@ -64,26 +57,8 @@ export function Today() {
   const fresh = !hasAnyProgress(p);
   const due = p.due.length, won = wonCount(p);
   return (
-    <div className="grid gap-12 pb-8 pt-10 md:pt-16">
-      <div className="grid gap-x-10 gap-y-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section aria-labelledby="how-t" className="grid content-start gap-4">
-          <h2 id="how-t" className={blockTitle}>
-            How to use it
-          </h2>
-          <ol className="grid gap-4">
-            {STEPS.map(([b, s], i) => (
-              <li key={b} className="grid grid-cols-[2rem_1fr] items-start gap-3">
-                <span aria-hidden className="grid size-8 place-items-center rounded-full border-[1.5px] border-ink font-mono text-sm font-medium">
-                  {i + 1}
-                </span>
-                <span className="grid gap-0.5">
-                  <b>{b}</b>
-                  <span className="text-sm text-ink-muted">{s}</span>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
+    <div className="grid gap-8 pb-8 pt-8 md:pt-12">
+      <div className="max-w-[640px]">
         {fresh ? (
           <FirstTen />
         ) : (
@@ -96,32 +71,24 @@ export function Today() {
               <p className="font-mono text-[56px] font-medium leading-none tracking-[-0.04em] tabular-nums">{due}</p>
               <p className="text-sm text-ink-muted">{due ? "Questions you missed, back for another try." : "Nothing due. Misses from any drill show up here."}</p>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Link href={study.drillStart("start")} className={cn(btn.primary, "col-span-2")}>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+              <Link href={study.drillStart("start")} className={btn.primary}>
                 Start 10 questions
               </Link>
-              <Link href={study.drillStart("mock")} className={btn.ghost}>
+              <Link href={study.drillStart("mock")} className={cn(linkBtn, "min-h-11 font-medium")}>
                 Mock test
               </Link>
-              <Link href={study.cards} className={btn.ghost}>
+              <Link href={study.cards} className={cn(linkBtn, "min-h-11 font-medium")}>
                 Flashcards
               </Link>
             </div>
           </section>
         )}
+      </div>
 
-        <section aria-labelledby="ht-t" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 id="ht-t" className={blockTitle}>
-              Topics
-            </h2>
-            {!fresh && (
-              <span className="text-sm text-ink-muted">
-                {won} of {TOPICS.length} mastered
-              </span>
-            )}
-          </div>
-          <ol className="overflow-hidden rounded-[18px] border border-line">
+      <div className="grid max-w-[640px] gap-3">
+        <Fold title="Your topics" teaser={fresh ? `${TOPICS.length} topics, each building on the one before.` : `${won} of ${TOPICS.length} mastered.`}>
+          <ol className="overflow-hidden rounded-[14px] border border-line">
             {TOPICS.map((t) => {
               const d = statsFor(p, t.id), w = isWon(p, t.id), v = Math.round((d.best || 0) * 100);
               return (
@@ -149,12 +116,9 @@ export function Today() {
               );
             })}
           </ol>
-        </section>
-        <section aria-labelledby="htl-t" className="grid content-start gap-3">
-          <h2 id="htl-t" className={blockTitle}>
-            Tools
-          </h2>
-          <ul className="overflow-hidden rounded-[18px] border border-line">
+        </Fold>
+        <Fold title="Tools" teaser="Solvers that show the work, and Excel, R, Python and SQL guides.">
+          <ul className="overflow-hidden rounded-[14px] border border-line">
             {[{ href: study.solve(), name: "Solve", blurb: "Type in the numbers from any problem and get every answer with the work." }, ...TOOLS.map((t) => ({ href: study.tools(t.id), name: t.name, blurb: t.blurb }))].map((t) => (
               <li key={t.href} className="border-b border-line last:border-b-0">
                 <Link href={t.href} className="grid gap-0.5 px-4 py-3 transition-colors hover:bg-sand">
@@ -164,14 +128,8 @@ export function Today() {
               </li>
             ))}
           </ul>
-        </section>
+        </Fold>
       </div>
-      <section aria-labelledby="hs-t" className="grid max-w-[760px] gap-3">
-        <h2 id="hs-t" className={blockTitle}>
-          Sources
-        </h2>
-        <SourceList limit={6} moreHref={study.sources} />
-      </section>
     </div>
   );
 }

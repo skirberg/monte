@@ -101,9 +101,8 @@ export function Bet() {
       {ok ? (
         <>
           {format === "american" ? "That line" : `${formatOdds(format, d)}, or ${formatOdds("american", d).replace("-", "\u2212")} in American odds,`} means a $100 bet wins {dollars(profit)}. The odds say {chance(implied, 2)}.{" "}
-          {two ? `With the other side, the two add to ${chance(two.book, 2)}, a margin of ${chance(two.margin, 2)}. ` : ""}
           At your {chance(p, 1)}, a $100 bet is worth {signedMoney(ev)} on average.{" "}
-          {f > 0 ? `A careful bettor would stake ${chance(f, 1)} of their money, or ${chance(f / 2, 1)} at half Kelly.` : "A careful bettor would not bet."}
+          {f > 0 ? `A careful stake: ${chance(f, 1)} of your money, or ${chance(f / 2, 1)} at half Kelly.` : "A careful bettor would not bet."}
         </>
       ) : (
         "Type odds to see what they mean."

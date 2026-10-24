@@ -76,9 +76,6 @@ export function TestResultMini() {
   return (
     <div className="grid gap-8 rounded-[28px] bg-sand p-5 sm:p-8 lg:grid-cols-12 lg:gap-12">
       <div className="space-y-5 lg:col-span-5">
-        <p className="text-ink-muted">
-          A screening test for a condition. Set how common it is, how often the test catches it, and how often it raises a false alarm.
-        </p>
         <Range
           id="mini-base"
           label="How common it is"
@@ -159,7 +156,6 @@ export function TestResultMini() {
 
         <p className="max-w-[56ch]">
           Test 1,000 people: about {tp.toLocaleString("en-US")} who have it test positive, and so do {fp.toLocaleString("en-US")} who don&rsquo;t.
-          {real < 0.5 ? " When the thing is rare, false alarms outnumber real cases." : " When the thing is common, a positive usually means it."} The full tool adds fraud alerts, spam filters and all four groups.
         </p>
 
         <a

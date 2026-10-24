@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion } from "motion/react";
 import { cn } from "cn";
+import { Fold } from "@/components/study/ui";
 import { Phi } from "@/lib/site-data";
 import { burstFrom, callout } from "@/lib/fun";
 import { useStoredString } from "@/lib/hooks";
@@ -448,9 +449,10 @@ export function Election() {
         </div>
       </div>
 
-      <Calibration history={history} avg={avgBrier} />
-
-      <ThousandElections />
+      <div className="space-y-3">
+        <Calibration history={history} avg={avgBrier} />
+        <ThousandElections />
+      </div>
     </div>
   );
 }
@@ -468,11 +470,12 @@ function Calibration({ history, avg }: { history: Race[]; avg: number | null }) 
   const under = sureRows.filter((r) => r.hit / r.n > r.said! + 0.1).length;
 
   return (
-    <section aria-labelledby="cal-t" className="grid gap-6 rounded-[28px] bg-sand p-5 sm:p-7 lg:grid-cols-12">
+    <Fold
+      title="How often were your 70% calls right?"
+      teaser={left > 0 ? `Your report appears after ${CAL_AFTER} races. ${left} to go.` : `Your report on ${history.length} races is ready.`}
+      bodyClassName="grid gap-6 lg:grid-cols-12"
+    >
       <div className="space-y-3 lg:col-span-5">
-        <h2 id="cal-t" className="font-display text-2xl font-[650]">
-          How often were your 70% calls right?
-        </h2>
         <p className="text-ink-muted">
           Being <b className="font-semibold text-ink">calibrated</b> means your 70% calls come true about 70% of the time. Right more often than that and you could have said a
           bigger number. Right less often and you were too sure.
@@ -533,7 +536,7 @@ function Calibration({ history, avg }: { history: Race[]; avg: number | null }) 
           </>
         )}
       </div>
-    </section>
+    </Fold>
   );
 }
 
@@ -587,12 +590,8 @@ function ThousandElections() {
   };
 
   return (
-    <section aria-labelledby="sim-t" className="grid gap-6 rounded-[28px] border border-line p-5 sm:p-7 lg:grid-cols-12">
+    <Fold title="A thousand elections" teaser="Give A a real lead and count how often the polls name the wrong leader." bodyClassName="grid gap-6 lg:grid-cols-12">
       <div className="space-y-4 lg:col-span-5">
-        <h2 id="sim-t" className="font-display text-2xl font-[650]">
-          A thousand elections
-        </h2>
-        <p className="text-ink-muted">Give A a real lead, poll each race ten times, and count how often the polls name the wrong leader.</p>
         <div>
           <div className="flex items-baseline justify-between gap-3">
             <label htmlFor="el-lead" className="text-ink-muted">
@@ -632,6 +631,6 @@ function ThousandElections() {
             : `A poll of ${n.toLocaleString()} has a margin of ±${pts(2 * moe(0.5, n))} points on the lead. Try a 2-point lead with 1,000 people, then switch to 2,500.`}
         </p>
       </div>
-    </section>
+    </Fold>
   );
 }

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "cn";
+import { Fold } from "@/components/study/ui";
 import { bounds, inFrames, pctile, rangeOk, readNumber, scoreDraw, triangular, type Range } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
 import { placeLabel, textWidth } from "@/lib/decide/chart";
@@ -22,7 +23,7 @@ const opt = (name: string, worst: number, likely: number, best: number): Opt => 
 const PRESETS: Preset[] = [
   {
     label: "Two job offers",
-    note: "Job A pays $95,000 plus a bonus of up to $15,000, usually about $8,000. Job B pays $85,000 plus a startup bonus that could be nothing or $60,000. The line is what you need for rent and savings.",
+    note: "Job A pays $95,000 and a steady bonus. Job B pays $85,000 and a startup bonus that could be nothing or $60,000. The line is what you need.",
     measure: "Total pay in year one",
     unit: "dollars",
     higher: true,
@@ -231,17 +232,25 @@ export function MonteCarlo() {
           <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Examples" items={PRESETS.map((p) => p.label)} value={preset} onChange={choose} />
-            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them, or type your own choice.</p>
+            <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers.</p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            <TextField id="mc-measure" label="What are you comparing?" value={measure} onChange={(v) => { setMeasure(v); xp(); }} />
-            <div className="space-y-1.5">
-              <p className="text-sm text-ink-muted" id="mc-dir-l">Which way is better?</p>
-              <Toggle label="Which way is better" value={higher ? "hi" : "lo"} onChange={(v) => { setHigher(v === "hi"); setPreset(-1); xp(); }} options={[["hi", "Higher"], ["lo", "Lower"]]} />
+          {/* What is being measured, which way is better and the units: set by each example, so they wait one tap away. */}
+          <Fold
+            level="h3"
+            title="What you are comparing"
+            teaser={`${measure.trim() || "Your measure"}, ${higher ? "higher" : "lower"} is better, ${unit === "dollars" ? "in dollars" : "plain numbers"}.`}
+            bodyClassName="space-y-4"
+          >
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              <TextField id="mc-measure" label="What are you comparing?" value={measure} onChange={(v) => { setMeasure(v); xp(); }} />
+              <div className="space-y-1.5">
+                <p className="text-sm text-ink-muted" id="mc-dir-l">Which way is better?</p>
+                <Toggle label="Which way is better" value={higher ? "hi" : "lo"} onChange={(v) => { setHigher(v === "hi"); setPreset(-1); xp(); }} options={[["hi", "Higher"], ["lo", "Lower"]]} />
+              </div>
             </div>
-          </div>
-          <Toggle label="Units" value={unit} onChange={(v) => { setUnit(v); xp(); }} options={[["dollars", "Dollars"], ["plain", "Plain numbers"]]} />
+            <Toggle label="Units" value={unit} onChange={(v) => { setUnit(v); xp(); }} options={[["dollars", "Dollars"], ["plain", "Plain numbers"]]} />
+          </Fold>
 
           <ol className="space-y-4">
             {opts.map((o, i) => (
@@ -315,7 +324,7 @@ export function MonteCarlo() {
           </div>
 
           {stats && (
-            <ul className={cn("grid gap-3", stats.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2")}>
+            <ul className={cn("grid gap-3", stats.length === 3 ? "sm:grid-cols-3" : "grid-cols-2")}>
               {stats.map((s, j) => (
                 <li key={j} className={cn("min-w-0 space-y-3 rounded-2xl p-4", j === leader ? "bg-clay-tint" : "border border-line")}>
                   <p className="flex items-center gap-2 font-medium">
@@ -432,7 +441,6 @@ function summary(stats: { name: string; top: number; p10: number; p90: number; m
   if (riskier) {
     s += ` But its bad end is worse: 1 time in 10 it ${higher ? "falls below" : "goes above"} ${fmt(badEnd(L))}, against ${fmt(badEnd(riskier))} for ${riskier.name}.`;
   }
-  s += ` Chance ${missWord}: ${stats.map((x) => `${x.name} ${chance(x.miss, 1)}`).join(", ")}.`;
   return s;
 }
 

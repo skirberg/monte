@@ -60,8 +60,9 @@ const COLUMNS: { title: string; className?: string; links: [string, string][] }[
 export function SiteFooter() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 py-12 md:px-6">
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:[html[data-mode=focus]_&]:grid-cols-4">
+      <div className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 py-6 md:px-6 lg:py-12">
+        {/* Phones and tablets have the tab bar and its More sheet, so the sitemap columns show on wide screens only. */}
+        <nav aria-label="Footer" className="hidden lg:grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:[html[data-mode=focus]_&]:grid-cols-4">
           {COLUMNS.map((col) => (
             <div key={col.title} className={col.className}>
               <p className="mb-2 text-sm font-semibold">{col.title}</p>
@@ -77,7 +78,7 @@ export function SiteFooter() {
             </div>
           ))}
         </nav>
-        <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
+        <div className="flex items-center justify-between gap-4 lg:border-t lg:border-line lg:pt-6">
           <div className="flex items-center gap-5">
             <Wordmark />
             <a href="/built/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">

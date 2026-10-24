@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Motion, Reveal } from "@/components/landing/motion-bits";
@@ -275,8 +275,14 @@ function StoryFigure({ figure }: { figure: Figure }) {
   );
 }
 
+// Below lg each story folds: the year, headline and idea stay in view, the body and figure open on a tap.
+// From lg up the body is printed open, as before. The body is rendered twice (one copy per breakpoint,
+// the other display:none) so the page works before hydration and never shifts on load.
 function StoryItem({ s }: { s: Story }) {
   const t = topicOf(s.topic);
+  const value = s.figure && "value" in s.figure ? s.figure.value : null;
+  const cut = t.name.lastIndexOf(" ") + 1;
+  const [nameHead, nameTail] = [t.name.slice(0, cut), t.name.slice(cut)];
   return (
     <li>
       <article aria-labelledby={`s-${s.id}`} className={storyGrid}>
@@ -286,38 +292,64 @@ function StoryItem({ s }: { s: Story }) {
           <span className="absolute left-1/2 top-[0.6rem] size-3 -translate-x-1/2 rounded-full bg-clay ring-[5px] ring-paper md:top-[0.85rem]" />
         </div>
 
-        <p className="col-start-2 row-start-1 md:sticky md:top-24 md:col-start-1 md:self-start md:text-right">
+        <p className="col-start-2 row-start-1 flex items-center justify-between gap-3 md:sticky md:top-24 md:col-start-1 md:block md:self-start md:text-right">
           <time dateTime={s.year} className="font-display text-xl font-[650] leading-8 tracking-[-0.01em] text-ink tabular-nums md:text-[2rem] md:leading-10">
             {s.year}
           </time>
+          {/* the story's number as a small tag on phones; the fold below repeats it with its caption */}
+          {value && (
+            <span aria-hidden className="rounded-full bg-sand px-2.5 py-0.5 font-display text-[0.95rem] font-[650] text-clay-ink tabular-nums md:hidden">
+              {value}
+            </span>
+          )}
         </p>
 
-        <div className="col-start-2 row-start-2 pb-16 pt-2 md:col-start-3 md:row-start-1 md:pb-24 md:pt-0.5 lg:grid lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:gap-12">
+        <div className="col-start-2 row-start-2 pb-3 pt-1 md:col-start-3 md:row-start-1 md:pb-16 md:pt-0.5 lg:grid lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:gap-12 lg:pb-24">
           <Reveal>
             <h3
               id={`s-${s.id}`}
-              className="font-display text-[clamp(1.65rem,1.2rem+1.5vw,2.35rem)] font-[650] leading-[1.02] tracking-[-0.015em]"
+              className="font-display text-[clamp(1.55rem,1.2rem+1.5vw,2.35rem)] font-[650] leading-[1.02] tracking-[-0.015em]"
               style={{ fontVariationSettings: "'wdth' 86" }}
             >
               {s.title}
             </h3>
-            <p className="mt-4 max-w-[62ch] text-[1.0625rem] leading-[1.65]">{s.body}</p>
-            <div className="mt-6 max-w-[62ch] rounded-[20px] bg-sand px-5 pb-3 pt-4 md:px-6">
+            <p className="mt-4 hidden max-w-[62ch] text-[1.0625rem] leading-[1.65] lg:block">{s.body}</p>
+            <div className="mt-3.5 max-w-[62ch] rounded-[20px] bg-sand px-4 pb-1.5 pt-3 md:px-6 lg:mt-6 lg:pb-3 lg:pt-4">
               <p className="text-sm font-medium text-clay-ink">The idea</p>
-              <p className="mt-1 font-display text-[1.3rem] font-[600] leading-snug md:text-[1.45rem]" style={{ fontVariationSettings: "'wdth' 92" }}>
+              <p
+                className="mt-0.5 font-display text-[1.125rem] lg:mt-1 font-[600] leading-snug md:text-[1.3rem] lg:text-[1.45rem]"
+                style={{ fontVariationSettings: "'wdth' 92" }}
+              >
                 {s.idea}
               </p>
               <a
                 href={topicHref(s.topic)}
-                className="group mt-2 inline-flex min-h-11 items-center gap-2 text-[0.95rem] font-medium underline-offset-4 hover:underline"
+                className="group mt-0.5 inline-block py-3 text-sm font-medium leading-snug underline-offset-4 hover:underline md:text-[0.95rem] lg:mt-2 lg:py-2.5 lg:leading-6"
               >
-                Learn it in topic {t.n}: {t.name}
-                <ArrowRight className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                Learn it in topic {t.n}: {nameHead}
+                {/* the last word rides with the arrow, so a wrap never leaves the arrow alone */}
+                <span className="whitespace-nowrap">
+                  {nameTail}
+                  <ArrowRight aria-hidden className="ml-1.5 inline size-4 align-[-0.2em] transition-transform group-hover:translate-x-0.5 lg:ml-2" />
+                </span>
               </a>
             </div>
+            <details className="group/fold mt-1 max-w-[62ch] lg:hidden">
+              <summary className="-mx-1 inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full px-1 text-[0.95rem] font-medium text-ink-muted transition-colors hover:text-ink [&::-webkit-details-marker]:hidden">
+                <ChevronDown aria-hidden className="size-4 transition-transform duration-200 group-open/fold:rotate-180 motion-reduce:transition-none" />
+                <span className="group-open/fold:hidden">Read the story</span>
+                <span className="hidden group-open/fold:inline">Hide the story</span>
+              </summary>
+              <p className="mt-1 text-[1.0625rem] leading-[1.65]">{s.body}</p>
+              {s.figure && (
+                <div className="mt-6 pb-2">
+                  <StoryFigure figure={s.figure} />
+                </div>
+              )}
+            </details>
           </Reveal>
           {s.figure && (
-            <Reveal delay={0.08} className="mt-8 lg:mt-1.5">
+            <Reveal delay={0.08} className="hidden lg:mt-1.5 lg:block">
               <StoryFigure figure={s.figure} />
             </Reveal>
           )}
@@ -343,7 +375,7 @@ export default function Story() {
       <SiteHeader mode="landing" />
       <main id="main" tabIndex={-1} className="outline-none">
         {/* ---------- opening ---------- */}
-        <header className="mx-auto grid w-full max-w-[1200px] gap-4 px-4 pb-14 pt-8 md:grid-cols-12 md:px-6 md:pb-20 md:pt-14">
+        <header className="mx-auto grid w-full max-w-[1200px] gap-4 px-4 pb-6 pt-8 md:grid-cols-12 md:px-6 md:pb-20 md:pt-14">
           <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">Why statistics</p>
           <div className="md:col-span-9">
             <h1
@@ -353,7 +385,7 @@ export default function Story() {
               Nobody gets to
               <span className="block">see everything.</span>
             </h1>
-            <div className="rise mt-7 max-w-[56ch] space-y-4 text-lg text-ink-muted md:text-xl" style={{ animationDelay: "80ms" }}>
+            <div className="rise mt-6 max-w-[56ch] space-y-3 text-[1.0625rem] text-ink-muted md:mt-7 md:space-y-4 md:text-xl" style={{ animationDelay: "80ms" }}>
               <p>
                 Statistics is deciding what to do from a slice of the data. You can&rsquo;t ask every voter or inspect every plane, so you
                 study some and speak carefully about all.
@@ -361,13 +393,13 @@ export default function Story() {
               <p>Here are fourteen times people did that, or failed to, and what each teaches.</p>
             </div>
 
-            <nav aria-label="Chapters" className="rise mt-12" style={{ animationDelay: "140ms" }}>
-              <ol className="grid border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+            <nav aria-label="Chapters" className="rise mt-9 md:mt-12" style={{ animationDelay: "140ms" }}>
+              <ol className="grid grid-cols-2 border-t border-line lg:grid-cols-4">
                 {CHAPTERS.map((c) => (
                   <li key={c.id} className="border-b border-line lg:border-b-0">
-                    <a href={`#${c.id}`} className="group flex min-h-11 flex-col gap-0.5 py-4 pr-4">
+                    <a href={`#${c.id}`} className="group flex min-h-11 flex-col gap-0.5 py-3 pr-3 md:py-4 md:pr-4">
                       <span className="text-xs text-ink-muted tabular-nums">{c.years}</span>
-                      <span className="flex items-center gap-1.5 font-display text-xl font-[650] group-hover:underline group-hover:underline-offset-4">
+                      <span className="flex items-center gap-1.5 font-display text-lg font-[650] group-hover:underline group-hover:underline-offset-4 max-md:leading-tight md:text-xl">
                         {c.title}
                       </span>
                     </a>
@@ -381,10 +413,10 @@ export default function Story() {
         {/* ---------- the chapters ---------- */}
         <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
           {CHAPTERS.map((c) => (
-            <section key={c.id} id={c.id} aria-labelledby={`c-${c.id}`} className="scroll-mt-20 border-t border-line pt-14 md:scroll-mt-24 md:pt-20">
-              <Reveal className={`${storyGrid} mb-12 md:mb-16`}>
+            <section key={c.id} id={c.id} aria-labelledby={`c-${c.id}`} className="scroll-mt-20 border-t border-line pt-8 md:scroll-mt-24 md:pt-20">
+              <Reveal className={`${storyGrid} mb-6 md:mb-16`}>
                 <p className="col-span-2 text-sm font-medium text-clay-ink md:col-span-1 md:pt-3 md:text-right">{c.years}</p>
-                <div className="col-span-2 mt-3 md:col-span-1 md:col-start-3 md:mt-0">
+                <div className="col-span-2 mt-2 md:col-span-1 md:col-start-3 md:mt-0">
                   <h2
                     id={`c-${c.id}`}
                     className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
@@ -392,7 +424,7 @@ export default function Story() {
                   >
                     {c.title}
                   </h2>
-                  <p className="mt-4 max-w-[52ch] text-lg text-ink-muted">{c.dek}</p>
+                  <p className="mt-2 max-w-[52ch] text-ink-muted md:mt-4 md:text-lg">{c.dek}</p>
                 </div>
               </Reveal>
               <ol>
@@ -405,9 +437,9 @@ export default function Story() {
         </div>
 
         {/* ---------- where you already use it ---------- */}
-        <section aria-labelledby="everyday-uses" className="bg-ink py-16 text-paper md:py-28">
+        <section aria-labelledby="everyday-uses" className="bg-ink py-10 text-paper md:py-28">
           <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
-            <Reveal className="mb-12 grid gap-4 md:grid-cols-12">
+            <Reveal className="mb-8 grid gap-4 md:mb-12 md:grid-cols-12">
               <p className="text-sm font-medium text-paper/70 md:col-span-3 md:pt-3">Today</p>
               <div className="space-y-4 md:col-span-9">
                 <h2
@@ -420,16 +452,16 @@ export default function Story() {
                 <p className="max-w-[52ch] text-lg text-paper/70">None of this stayed in the history books. You use it every day.</p>
               </div>
             </Reveal>
-            <ul className="grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-[24px] bg-paper/15 lg:grid-cols-4">
               {EVERYDAY.map((e) => (
                 <li key={e.name} className="bg-ink">
-                  <a href={topicHref(e.topic)} className="group flex h-full min-h-40 flex-col gap-3 p-6 transition-colors hover:bg-paper/5">
-                    <span className="flex items-center justify-between gap-3 font-display text-2xl font-[650]">
+                  <a href={topicHref(e.topic)} className="group flex h-full flex-col gap-2 p-4 transition-colors hover:bg-paper/5 sm:min-h-40 sm:gap-3 sm:p-6">
+                    <span className="flex items-center justify-between gap-2 font-display text-xl font-[650] sm:gap-3 sm:text-2xl">
                       {e.name}
-                      <ArrowUpRight className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
+                      <ArrowUpRight className="size-4 shrink-0 text-paper/40 sm:size-5 transition-colors group-hover:text-clay" />
                     </span>
-                    <span className="text-paper/70">{e.line}</span>
-                    <span className="mt-auto text-sm text-paper/70">Topic {topicOf(e.topic).n}</span>
+                    <span className="text-sm leading-snug text-paper/70 sm:text-base sm:leading-normal">{e.line}</span>
+                    <span className="mt-auto text-xs text-paper/70 sm:text-sm">Topic {topicOf(e.topic).n}</span>
                   </a>
                 </li>
               ))}
@@ -438,7 +470,7 @@ export default function Story() {
         </section>
 
         {/* ---------- close ---------- */}
-        <section className="mx-auto w-full max-w-[1200px] px-4 py-20 md:px-6 md:py-28">
+        <section className="mx-auto w-full max-w-[1200px] px-4 py-10 md:px-6 md:py-28">
           <Reveal className="flex flex-col items-center text-center">
             <h2
               className="max-w-[16ch] font-display text-[clamp(2.4rem,1.4rem+4vw,4.8rem)] font-[680] leading-[0.95] tracking-[-0.02em]"
@@ -446,10 +478,10 @@ export default function Story() {
             >
               Every idea here is a topic.
             </h2>
-            <p className="mt-5 max-w-[44ch] text-lg text-ink-muted">Read it in a sentence, drag it in a lab, then drill it with fresh numbers.</p>
+            <p className="mt-4 max-w-[44ch] text-lg text-ink-muted md:mt-5">Read it in a sentence, drag it in a lab, then drill it with fresh numbers.</p>
             <a
               href={studyHref("#learn/topics/data")}
-              className="mt-9 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-7 font-medium text-paper transition-colors hover:bg-ink/85"
+              className="mt-7 inline-flex h-12 items-center md:mt-9 gap-2 rounded-full bg-ink px-7 font-medium text-paper transition-colors hover:bg-ink/85"
             >
               Start with topic 1 <ArrowRight className="size-4" />
             </a>
@@ -457,8 +489,8 @@ export default function Story() {
         </section>
 
         {/* ---------- sources ---------- */}
-        <section aria-labelledby="story-sources" className="mx-auto w-full max-w-[1200px] px-4 pb-20 md:px-6">
-          <div className="grid gap-4 border-t border-line pt-8 md:grid-cols-12 md:pt-10">
+        <section aria-labelledby="story-sources" className="mx-auto w-full max-w-[1200px] px-4 pb-14 md:px-6 md:pb-20">
+          <div className="grid gap-3 border-t border-line pt-6 md:grid-cols-12 md:gap-4 md:pt-10">
             <div className="md:col-span-3">
               <h2 id="story-sources" className="font-display text-2xl font-[650]">
                 Sources
@@ -468,19 +500,26 @@ export default function Story() {
               <p className="max-w-[62ch] text-ink-muted">
                 Every date and number above was checked against these. Where accounts disagree, the story leaves the detail out.
               </p>
-              <ul className="mt-6 divide-y divide-line border-y border-line">
-                {SOURCES.map((src) => (
-                  <li key={src.url} className="grid gap-1 py-3 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-4">
-                    <span className="font-mono text-sm text-ink-muted tabular sm:pt-0.5">{src.story}</span>
-                    <span className="min-w-0">
-                      <a href={src.url} target="_blank" rel="noreferrer" className="font-medium underline-offset-4 hover:underline">
-                        {src.title}
-                      </a>
-                      <span className="mt-0.5 block break-all font-mono text-xs text-ink-muted">{src.url.replace(/^https?:\/\//, "")}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <details className="group/src mt-5">
+                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-line px-4 text-[0.95rem] font-medium transition-colors hover:bg-sand [&::-webkit-details-marker]:hidden">
+                  <span className="group-open/src:hidden">Show all {SOURCES.length} sources</span>
+                  <span className="hidden group-open/src:inline">Hide the sources</span>
+                  <ChevronDown aria-hidden className="size-4 transition-transform duration-200 group-open/src:rotate-180 motion-reduce:transition-none" />
+                </summary>
+                <ul className="mt-5 divide-y divide-line border-y border-line">
+                  {SOURCES.map((src) => (
+                    <li key={src.url} className="grid gap-1 py-3 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-4">
+                      <span className="font-mono text-sm text-ink-muted tabular sm:pt-0.5">{src.story}</span>
+                      <span className="min-w-0">
+                        <a href={src.url} target="_blank" rel="noreferrer" className="font-medium underline-offset-4 hover:underline">
+                          {src.title}
+                        </a>
+                        <span className="mt-0.5 block break-all font-mono text-xs text-ink-muted">{src.url.replace(/^https?:\/\//, "")}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </div>
           </div>
         </section>

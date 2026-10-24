@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "cn";
-import { capacity, fewestStaff, overload, poissonPmf, poissonQuantile, readNumber } from "@/lib/decide/math";
+import { capacity, fewestStaff, overload, poissonPmf, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
 import { HowItWorks, NumField, Presets, ResultBar, Slider, chance, useToolXp } from "@/components/decide/fields";
 import { ChartList, useScrub } from "@/components/decide/scrub";
@@ -74,14 +74,12 @@ export function Staffing() {
   const rows = ok ? ROWS.map((s) => ({ s, cap: capacity(s, per), busy: lam / (s * per), over: overload(lam, per, s) })) : [];
   const shown = Number.isFinite(best) ? best : NaN;
   const cap = Number.isFinite(shown) ? capacity(shown, per) : NaN;
-  const q10 = ok ? poissonQuantile(0.1, lam) : NaN;
-  const q90 = ok ? poissonQuantile(0.9, lam) : NaN;
 
   let read = "Fix the numbers to see how many you need.";
   if (ok) {
     if (Number.isFinite(best)) {
       const busy = lam / (best * per);
-      read = `With ${best} ${best === 1 ? "person" : words.staff}, the team can serve ${k(cap)} ${words.who} an hour, and ${chance(overload(lam, per, best), 1)} of hours bring more than that, under your ${target}%. Each one is busy about ${Math.round(busy * 100)}% of the time. 8 hours in 10 bring between ${k(q10)} and ${k(q90)} ${words.who}.`;
+      read = `With ${best} ${best === 1 ? "person" : words.staff}, the team can serve ${k(cap)} ${words.who} an hour, and ${chance(overload(lam, per, best), 1)} of hours bring more than that, under your ${target}%. Each one is busy about ${Math.round(busy * 100)}% of the time.`;
       if (best > 6) read += " That is more than the table shows.";
       if (busy > 0.85) read += " That is very busy: even in hours that are not over, arrivals bunch up and a line forms.";
     } else {

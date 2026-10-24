@@ -94,7 +94,7 @@ export function AbTest() {
   else if (none || all) read = none ? "Nobody converted in either version, so there is nothing to compare yet." : "Everyone converted in both versions, so there is nothing to compare.";
   else if (t) {
     if (sig) {
-      read = `${t.diff > 0 ? "B wins" : "B is worse"}, and luck alone is an unlikely reason. If the change did nothing, a gap this big would show up only ${chance(t.p, 1)} of the time. The real difference is probably between ${pts(t.lo)} and ${pts(t.hi)}.`;
+      read = `${t.diff > 0 ? "B wins" : "B is worse"}. Luck alone would make a gap this big only ${chance(t.p, 1)} of the time. The real difference is probably ${pts(t.lo)} to ${pts(t.hi)}.`;
     } else {
       read = `Too close to call. If the change did nothing, a gap this big would still show up ${chance(t.p, 0)} of the time. The real difference could be anywhere from ${pts(t.lo)} to ${pts(t.hi)}.`;
       if (Number.isFinite(need)) read += ` To tell a ${Number.isFinite(t.lift) ? `${(Math.abs(t.lift) * 100).toFixed(1)}% ` : ""}${t.diff < 0 ? "drop" : "lift"} from luck, plan on about ${k(need)} per version.`;

@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { cn } from "cn";
 import { symHtml } from "@/lib/study/symbols";
 
@@ -79,5 +80,59 @@ export function PageHead({ title, children, as: Tag = "h1" }: { title: string; c
       <Tag className={h1}>{title}</Tag>
       {children}
     </div>
+  );
+}
+
+/**
+ * Progressive disclosure: anything that is not the page's one job starts folded behind one row with a one-line teaser.
+ * A native <details>, so it works before hydration and the browser's find-in-page opens it. The heading sits in the
+ * summary, so the outline still reads in order. Pass `open` and `onToggle` to control it (a search that should open it).
+ */
+export function Fold({
+  title,
+  teaser,
+  children,
+  id,
+  open,
+  onToggle,
+  level = "h2",
+  className,
+  bodyClassName,
+  flat,
+}: {
+  title: React.ReactNode;
+  teaser?: React.ReactNode;
+  children: React.ReactNode;
+  id?: string;
+  open?: boolean;
+  onToggle?: (open: boolean) => void;
+  level?: "h2" | "h3";
+  className?: string;
+  bodyClassName?: string;
+  /** A row in a divided list instead of a box: for accordions of many sections. */
+  flat?: boolean;
+}) {
+  const H = level;
+  return (
+    <details
+      id={id}
+      open={open}
+      onToggle={onToggle ? (e) => onToggle(e.currentTarget.open) : undefined}
+      className={cn("group scroll-mt-24", flat ? "border-b border-line" : "rounded-[18px] border border-line", className)}
+    >
+      <summary
+        className={cn(
+          "flex cursor-pointer list-none items-center justify-between gap-4 transition-colors [&::-webkit-details-marker]:hidden",
+          flat ? "min-h-12 py-2.5 hover:text-clay-ink" : "min-h-14 rounded-[18px] px-4 py-3 hover:bg-sand md:px-5",
+        )}
+      >
+        <span className="grid min-w-0 gap-0.5">
+          <H className="font-display text-[1.15rem] font-[650] leading-snug tracking-[-0.015em]">{title}</H>
+          {teaser && <span className="text-sm text-ink-muted">{teaser}</span>}
+        </span>
+        <ChevronDown aria-hidden className="size-5 flex-none text-ink-muted transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <div className={cn(flat ? "pb-5 pt-1" : "px-4 pb-5 pt-1 md:px-5", bodyClassName)}>{children}</div>
+    </details>
   );
 }

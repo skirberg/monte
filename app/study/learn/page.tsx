@@ -14,7 +14,7 @@ export default function LearnPage() {
     <div className="grid gap-6">
       <PageHead title="Topics">
         <p className={`${lead} max-w-[62ch] text-ink-muted`}>
-          {TOPICS.length} topics, each building on the one before. Each one is a plain sentence, a real example, something to drag, and questions to check yourself.
+          {TOPICS.length} topics, each building on the one before.
         </p>
       </PageHead>
       <TopicIndex />
