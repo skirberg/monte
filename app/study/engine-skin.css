@@ -344,7 +344,7 @@ html:has(.engine) { scroll-padding-top: 72px; }
 .engine .tricks details[open] summary svg { transform: rotate(180deg); }
 .engine .tricks .trick-body { display: grid; gap: 8px; justify-items: start; padding-bottom: 18px; }
 
-/* Phones: all thirteen topics start selected, so the start buttons come right after the title
+/* Phones: all fourteen topics start selected, so the start buttons come right after the title
    instead of below a full screen of topic chips. Chips stay below for anyone narrowing the mix. */
 @media (max-width: 47.99em) {
   .engine #drill-setup > :first-child { order: -2; }
@@ -364,3 +364,91 @@ html:has(.engine) { scroll-padding-top: 72px; }
   font-size: 13px;
   color: var(--ink-muted);
 }
+
+/* ---------- Terms: a scannable glossary, term on the left, meaning and example on the right. */
+.engine .terms-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.engine .terms-head a { display: inline-flex; align-items: center; min-height: 32px; color: var(--clay-ink); }
+.engine .terms { margin: 0; }
+.engine .terms > div { display: grid; gap: 4px; padding-block: 14px; }
+.engine .terms dt { font-weight: 600; }
+.engine .terms dd { margin: 0; display: grid; gap: 2px; max-width: 62ch; }
+.engine .terms .tm-ex { font-size: 14px; color: var(--ink-muted); }
+@media (min-width: 48em) {
+  .engine .terms > div { grid-template-columns: minmax(10rem, 15rem) 1fr; gap: 24px; }
+}
+
+/* ---------- Flashcards */
+.engine .cards { max-width: 44rem; margin-inline: auto; padding-block: 8px 32px; }
+.engine .cards .page-head h2 { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); font-variation-settings: "wdth" 88; line-height: 1.02; }
+.engine .cards-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.engine .cards-meter { display: grid; gap: 8px; }
+.engine .cards-meter .track { height: 8px; }
+.engine .fcard {
+  display: grid; align-content: center; justify-items: center; gap: 14px;
+  width: 100%; min-height: clamp(15rem, 40vh, 20rem); padding: 32px 24px;
+  border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--paper);
+  box-shadow: 0 1px 0 var(--line), 0 18px 40px -28px color-mix(in oklch, var(--ink) 40%, transparent);
+  color: var(--ink); font: inherit; text-align: center; cursor: pointer;
+  transition: transform 220ms cubic-bezier(.2, .7, .2, 1), background-color 220ms;
+}
+.engine .fcard:hover { border-color: var(--line-strong); }
+.engine .fcard:active { transform: scale(0.99); }
+.engine .fcard.flipped { background: var(--sand); animation: fc-flip 260ms cubic-bezier(.2, .7, .2, 1); }
+@keyframes fc-flip { from { transform: perspective(900px) rotateX(10deg); opacity: .6; } to { transform: none; opacity: 1; } }
+.engine .fc-kick { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--clay-ink); }
+.engine .fc-front { font-family: var(--font-head); font-weight: 650; font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; text-wrap: balance; }
+.engine .fc-back { display: grid; gap: 8px; max-width: 34rem; }
+.engine .fc-back[hidden] { display: none; }
+.engine .fc-main { font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem); line-height: 1.45; }
+.engine .fc-sub { font-size: 14px; color: var(--ink-muted); }
+.engine .fc-tap { font-size: 13px; color: var(--ink-muted); }
+.engine .fc-actions .btn { flex: 1 1 8rem; }
+@media (prefers-reduced-motion: reduce) { .engine .fcard, .engine .fcard.flipped { transition: none; animation: none; } }
+
+/* Two selects side by side inside a lab. */
+.engine .lab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Tab bars: never squeeze labels into each other. Wide screens give the Learn tabs their own
+   width and let search fill the rest; narrow screens scroll the tabs sideways inside the pill. */
+.engine .seg { overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.engine .seg::-webkit-scrollbar { display: none; }
+.engine .seg button { flex: none; white-space: nowrap; }
+@media (min-width: 64em) {
+  .engine .learn-bar { display: flex; flex-wrap: wrap; }
+  .engine .learn-bar .search { flex: 1 1 18rem; max-width: var(--width-reading); margin-left: auto; }
+}
+
+/* Flashcards and labs: grid tracks may shrink below their content (selects otherwise force overflow). */
+.engine .cards, .engine .cards > * { min-width: 0; }
+.engine .cards-filters, .engine .lab-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.engine .cards-filters select, .engine .lab-row select { width: 100%; }
+
+/* ---------- Readability pass (design review, Oct 23) ---------- */
+/* Formula sheet and topic formulas: the term you scan for is the strongest text on the row,
+   the formula reads as plain bold text, and only the worked example stays quiet. */
+.engine .sheet-rows .t,
+.engine .formulas dt,
+.engine .code-rows .t { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0; color: var(--ink); }
+.engine .sheet-rows .val { font-family: var(--font-sans); font-variant-numeric: tabular-nums; background: none; padding: 0; font-weight: 600; }
+
+/* Check yourself: one line per question with a quiet reveal on the right. */
+.engine .qa li { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: 16px; }
+.engine .qa .q { margin: 0; }
+.engine .qa .ans { grid-column: 1 / -1; }
+.engine .qa .link-btn { min-height: 32px; font-size: 14px; white-space: nowrap; }
+
+/* Selected topic chips stay light, so the one ink button left on the page is the action. */
+.engine .chip[aria-pressed="true"] { background: var(--clay-tint); border-color: var(--ink); color: var(--ink); }
+
+/* Labs: label beside its control on wider screens, so the chart that teaches is in view. */
+@media (min-width: 48em) {
+  .engine .lab > .field { display: grid; grid-template-columns: 12rem minmax(0, 1fr); align-items: center; column-gap: 16px; }
+}
+
+/* Phones and tablets: the topic picker already says "Topic n of 14", so drop the repeat. */
+@media (max-width: 63.99em) { .engine #topic-article .eyebrow { display: none; } }
+
+/* Study home and page heads: headlines on fewer lines, leads at a readable measure. */
+.engine .hero h1 { max-width: 22ch; }
+.engine .hero .lead, .engine .page-head .lead { max-width: 62ch; }
+@media (max-width: 29.99em) { .engine .seg button { padding-inline: 11px; font-size: 15px; } }

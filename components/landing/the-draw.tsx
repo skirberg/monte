@@ -27,21 +27,21 @@ function status(s?: Stat) {
   return { label: `Best ${Math.round(s.best * 100)}%`, won: false };
 }
 
-/** The curriculum as a distribution: thirteen columns, this topic's column in clay. */
+/** The curriculum as a distribution: fourteen columns, this topic's column in clay. */
 function MiniPile({ n, className }: { n: number; className?: string }) {
   const pmf = (k: number) => {
     let c = 1;
-    for (let i = 1; i <= k; i++) c = (c * (12 - k + i)) / i;
-    return c / 4096;
+    for (let i = 1; i <= k; i++) c = (c * (TOPICS.length - 1 - k + i)) / i;
+    return c / 2 ** (TOPICS.length - 1);
   };
   return (
     <svg viewBox="0 0 130 64" className={className} aria-hidden>
-      {Array.from({ length: 13 }, (_, k) => {
-        const dots = Math.max(1, Math.round(pmf(k) * 26));
+      {Array.from({ length: TOPICS.length }, (_, k) => {
+        const dots = Math.max(1, Math.round(pmf(k) * 2 * TOPICS.length));
         return Array.from({ length: dots }, (_, d) => (
           <circle
             key={`${k}-${d}`}
-            cx={5 + k * 10}
+            cx={5 + (k * 120) / (TOPICS.length - 1)}
             cy={58 - d * 8}
             r={3.4}
             fill={k + 1 === n ? "var(--clay)" : "var(--line-strong)"}
@@ -135,7 +135,7 @@ export function TheDraw() {
                       <Check className="size-3.5" /> Won
                     </span>
                   ) : (
-                    <span className="hidden sm:inline">{st.label}</span>
+                    drill[x.id]?.asked ? <span className="hidden sm:inline">{st.label}</span> : null
                   )}
                   <ArrowRight className="size-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100" />
                 </span>
@@ -145,7 +145,7 @@ export function TheDraw() {
         })}
         <li className="flex items-center justify-between gap-3 py-4 pl-2 font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
           <span>Final: timed closed-book mock, 20 questions</span>
-          <span className="tabular">{won} of 13 won</span>
+          <span className="tabular">{won} of {TOPICS.length} won</span>
         </li>
       </ol>
 

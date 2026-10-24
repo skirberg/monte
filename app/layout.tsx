@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description:
-    "Thirteen topics of business statistics. Each one has a plain sentence, a real example, something to drag, and timed drills with fresh numbers until it sticks.",
+    "Fourteen topics of business statistics. Each one has a plain sentence, a real example, something to drag, and timed drills with fresh numbers until it sticks.",
   openGraph: {
     title: SITE_NAME,
     description: "Drop enough grains and the shape appears. Business statistics, one idea at a time.",

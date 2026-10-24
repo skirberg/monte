@@ -18,16 +18,14 @@ export default function PlayHub() {
       <SiteHeader mode="play" />
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 pt-8 outline-none md:px-6 md:pt-14">
         <header className="mb-10 grid gap-4 md:mb-14 md:grid-cols-12">
-          <p className="rise font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-4">
-            <span className="text-clay-ink">Play</span> / {GAMES.length} games
-          </p>
+          <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">{GAMES.length} games</p>
           <div className="space-y-4 md:col-span-9">
             <h1
               className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.6rem)] font-[680] leading-[0.92] tracking-[-0.02em]"
               style={{ fontVariationSettings: "'wdth' 78" }}
             >
               Every game hides
-              <span className="block text-ink-muted">a real idea.</span>
+              <span className="block">a real idea.</span>
             </h1>
           </div>
         </header>
@@ -56,9 +54,7 @@ export default function PlayHub() {
                         <GameArt slug={g.slug} />
                       </div>
                       <div className="flex flex-col gap-3 p-6">
-                        <p className="font-mono text-xs text-ink-muted tabular">
-                          {String(GAMES.indexOf(g) + 1).padStart(2, "0")} · {g.topicName}
-                        </p>
+                        <p className="text-sm text-ink-muted">{g.topicName}</p>
                         <h3 className="flex items-center justify-between gap-3 font-display text-2xl font-[650]" style={{ fontVariationSettings: "'wdth' 88" }}>
                           {g.name}
                           <ArrowRight className="size-5 shrink-0 text-ink-muted transition-transform group-hover:translate-x-1 group-hover:text-ink" />

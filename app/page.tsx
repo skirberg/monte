@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Printer } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookA, Layers, Printer, Timer } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GameArt } from "@/components/play/game-art";
@@ -15,12 +15,10 @@ const wrap = "mx-auto w-full max-w-[1200px] px-4 md:px-6";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-function SectionHead({ n, kicker, title, children }: { n: string; kicker: string; title: React.ReactNode; children?: React.ReactNode }) {
+function SectionHead({ kicker, title, children }: { n?: string; kicker: string; title: React.ReactNode; children?: React.ReactNode }) {
   return (
     <Reveal className="mb-10 grid gap-4 md:mb-14 md:grid-cols-12">
-      <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-3">
-        <span className="text-clay-ink">{n}</span> / {kicker}
-      </p>
+      <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-3">{kicker}</p>
       <div className="space-y-4 md:col-span-9">
         <h2
           className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
@@ -43,21 +41,21 @@ export default function Home() {
           name: SITE_NAME,
           url: `${SITE_URL}/`,
           inLanguage: "en",
-          description: "Business statistics, one idea at a time: thirteen topics with labs, timed drills, solvers that show the work, and games.",
+          description: "Business statistics, one idea at a time: fourteen topics with labs, timed drills, solvers that show the work, and games.",
         }}
       />
       <SiteHeader mode="landing" />
       <main id="main" tabIndex={-1} className="outline-none">
         {/* ---------- hero ---------- */}
-        <section className={`${wrap} grid gap-10 pb-14 pt-8 md:pb-20 md:pt-16 lg:grid-cols-12 lg:gap-8 lg:pb-28`}>
+        <section className={`${wrap} grid gap-10 pb-14 pt-8 md:pb-20 md:pt-16 lg:grid-cols-12 lg:gap-8 lg:pb-16`}>
           <div className="flex flex-col justify-center lg:col-span-6">
             <div className="rise">
               <h1
-                className="font-display text-[clamp(3.1rem,1.6rem+6vw,6.4rem)] font-[680] leading-[0.9] tracking-[-0.02em]"
+                className="font-display text-[clamp(3.1rem,1.6rem+5vw,5.4rem)] font-[680] leading-[0.9] tracking-[-0.02em]"
                 style={{ fontVariationSettings: "'wdth' 78" }}
               >
                 Drop enough grains.
-                <span className="block text-ink-muted">The shape appears.</span>
+                <span className="block">The shape appears.</span>
               </h1>
             </div>
             <div className="rise" style={{ animationDelay: "80ms" }}>
@@ -88,7 +86,7 @@ export default function Home() {
 
         {/* ---------- the draw ---------- */}
         <section id="draw" className={`${wrap} scroll-mt-24 py-16 md:py-28`}>
-          <SectionHead n="01" kicker="The draw" title={<>Thirteen matches.<br />Win each one.</>} />
+          <SectionHead n="01" kicker="The draw" title={<>Fourteen matches.<br />Win each one.</>} />
           <TheDraw />
         </section>
 
@@ -138,7 +136,7 @@ export default function Home() {
               ))}
             </Reveal>
 
-            <div className="mt-20 grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-20 grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-4">
               {TOOLS.map((t, i) => (
                 <Reveal key={t.id} delay={i * 0.05} className="bg-ink">
                   <a href={studyHref(`#tools/${t.id}`)} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
@@ -151,6 +149,24 @@ export default function Home() {
                 <a href={studyHref("#learn/formulas")} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
                   Formula sheet
                   <Printer className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
+                </a>
+              </Reveal>
+              <Reveal delay={0.25} className="bg-ink">
+                <a href={studyHref("#practice/cards")} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
+                  Flashcards
+                  <Layers className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
+                </a>
+              </Reveal>
+              <Reveal delay={0.3} className="bg-ink">
+                <a href={studyHref("#learn/terms")} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
+                  Terms
+                  <BookA className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
+                </a>
+              </Reveal>
+              <Reveal delay={0.35} className="bg-ink">
+                <a href={studyHref("#practice/drill/mock")} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
+                  Mock exam
+                  <Timer className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
                 </a>
               </Reveal>
             </div>

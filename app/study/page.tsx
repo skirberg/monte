@@ -12,7 +12,7 @@ import "./engine-skin.css";
 
 export const metadata: Metadata = {
   title: "Study",
-  description: "Learn, practice, solve. Thirteen topics, timed drills with fresh numbers, and solvers that show the work.",
+  description: "Learn, practice, solve. Fourteen topics, timed drills with fresh numbers, and solvers that show the work.",
   alternates: { canonical: "/study/" },
 };
 
@@ -23,7 +23,7 @@ export default function StudyPage() {
         data={{
           "@type": "LearningResource",
           name: `${SITE_NAME}: study`,
-          description: "Thirteen business statistics topics with labs, timed drills with fresh numbers, a mock exam and solvers that show the work.",
+          description: "Fourteen business statistics topics with labs, timed drills with fresh numbers, a mock exam and solvers that show the work.",
           url: abs("/study/"),
           learningResourceType: "Interactive lessons and practice questions",
           teaches: TOPICS.map((t) => t.name),

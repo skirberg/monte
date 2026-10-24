@@ -26,6 +26,7 @@ export const SOLVERS = [
   { id: "normal", name: "Normal" },
   { id: "samp", name: "Sampling" },
   { id: "ci", name: "Intervals" },
+  { id: "test", name: "Tests" },
   { id: "bday", name: "Birthday" },
   { id: "data", name: "Describe data" },
 ] as const;

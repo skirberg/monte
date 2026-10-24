@@ -89,6 +89,9 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             <CommandItem value="quick math sprint" onSelect={() => run(() => goStudy("#practice/math"))}>
               <Timer /> Quick math sprint
             </CommandItem>
+            <CommandItem value="flashcards cards memorize terms formulas review" onSelect={() => run(() => goStudy("#practice/cards"))}>
+              <BookOpen /> Flashcards
+            </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Play">
@@ -113,6 +116,9 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             </CommandItem>
             <CommandItem value="frameworks chooser which formula" onSelect={() => run(() => goStudy("#learn/frameworks"))}>
               <Compass /> Frameworks: which formula do I need
+            </CommandItem>
+            <CommandItem value="terms glossary definitions vocabulary words" onSelect={() => run(() => goStudy("#learn/terms"))}>
+              <BookOpen /> Terms: every key word in plain English
             </CommandItem>
             <CommandItem value="how it's built colophon stack data math sources" onSelect={() => run(() => go("/built/"))}>
               <BookOpen /> How it&rsquo;s built
