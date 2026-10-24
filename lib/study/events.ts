@@ -8,4 +8,3 @@ const send = (type: string, detail: unknown) => {
 };
 export const awardXp = (xp: number, reason: string) => send("monte:xp", { xp, reason });
 export const awardBadge = (id: string) => send("monte:badge", id);
-export const countUp = (name: string) => send("monte:count", name);

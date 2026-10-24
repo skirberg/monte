@@ -36,7 +36,7 @@ export function TopicIndex() {
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((t) => {
           const d = statsFor(p, t.id), won = isWon(p, t.id);
-          const status = won ? "Won" : d.asked ? `Best ${Math.round(d.best * 100)}%` : p.read?.[t.id] ? "Read" : "";
+          const status = won ? "Mastered" : d.asked ? `Best ${Math.round(d.best * 100)}%` : p.read?.[t.id] ? "Read" : "";
           return (
             <li key={t.id}>
               <Link href={study.topic(t.id)} className="grid h-full content-start gap-2 rounded-[18px] border border-line p-5 transition-colors hover:border-ink hover:bg-sand">

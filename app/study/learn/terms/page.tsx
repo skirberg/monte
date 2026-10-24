@@ -3,7 +3,7 @@ import { TermsList } from "@/components/study/terms-list";
 
 export const metadata: Metadata = {
   title: "Terms",
-  description: "Every key word in business statistics in plain English, with a quick example.",
+  description: "Every key word in statistics in plain English, with a quick example.",
   alternates: { canonical: "/study/learn/terms/" },
 };
 

@@ -1,12 +1,14 @@
 # Monte: design source of truth
 
-A study site for business statistics students, with games. It began as a class study app called Sigma Sandbox; /study is that app, rebuilt as typed React pages.
+Statistics for everyone, one idea at a time: learn it, practice it, solve with it, decide with it, play with it. Monte is not for one class or one course. It began as a class study app called Sigma Sandbox; /study is that app, rebuilt as typed React pages. Public copy never frames the site around an exam, a class or a school: say "mock test", not "final" or "closed-book exam".
 
 ## Concept
 
 **Statistics is a sandbox: drop enough grains and the shape appears.**
 
 Proof: every data point is a grain of sand. Pour enough of them through chance and they pile into a bell curve (a Galton board, the Central Limit Theorem). The tennis thread comes from the study app: fourteen topics are fourteen matches in "the draw", won by scoring 80% on a fresh timed drill. Sand plus tennis means clay, the court surface made of crushed brick.
+
+The site's public pages (home, menus, footer) say **topics** and **mastered**, not matches and won: a newcomer should not need the tennis to follow along. Clay, the court baseline and the grains stay as the look.
 
 ## Name
 
@@ -21,9 +23,30 @@ Register: a coach at practice. Short, plain, direct, a little dry.
 - Jokes: one dry line per page at most, never in feedback on a wrong answer
 
 Three lines in the voice:
-- Hero: "Learn business statistics one idea at a time."
+- Hero: "Drop enough grains. The shape appears." Under it: "Statistics, one idea at a time."
 - Error: "Not quite. Here is the work."
-- Confirmation: "Match won. 8 of 10, under the clock."
+- Confirmation (study app drills, which keep the tennis): "Match won. 8 of 10, under the clock." On public pages the same moment reads "Mastered."
+
+## Copy rules
+
+- Plain English. One idea per sentence. Say how long and where a button goes ("Start the first idea, 5 min").
+- Dashes (owner's rule, October 2026): **en dashes are fine where they are the right typography**: number ranges (5–10), scores (3–1), and an empty value in a tile or table (–). **Avoid em dashes**; use a period, a colon or a comma instead.
+- Never mention AI, in copy, metadata or alt text.
+- For everyone: no exam, class or school framing in public copy (see the first paragraph).
+
+## Navigation
+
+One vocabulary, in this order, everywhere: **Learn · Practice · Solve · Decide · Play.** The constants live in `lib/site-data.ts` (`SITE_NAV`, `navKeyFor`, `DECIDE_TOOLS`).
+
+| Place | What it shows |
+|---|---|
+| Site header (every page) | The five, with the current one underlined from the pathname. Decide is current on `/decide/` and every `/decide/<tool>/`. Play is hidden in Focus. |
+| Phone tab bar | Today, Learn, Practice, Solve, More. Today is the study landing (`/study/`) and appears only here and in ⌘K. |
+| Phone More sheet | Learn extras (Why statistics, Formula sheet, the Excel, R, Python and SQL guides, Free sources), Decide (all decisions, Is this test result real?), Play (Fun only), the Fun or Focus switch, How it's built. |
+| Footer | Five columns with the same headings. The Play column hides whole in Focus. How it's built sits by the wordmark; the only credit is the GitHub icon. |
+| ⌘K menu | Groups named Learn, Practice, Solve, Decide, Play, then Go to (Today, the five, How it's built, mode and theme). |
+
+**Tools** (the Excel, R, Python, Power Query and SQL guides) and **Sources** live under Learn: they keep their URLs (`/study/tools/…`, `/study/sources/`), and the header and phone bar mark Learn as current on them. Home page section kickers follow the same words (Learn, Solve, Decide, Play).
 
 ## Type (Google Fonts, SIL Open Font License, free for web, app and print)
 
@@ -67,12 +90,13 @@ The closing animation on the home page draws the three cups in turn, drops the g
 
 - 150 ms UI feedback, 240 ms enter, ease `cubic-bezier(.2,.8,.2,1)` ("settle")
 - Grains fall with gravity and settle; the line draws once
-- Hero board `HeroBoard` (SVG board plus one canvas for the grains): a 360-grain pour in under 5 s on load, then tap to drop, hold to pour, Drop 100 and Clear; the curve scales with the grains landed
+- Hero board `HeroBoard` (SVG board plus one canvas for the grains): a 360-grain pour in under 5 s on load, then tap to drop, hold to pour, Drop 100 and Clear; the curve scales with the grains landed. The board holds 2,000 grains: Drop 100 drops only the room left, and a full board says "Board full, clear to pour again." instead of clearing itself
+- Press feedback: buttons and pill links scale to 0.97 while pressed, 120 ms ease-out (`app/globals.css`); no tap highlight, no double-tap zoom delay, no long-press text selection on buttons, and sheets and dialogs keep their scroll to themselves
 - Everything respects prefers-reduced-motion (the film shows its final frame still)
 
 ## Modes
 
-One site, two behaviors, chosen in the header (`lib/mode.ts`, stored per browser, Fun by default).
+One site, two behaviors (`lib/mode.ts`, stored per browser, Fun by default). The switch is a compact icon button in the header on wide screens (sparkles for Fun, a target for Focus; its label says what a press does), two labelled choices in the phone More sheet, and an item in ⌘K. It is not a segmented control in prime header space.
 
 - **Fun**: Play appears in the menus and on the landing page; right answers in drills get a grain burst and a line call ("Ace.", "Point."); a won match gets "Game, set, match."; the hero board pours on load.
 - **Focus**: Play is hidden from menus, no celebrations, the hero board shows the finished pile. The page is only the work.
@@ -80,4 +104,4 @@ One site, two behaviors, chosen in the header (`lib/mode.ts`, stored per browser
 
 ## Play
 
-Four games (`app/play/`), each with the game, a "What's going on" block with the real formula, a link to its topic and the next game. Every number on these pages is computed live or verified: Monty Hall rates come from simulation, the coin verdict from 20,000 simulated sequences (about 3% false alarms on real coins), the tennis model matches Monte Carlo and the classic hold(0.6) = 0.736.
+Ten games (`app/play/`, listed in `GAMES` in `lib/site-data.ts`), each with the game, a "What's going on" block with the real formula, a link to its topic and the next game. Every number on these pages is computed live or verified: Monty Hall rates come from simulation, the coin verdict from 20,000 simulated sequences (about 3% false alarms on real coins), the tennis model matches Monte Carlo and the classic hold(0.6) = 0.736.

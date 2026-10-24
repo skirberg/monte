@@ -192,7 +192,7 @@ export function Frameworks() {
         </ul>
       </section>
       <section aria-labelledby="fw3" className="grid gap-3">
-        <h2 id="fw3" className={blockTitle}>3. Four S for any exam problem</h2>
+        <h2 id="fw3" className={blockTitle}>3. Four S for any word problem</h2>
         {numbered(fourS)}
       </section>
       <section aria-labelledby="fw4" className="grid gap-3">

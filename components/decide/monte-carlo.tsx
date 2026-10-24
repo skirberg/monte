@@ -5,7 +5,9 @@ import { Plus, X } from "lucide-react";
 import { cn } from "cn";
 import { bounds, inFrames, pctile, rangeOk, readNumber, scoreDraw, triangular, type Range } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Slider, TextField, Toggle, chance, dollars, useToolXp } from "@/components/decide/fields";
+import { placeLabel, textWidth } from "@/lib/decide/chart";
+import { HowItWorks, NumField, Presets, ResultBar, Slider, TextField, Toggle, chance, dollars, useToolXp } from "@/components/decide/fields";
+import { ChartList, useScrub } from "@/components/decide/scrub";
 
 const DRAWS = 10000;
 const PER_FRAME = 1000;
@@ -214,12 +216,19 @@ export function MonteCarlo() {
     : null;
   const leader = stats ? stats.reduce((b, s, j) => (s.top > stats[b].top ? j : b), 0) : 0;
   const missWord = higher ? `below ${fmt(lineAt)}` : `above ${fmt(lineAt)}`;
+  // The one-line answer; null while drawing, so the bar keeps the last answer instead of flashing.
+  const bar: [string | null, string | null] = !ready
+    ? ["", "Fix the numbers in red and the futures run again."]
+    : stats
+      ? [chance(stats[leader].top, 0), `of futures: ${stats[leader].name} comes out on top. ${chance(stats[leader].miss, 0)} land ${missWord}.`]
+      : [null, null];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         {/* ---------- inputs ---------- */}
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Examples" items={PRESETS.map((p) => p.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them, or type your own choice.</p>
@@ -254,14 +263,12 @@ export function MonteCarlo() {
                       ["best", "Best"],
                     ] as const
                   ).map(([key, l]) => (
-                    <NumField key={key} id={`mc-${key}-${i}`} label={money ? `${l}, $` : l} value={o[key]} onChange={(v) => edit(i, key, v)} invalid={bad[i]} describedBy={bad[i] ? `mc-err-${i}` : undefined} size="md" className="[&_span]:px-2.5" />
+                    <NumField key={key} id={`mc-${key}-${i}`} label={money ? `${l}, $` : l} value={o[key]} onChange={(v) => edit(i, key, v)} invalid={bad[i]} describedBy={`mc-err-${i}`} size="md" className="[&_span]:px-2.5" />
                   ))}
                 </div>
-                {bad[i] && (
-                  <p id={`mc-err-${i}`} role="alert" className="text-sm text-[var(--danger)]">
-                    Use three numbers, with likely between worst and best.
-                  </p>
-                )}
+                <p id={`mc-err-${i}`} className={cn("text-sm", bad[i] ? "text-[var(--danger)]" : "sr-only")}>
+                  {bad[i] ? "Use three numbers, with likely between worst and best." : "Worst, likely and best: likely sits between the other two."}
+                </p>
               </li>
             ))}
           </ol>
@@ -336,7 +343,7 @@ export function MonteCarlo() {
             </ul>
           )}
 
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {stats ? summary(stats, leader, higher, fmt, missWord, measure) : ready ? "Drawing futures…" : "Fix the numbers in red and the futures run again."}
           </p>
         </div>
@@ -429,7 +436,7 @@ function summary(stats: { name: string; top: number; p10: number; p90: number; m
   return s;
 }
 
-/** Overlapping piles on one shared scale, with each option's 80% range drawn underneath and your line across all of it. */
+/** Overlapping piles on one shared scale, with each option's 80% range drawn underneath and your line across all of it. Hover or tap a pile to read it. */
 function PileChart({ res, line, fmt, stats }: { res: Result; line: number; fmt: (v: number) => string; stats: { name: string; p10: number; p50: number; p90: number }[] | null }) {
   // A narrower drawing on phones keeps the labels readable instead of scaling them down.
   const narrow = useMediaQuery("(max-width: 639px)");
@@ -440,7 +447,7 @@ function PileChart({ res, line, fmt, stats }: { res: Result; line: number; fmt: 
   const plotH = 170;
   const rowH = 34;
   const rowsTop = top + plotH + 30;
-  const H = rowsTop + res.names.length * rowH + 30;
+  const H = rowsTop + res.names.length * rowH + 8;
   const X = (v: number) => L + ((v - res.lo) / (res.hi - res.lo)) * (W - L - R);
   const bw = (W - L - R) / BINS;
   // Scale to where the tallest pile will end, so the piles grow up into a fixed frame while the draws land.
@@ -452,53 +459,88 @@ function PileChart({ res, line, fmt, stats }: { res: Result; line: number; fmt: 
   const label = stats
     ? `Chart of ${DRAWS.toLocaleString()} simulated outcomes per option. ` + stats.map((s) => `${s.name}: 8 in 10 between ${fmt(s.p10)} and ${fmt(s.p90)}, middle ${fmt(s.p50)}.`).join(" ") + ` Your line at ${fmt(line)}.`
     : "Chart of simulated outcomes, still drawing.";
+  const scrub = useScrub(BINS, W, (x) => Math.floor((x - L) / bw));
+  const at = stats ? scrub.at : null;
+  const binW = (res.hi - res.lo) / BINS;
+  const binName = (b: number) => `${fmt(res.lo + b * binW)} to ${fmt(res.lo + (b + 1) * binW)}`;
+  const share = (j: number, b: number) => chance(res.hist[j][b] / DRAWS, 1);
+  const pillW = 76;
+  const pillX = Math.min(W - R - pillW, Math.max(L, lx - pillW / 2));
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={label}>
-      <line x1={L} x2={W - R} y1={top + plotH} y2={top + plotH} stroke="var(--line-strong)" />
-      {ticks.map((t, i) => (
-        <text key={i} x={X(t)} y={top + plotH + 18} textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"} className="font-mono" fontSize="12" fill="var(--ink-muted)">
-          {fmt(t)}
+    <figure>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full select-none" role="img" aria-label={label} {...(stats ? scrub.bind : {})}>
+        <line x1={L} x2={W - R} y1={top + plotH} y2={top + plotH} stroke="var(--line-strong)" />
+        {ticks.map((t, i) => (
+          <text key={i} x={X(t)} y={top + plotH + 18} textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"} className="font-mono" fontSize="12" fill="var(--ink-muted)">
+            {fmt(t)}
+          </text>
+        ))}
+        {at !== null && <rect x={L + at * bw} y={top} width={bw} height={plotH} fill="var(--ink)" fillOpacity={0.08} pointerEvents="none" />}
+        {res.hist.map((h, j) => {
+          const s = SERIES[j];
+          let d = `M ${L} ${top + plotH}`;
+          h.forEach((c, b) => {
+            d += ` L ${L + b * bw} ${Y(c)} L ${L + (b + 1) * bw} ${Y(c)}`;
+          });
+          d += ` L ${W - R} ${top + plotH} Z`;
+          return <path key={j} d={d} fill={s.fill} fillOpacity={j === 0 ? 0.32 : 0.14} stroke={s.stroke} strokeWidth={2} strokeDasharray={s.dash} strokeLinejoin="round" />;
+        })}
+
+        {/* the 80% range for each option, on the same scale; each name sits beside its bar, clear of your line */}
+        {res.names.map((n, j) => {
+          const y = rowsTop + j * rowH + rowH / 2;
+          const st = stats?.[j];
+          const name = st?.name ?? n;
+          const spot = st
+            ? placeLabel({ x0: X(st.p10), x1: X(st.p90), lx, w: textWidth(name), min: L, max: W - R })
+            : { x: L, anchor: "start" as const, beside: false };
+          return (
+            <g key={j}>
+              <text x={spot.x} y={spot.beside ? y + 4 : y - 10} textAnchor={spot.anchor} fontSize="12" fill="var(--ink)" stroke="var(--sand)" strokeWidth={4} paintOrder="stroke">
+                {name}
+              </text>
+              {st && (
+                <>
+                  <line x1={X(st.p10)} x2={X(st.p90)} y1={y} y2={y} stroke={SERIES[j].stroke} strokeWidth={5} strokeLinecap="round" strokeDasharray={SERIES[j].dash ? "2 6" : undefined} />
+                  <circle cx={X(st.p50)} cy={y} r={5} fill="var(--paper)" stroke={SERIES[j].stroke} strokeWidth={2.5} />
+                </>
+              )}
+            </g>
+          );
+        })}
+
+        <line x1={lx} x2={lx} y1={top - 6} y2={rowsTop + res.names.length * rowH} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="4 4" pointerEvents="none" />
+        <rect x={pillX} y={0} width={pillW} height={18} rx={9} fill="var(--ink)" />
+        <text x={pillX + pillW / 2} y={13} textAnchor="middle" fontSize="11.5" fill="var(--paper)">
+          your line
         </text>
-      ))}
-      {res.hist.map((h, j) => {
-        const s = SERIES[j];
-        let d = `M ${L} ${top + plotH}`;
-        h.forEach((c, b) => {
-          d += ` L ${L + b * bw} ${Y(c)} L ${L + (b + 1) * bw} ${Y(c)}`;
-        });
-        d += ` L ${W - R} ${top + plotH} Z`;
-        return <path key={j} d={d} fill={s.fill} fillOpacity={j === 0 ? 0.32 : 0.14} stroke={s.stroke} strokeWidth={2} strokeDasharray={s.dash} strokeLinejoin="round" />;
-      })}
-
-      {/* the 80% range for each option, on the same scale */}
-      {res.names.map((n, j) => {
-        const y = rowsTop + j * rowH + rowH - 8;
-        const st = stats?.[j];
-        return (
-          <g key={j}>
-            <text x={st ? Math.min(W - R - 110, Math.max(L, X(st.p10))) : L} y={y - 10} className="font-mono" fontSize="12" fill="var(--ink-muted)" stroke="var(--sand)" strokeWidth={4} paintOrder="stroke">
-              {st?.name ?? n}
-            </text>
-            {st && (
-              <>
-                <line x1={X(st.p10)} x2={X(st.p90)} y1={y} y2={y} stroke={SERIES[j].stroke} strokeWidth={5} strokeLinecap="round" strokeDasharray={SERIES[j].dash ? "2 6" : undefined} />
-                <circle cx={X(st.p50)} cy={y} r={5} fill="var(--paper)" stroke={SERIES[j].stroke} strokeWidth={2.5} />
-              </>
-            )}
-          </g>
-        );
-      })}
-      <text x={L} y={H - 8} className="font-mono" fontSize="12" fill="var(--ink-muted)">
-        Bars: 8 in 10 futures · dot: the middle
-      </text>
-
-      <line x1={lx} x2={lx} y1={top - 6} y2={rowsTop + res.names.length * rowH} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="4 4" />
-      <rect x={Math.min(W - R - 92, Math.max(L, lx - 46))} y={0} width={92} height={18} rx={9} fill="var(--ink)" />
-      <text x={Math.min(W - R - 46, Math.max(L + 46, lx))} y={13} textAnchor="middle" className="font-mono" fontSize="11.5" fill="var(--paper)">
-        your line
-      </text>
-    </svg>
+        {stats && <rect x={L} y={top} width={W - L - R} height={plotH} fill="transparent" />}
+      </svg>
+      <figcaption className="mt-2 min-h-10 text-sm text-ink-muted">
+        {at !== null ? (
+          <span className="text-ink">
+            <span className="font-mono tabular">{binName(at)}</span>:{" "}
+            {res.names.map((_, j) => (
+              <React.Fragment key={j}>
+                {j > 0 && ", "}
+                {stats?.[j]?.name ?? res.names[j]} <span className="font-mono tabular">{share(j, at)}</span>
+              </React.Fragment>
+            ))}{" "}
+            of futures.
+          </span>
+        ) : (
+          <>Piles: where the futures land. Bars: 8 futures in 10. Dot: the middle. {stats ? "Hover or tap a pile to read it." : ""}</>
+        )}
+      </figcaption>
+      {stats && (
+        <ChartList
+          summary="Every pile, as a list"
+          caption={`Share of ${DRAWS.toLocaleString()} futures that land in each range, for each option`}
+          head={["Range", ...stats.map((s) => s.name)]}
+          rows={Array.from({ length: BINS }, (_, b) => ({ key: b, mark: b === at, cells: [binName(b), ...stats.map((_, j) => share(j, b))] }))}
+        />
+      )}
+    </figure>
   );
 }
-

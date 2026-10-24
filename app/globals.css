@@ -115,6 +115,22 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    /* Native feel: no grey flash on tap; the press state below does that job. */
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Taps fire at once (no double-tap zoom wait), and a long press never selects a button's label. */
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Scrolling inside a sheet or dialog never drags the page behind it, or pulls to refresh. */
+  [data-slot="sheet-content"],
+  [data-slot="dialog-content"],
+  [data-slot="command-list"],
+  [data-slot="dropdown-menu-content"] {
+    overscroll-behavior: contain;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -156,6 +172,26 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Press feedback: buttons and pill links settle in a touch when pressed, 120 ms ease-out.
+ * Unlayered on purpose: inside @layer base it would lose to the transition-colors utility most buttons carry.
+ * Uses the `scale` property, so it never fights translate or transform utilities, and keeps the color fades.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a.rounded-full {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, scale, translate, rotate, transform;
+    transition-timing-function: ease-out;
+    transition-duration: 120ms;
+  }
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active,
+  a.rounded-full:active {
+    scale: 0.97;
   }
 }
 

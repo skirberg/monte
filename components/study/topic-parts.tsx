@@ -10,14 +10,14 @@ import { awardXp } from "@/lib/study/events";
 import { Html, btn, linkBtn } from "@/components/study/ui";
 import { useHydrated, useStoredString } from "@/lib/hooks";
 
-/** Read it, practice it, win it: the three steps to own a topic. Checks fill in as you go. */
+/** Read it, practice it, master it: the three steps to own a topic. Checks fill in as you go. */
 export function TopicPath({ id }: { id: TopicId }) {
   const p = useStudyProgress();
   const d = statsFor(p, id);
   const steps = [
     { on: !!p.read?.[id], label: "Read it", sub: "Reach the end of the page" },
     { on: d.asked >= 4, label: "Practice it", sub: d.asked ? `Best ${Math.round(d.best * 100)}%` : "Answer a few questions" },
-    { on: isWon(p, id), label: "Win it", sub: "80% on a drill of 8 or more" },
+    { on: isWon(p, id), label: "Master it", sub: "80% on a drill of 8 or more" },
   ];
   return (
     <ol aria-label="Your progress on this topic" className="my-4 grid grid-cols-3 gap-2">

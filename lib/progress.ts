@@ -9,6 +9,8 @@
  *   and are never money.
  * - Badges for real milestones.
  *
+ * This is the only streak on the site: the study app, the games and /decide/ all move it by earning XP.
+ *
  * Anything (study pages via lib/study/events.ts, games, /decide/) can award XP by dispatching
  * `window.dispatchEvent(new CustomEvent("monte:xp", { detail: { xp, reason } }))`;
  * <ProgressBridge /> listens and calls addXp. Every change fires "monte:progress".
@@ -37,10 +39,10 @@ export type ProgressEvent = { gained?: number; reason?: string; levelUp?: number
 
 export const BADGES: Record<string, { name: string; how: string }> = {
   "first-drill": { name: "First drill", how: "Finish a drill." },
-  "topic-won": { name: "Match won", how: "Score 80% on a topic drill." },
-  "all-topics": { name: "Full draw", how: "Win every topic." },
-  "mock-pass": { name: "Exam ready", how: "Score 80% on a mock exam." },
-  "cards-50": { name: "Card shark", how: "Know 50 flashcards." },
+  "topic-won": { name: "Topic mastered", how: "Score 80% on an 8-question topic drill." },
+  "all-topics": { name: "Every topic", how: "Master all 14 topics." },
+  "mock-pass": { name: "Test ready", how: "Score 80% on a mock test." },
+  "cards-50": { name: "Card shark", how: "Master 50 flashcards." },
   "streak-7": { name: "Seven days", how: "Keep a 7-day streak." },
   "goal-hit": { name: "Daily goal", how: `Earn ${DAILY_GOAL} XP in a day.` },
   "calibrated": { name: "Well calibrated", how: "Finish 10 election calls with a Brier score under 0.2." },
@@ -61,8 +63,24 @@ export function localDay(t = Date.now()) {
   const d = new Date(t);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
+/** The local day `by` calendar days from `t` (−1 is yesterday). Calendar arithmetic, so a 23- or
+ *  25-hour day at a clock change never skips or repeats a date. */
+export function shiftDay(t: number, by: number) {
+  const d = new Date(t);
+  d.setDate(d.getDate() + by);
+  return localDay(d.getTime());
+}
 const today = () => localDay();
+/** Whole days from a to b. Date-only strings parse as UTC midnight, so clock changes can't bend it. */
 const dayDiff = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+
+/** The streak as it stands on `day`: still alive if the last learning day was today or yesterday,
+ *  or the missed days in between are covered by freezes. Otherwise it shows 0 until the next action. */
+export function liveStreak(p: Pick<Progress, "streak" | "lastDay" | "freezes">, day = today()) {
+  if (!p.lastDay) return 0;
+  const gap = dayDiff(p.lastDay, day);
+  return gap <= 1 || gap - 1 <= p.freezes ? p.streak : 0;
+}
 
 function blank(): Progress {
   return { xp: 0, days: {}, streak: 0, lastDay: null, freezes: 0, chips: START_CHIPS, badges: [], counts: {} };
@@ -130,16 +148,6 @@ export function addXp(amount: number, reason = "") {
   save(p, ev);
 }
 
-/** Count something (cards known, calibrated calls) and award a badge when it crosses a line. */
-export function bump(counter: string, by = 1) {
-  const p = getProgress();
-  p.counts[counter] = (p.counts[counter] ?? 0) + by;
-  const ev: ProgressEvent = {};
-  if (counter === "cards-known" && p.counts[counter] >= 50) giveBadge(p, "cards-50", ev);
-  save(p, ev);
-  return p.counts[counter];
-}
-
 export function unlockBadge(id: string) {
   const p = getProgress();
   const ev: ProgressEvent = {};
@@ -185,38 +193,64 @@ export function useProgress() {
 }
 
 // ---------- Backup and move: progress lives in this browser, so let people carry it.
-const KEYS = [KEY, "sigma", "monteElectionCalls"];
+/** Every key Monte writes: progress, study progress and preferences, the games' bests and history. */
+const KEYS = [KEY, "sigma", "sigmaTopic", "sigmaQuiz", "sigmaUntimed", "sigmaMode", "sigmaGuessR", "monteElectionCalls", "monteElectionStreak"];
+/** Keys made per tool, found by prefix (monte-decide:<tool> holds the day its XP was last paid). */
+const PREFIXES = ["monte-decide:"];
+export const isMonteKey = (k: string) => KEYS.includes(k) || PREFIXES.some((p) => k.startsWith(p));
 
-/** Everything Monte saved in this browser, as one short code to paste on another device. */
+function monteKeys() {
+  const out = new Set(KEYS);
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && isMonteKey(k)) out.add(k);
+    }
+  } catch {}
+  return [...out];
+}
+
+/** Everything Monte saved in this browser, as one short code to paste on another device.
+ *  Version 2 keeps each value as the exact string stored, so plain strings (a topic id, a date) survive. */
 export function exportProgress() {
-  const data: Record<string, unknown> = {};
-  for (const k of KEYS) {
+  const data: Record<string, string> = {};
+  for (const k of monteKeys()) {
     try {
       const v = localStorage.getItem(k);
-      if (v) data[k] = JSON.parse(v);
+      if (v != null) data[k] = v;
     } catch {}
   }
-  const json = JSON.stringify({ app: "monte", v: 1, at: new Date().toISOString(), data });
+  const json = JSON.stringify({ app: "monte", v: 2, at: new Date().toISOString(), data });
   return btoa(unescape(encodeURIComponent(json)));
 }
 
-/** Restore from a code or a backup file's text. Returns false if it isn't a Monte backup. */
+/** Restore from a code or a backup file's text. Returns false if it isn't a Monte backup.
+ *  Only Monte's own keys are written. Version 1 codes held parsed JSON, so their values are re-encoded. */
 export function importProgress(text: string) {
-  let obj: { app?: string; data?: Record<string, unknown> } | null = null;
+  let obj: { app?: string; v?: number; data?: Record<string, unknown> } | null = null;
   const raw = text.trim();
   try {
     obj = JSON.parse(raw.startsWith("{") ? raw : decodeURIComponent(escape(atob(raw))));
   } catch {
     return false;
   }
-  if (!obj || obj.app !== "monte" || !obj.data) return false;
-  for (const k of KEYS) {
-    if (obj.data[k] !== undefined) {
-      try {
-        localStorage.setItem(k, JSON.stringify(obj.data[k]));
-      } catch {}
-    }
+  if (!obj || obj.app !== "monte" || !obj.data || typeof obj.data !== "object") return false;
+  const asIs = (obj.v ?? 1) >= 2;
+  for (const [k, v] of Object.entries(obj.data)) {
+    if (!isMonteKey(k) || v === undefined) continue;
+    try {
+      localStorage.setItem(k, asIs && typeof v === "string" ? v : JSON.stringify(v));
+    } catch {}
   }
   window.dispatchEvent(new CustomEvent("monte:progress", { detail: {} }));
   return true;
+}
+
+/** What to say when a milestone lands, for the toast and screen readers. Empty when nothing did. */
+export function milestoneText(ev: ProgressEvent) {
+  const parts: string[] = [];
+  if (ev.levelUp) parts.push(`Level ${ev.levelUp} reached.`);
+  if (ev.goalHit) parts.push("Daily goal done.");
+  if (ev.badge && !(ev.goalHit && ev.badge === "goal-hit")) parts.push(`Badge earned: ${BADGES[ev.badge]?.name ?? ev.badge}.`);
+  return parts.join(" ");
 }

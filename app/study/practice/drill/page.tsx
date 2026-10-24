@@ -4,7 +4,7 @@ import { Drill } from "@/components/study/drill";
 
 export const metadata: Metadata = {
   title: "Drill",
-  description: "Timed business statistics drills with fresh numbers every time, a closed-book mock exam, Monte Daily and the questions you missed.",
+  description: "Statistics drills with fresh numbers every time, timed or untimed, a mock test, Monte Daily and the questions you missed.",
   alternates: { canonical: "/study/practice/drill/" },
 };
 

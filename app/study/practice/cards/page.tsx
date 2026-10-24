@@ -3,7 +3,7 @@ import { Flashcards } from "@/components/study/flashcards";
 
 export const metadata: Metadata = {
   title: "Flashcards",
-  description: "Business statistics flashcards: terms, formulas and memory hooks, with cards you miss coming back sooner.",
+  description: "Statistics flashcards: terms, formulas and memory hooks, with cards you miss coming back sooner.",
   alternates: { canonical: "/study/practice/cards/" },
 };
 

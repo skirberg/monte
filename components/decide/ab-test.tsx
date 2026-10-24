@@ -3,7 +3,7 @@
 import * as React from "react";
 import { abSampleSize, abTest, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Stat, Stats, chance, useToolXp } from "@/components/decide/fields";
+import { HowItWorks, NumField, Presets, ResultBar, Stat, Stats, chance, useToolXp } from "@/components/decide/fields";
 
 type Words = { who: string; did: string };
 type Preset = { label: string; note: string; nA: string; xA: string; nB: string; xB: string; words: Words };
@@ -101,10 +101,17 @@ export function AbTest() {
     }
   }
 
+  const bar: [string, string] = !t
+    ? ["", read]
+    : sig
+      ? [Number.isFinite(t.lift) ? signedPct(t.lift) : pts(t.diff), `for B, and luck is an unlikely reason: ${t.diff > 0 ? "B wins" : "B is worse"}.`]
+      : [Number.isFinite(t.lift) ? signedPct(t.lift) : pts(t.diff), `for B, but too close to call. Luck makes a gap like this ${chance(t.p, 0)} of the time.`];
+
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example tests" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up counts. Type your own.</p>
@@ -123,7 +130,7 @@ export function AbTest() {
               <NumField id="ab-xb" label={words.did} value={xB} onChange={edit(setXB)} inputMode="numeric" invalid={badB} describedBy="ab-hint" />
             </div>
           </fieldset>
-          <p id="ab-hint" className="text-sm text-ink-muted" role={badA || badB ? "alert" : undefined}>
+          <p id="ab-hint" className="text-sm text-ink-muted">
             {badA || badB ? `Use whole numbers, with at least 1 in ${words.who.toLowerCase()} and no more ${did} than that.` : "The test only means something if people were split between A and B at random."}
           </p>
         </div>
@@ -150,7 +157,7 @@ export function AbTest() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {read}
           </p>
         </div>
@@ -244,15 +251,15 @@ function DiffChart({ diff, lo, hi, sig }: { diff: number; lo: number; hi: number
   const color = sig ? "var(--clay)" : "var(--ink-muted)";
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`B minus A is ${pts(diff)}, with a 95% range from ${pts(lo)} to ${pts(hi)}. ${lo > 0 || hi < 0 ? "The range does not cross zero." : "The range crosses zero."}`}>
-      <text x={L} y={16} className="font-mono" fontSize="12" fill="var(--ink-muted)">
+      <text x={L} y={16} fontSize="12" fill="var(--ink-muted)">
         ← A better
       </text>
-      <text x={W - R} y={16} textAnchor="end" className="font-mono" fontSize="12" fill="var(--ink-muted)">
+      <text x={W - R} y={16} textAnchor="end" fontSize="12" fill="var(--ink-muted)">
         B better →
       </text>
       <line x1={L} x2={W - R} y1={y} y2={y} stroke="var(--line-strong)" />
       <line x1={X(0)} x2={X(0)} y1={26} y2={y + 22} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="4 4" />
-      <text x={X(0)} y={H - 10} textAnchor="middle" className="font-mono" fontSize="12" fill="var(--ink)">
+      <text x={X(0)} y={H - 10} textAnchor="middle" fontSize="12" fill="var(--ink)">
         no difference
       </text>
       <line x1={X(lo)} x2={X(hi)} y1={y} y2={y} stroke={color} strokeWidth={8} strokeLinecap="round" strokeOpacity={0.55} />

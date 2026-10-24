@@ -3,7 +3,8 @@
 import * as React from "react";
 import { goalMean, goalPath, inFrames, monthlyStep, pctile, putIn, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Stat, Stats, chance, dollars, useToolXp } from "@/components/decide/fields";
+import { HowItWorks, NumField, Presets, ResultBar, Stat, Stats, chance, dollars, useToolXp } from "@/components/decide/fields";
+import { ChartList, useScrub } from "@/components/decide/scrub";
 
 const PATHS = 5000;
 const PER_FRAME = 500;
@@ -195,11 +196,20 @@ export function Goal() {
     read = `${goalOk ? `In ${chance(hits / PATHS, 0)} of ${PATHS.toLocaleString()} futures you reach ${dollars(G)} after ${Y} year${Y === 1 ? "" : "s"}. ` : ""}The middle future ends at ${dollars(p50)}, and 8 in 10 end between ${dollars(p10)} and ${dollars(p90)}. You put in ${dollars(put)}.`;
     if (mean > p50 * 1.05) read += ` The average, ${dollars(mean)}, is higher than the middle because a few lucky futures pull it up. Plan on the middle, not the average.`;
   }
+  // The one-line answer: null while the futures are still drawing, so the bar keeps the last answer instead of flashing.
+  const bar: [string | null, string | null] = !ready
+    ? ["", "Fix the numbers in red to see your chance."]
+    : !finished || !fin
+      ? [null, null]
+      : goalOk
+        ? [chance(hits / PATHS, 0), `of futures reach ${dollars(G)} in ${Y} year${Y === 1 ? "" : "s"}. The middle ends at ${dollars(p50)}.`]
+        : [dollars(p50), `is where the middle future ends. Set a goal to see your chance.`];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example plans" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">
@@ -215,7 +225,7 @@ export function Goal() {
             <NumField id="gl-ret" label="Average yearly return" suffix="%" value={ret} onChange={edit(setRet)} invalid={!(r >= -0.2 && r <= 0.3)} describedBy="gl-hint" />
             <NumField id="gl-vol" label="Typical yearly swing" suffix="%" value={vol} onChange={edit(setVol)} invalid={!(v >= 0 && v <= 0.8)} describedBy="gl-hint" />
           </div>
-          <p id="gl-hint" className="text-sm text-ink-muted" role={ready && goalOk ? undefined : "alert"}>
+          <p id="gl-hint" className="text-sm text-ink-muted">
             {!ready
               ? errors.join(" ")
               : !goalOk
@@ -258,7 +268,7 @@ export function Goal() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {read}
           </p>
         </div>
@@ -345,14 +355,14 @@ function niceStep(max: number) {
   return (q < 1.5 ? 1 : q < 3.5 ? 2 : q < 7.5 ? 5 : 10) * p;
 }
 
-/** The fan: the band 8 in 10 futures fall in, the middle line, a few single futures, what you put in, and the goal. */
+/** The fan: the band 8 in 10 futures fall in, the middle line, a few single futures, what you put in, and the goal. Hover or tap for any year. */
 function FanChart({ res, goal }: { res: Result; goal: number }) {
   const narrow = useMediaQuery("(max-width: 639px)");
   const W = narrow ? 360 : 560;
-  const H = narrow ? 250 : 280;
+  const H = narrow ? 236 : 266;
   const L = 46;
   const R = 10;
-  const top = 26;
+  const top = 12;
   const base = H - 30;
   const Y = res.years;
   const sampleEnds = res.samples.map((s) => s[s.length - 1]).sort((a, b) => a - b);
@@ -374,50 +384,83 @@ function FanChart({ res, goal }: { res: Result; goal: number }) {
         .join(" ")} Z`
     : "";
   const gy = Number.isFinite(goal) ? V(goal) : NaN;
+  const scrub = useScrub(Y + 1, W, (x) => Math.round(((x - L) / (W - L - R)) * Y));
+  const at = b ? scrub.at : null;
   const label = b
     ? `Fan of ${PATHS.toLocaleString()} simulated futures over ${Y} year${Y === 1 ? "" : "s"}. After ${Y} year${Y === 1 ? "" : "s"}, 8 in 10 end between ${dollars(b.p10[Y])} and ${dollars(b.p90[Y])}, the middle at ${dollars(b.p50[Y])}. You put in ${dollars(res.put[Y])}.${Number.isFinite(goal) ? ` Goal ${dollars(goal)}.` : ""}`
     : "Fan of simulated futures, still drawing.";
+  const yearName = (y: number) => (y === 0 ? "Now" : `Year ${y}`);
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={label}>
-      <defs>
-        <clipPath id="gl-plot">
-          <rect x={L} y={top - 2} width={W - L - R} height={base - top + 2} />
-        </clipPath>
-      </defs>
-      {ticks.map((t) => (
-        <g key={t}>
-          <line x1={L} x2={W - R} y1={V(t)} y2={V(t)} stroke="var(--line)" />
-          <text x={L - 6} y={V(t) + 4} textAnchor="end" className="font-mono" fontSize="11" fill="var(--ink-muted)">
-            {compact(t)}
-          </text>
-        </g>
-      ))}
-      {xTicks.map((y, i) => (
-        <text key={i} x={X(y)} y={H - 10} textAnchor={i === 0 ? "start" : i === xTicks.length - 1 ? "end" : "middle"} className="font-mono" fontSize="12" fill="var(--ink-muted)">
-          {y === 0 ? "now" : `year ${y}`}
-        </text>
-      ))}
-      <g clipPath="url(#gl-plot)">
-        {band && <path d={band} fill="var(--clay)" fillOpacity={0.2} />}
-        {res.samples.map((s, i) => (
-          <path key={i} d={line(s)} fill="none" stroke="var(--ink-muted)" strokeOpacity={0.35} strokeWidth={1} />
+    <figure>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full select-none" role="img" aria-label={label} {...(b ? scrub.bind : {})}>
+        <defs>
+          <clipPath id="gl-plot">
+            <rect x={L} y={top - 2} width={W - L - R} height={base - top + 2} />
+          </clipPath>
+        </defs>
+        {ticks.map((t) => (
+          <g key={t}>
+            <line x1={L} x2={W - R} y1={V(t)} y2={V(t)} stroke="var(--line)" />
+            <text x={L - 6} y={V(t) + 4} textAnchor="end" className="font-mono" fontSize="11" fill="var(--ink-muted)">
+              {compact(t)}
+            </text>
+          </g>
         ))}
-        <path d={line(res.put)} fill="none" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="5 4" />
-        {b && <path d={line(b.p50)} fill="none" stroke="var(--clay)" strokeWidth={2.5} strokeLinejoin="round" />}
-      </g>
-      {Number.isFinite(gy) && (
-        <g>
-          <line x1={L} x2={W - R} y1={gy} y2={gy} stroke="var(--ink)" strokeWidth={1.5} />
-          <rect x={L + 4} y={gy - 19} width={compact(goal).length * 7.4 + 44} height={16} rx={8} fill="var(--ink)" />
-          <text x={L + 12} y={gy - 7} className="font-mono" fontSize="11" fill="var(--paper)">
-            goal {compact(goal)}
+        {xTicks.map((y, i) => (
+          <text key={i} x={X(y)} y={H - 10} textAnchor={i === 0 ? "start" : i === xTicks.length - 1 ? "end" : "middle"} fontSize="12" fill="var(--ink-muted)">
+            {y === 0 ? "now" : (
+              <>
+                year <tspan className="font-mono">{y}</tspan>
+              </>
+            )}
           </text>
+        ))}
+        <g clipPath="url(#gl-plot)">
+          {band && <path d={band} fill="var(--clay)" fillOpacity={0.2} />}
+          {res.samples.map((s, i) => (
+            <path key={i} d={line(s)} fill="none" stroke="var(--ink-muted)" strokeOpacity={0.35} strokeWidth={1} />
+          ))}
+          <path d={line(res.put)} fill="none" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="5 4" />
+          {b && <path d={line(b.p50)} fill="none" stroke="var(--clay)" strokeWidth={2.5} strokeLinejoin="round" />}
         </g>
+        {Number.isFinite(gy) && (
+          <g>
+            <line x1={L} x2={W - R} y1={gy} y2={gy} stroke="var(--ink)" strokeWidth={1.5} />
+            <rect x={L + 4} y={gy - 19} width={compact(goal).length * 7.4 + 42} height={16} rx={8} fill="var(--ink)" />
+            <text x={L + 12} y={gy - 7} fontSize="11" fill="var(--paper)">
+              goal <tspan className="font-mono">{compact(goal)}</tspan>
+            </text>
+          </g>
+        )}
+        {b && at !== null && (
+          <g pointerEvents="none">
+            <line x1={X(at)} x2={X(at)} y1={top} y2={base} stroke="var(--ink)" strokeWidth={1} />
+            <line x1={X(at)} x2={X(at)} y1={V(b.p90[at])} y2={V(b.p10[at])} stroke="var(--clay)" strokeWidth={4} strokeOpacity={0.6} strokeLinecap="round" />
+            <circle cx={X(at)} cy={V(b.p50[at])} r={5} fill="var(--paper)" stroke="var(--clay)" strokeWidth={2.5} />
+          </g>
+        )}
+        {/* the whole plot is the target, so a tap anywhere picks the nearest year */}
+        {b && <rect x={L} y={top} width={W - L - R} height={base - top} fill="transparent" />}
+      </svg>
+      <figcaption className="mt-2 min-h-10 text-sm text-ink-muted">
+        {b && at !== null ? (
+          <span className="text-ink">
+            {yearName(at)}: the middle is <span className="font-mono tabular">{dollars(b.p50[at])}</span>, and 8 in 10 futures are between{" "}
+            <span className="font-mono tabular">{dollars(b.p10[at])}</span> and <span className="font-mono tabular">{dollars(b.p90[at])}</span>.
+          </span>
+        ) : (
+          <>Shaded: 8 futures in 10. Solid line: the middle. Dashed: what you put in. {b ? "Hover or tap for any year." : ""}</>
+        )}
+      </figcaption>
+      {b && (
+        <ChartList
+          summary="Every year, as a list"
+          caption="Balance at the end of each year: the bad case, the middle and the good case"
+          head={["Year", "Bad case", "Middle", "Good case"]}
+          rows={b.p50.map((m, y) => ({ key: y, mark: y === at, cells: [yearName(y), dollars(b.p10[y]), dollars(m), dollars(b.p90[y])] }))}
+        />
       )}
-      <text x={L} y={13} className="font-mono" fontSize="11.5" fill="var(--ink-muted)">
-        {narrow ? "band: 8 in 10 · line: middle · dashed: put in" : "Shaded: 8 in 10 futures · line: the middle · dashed: what you put in"}
-      </text>
-    </svg>
+    </figure>
   );
 }

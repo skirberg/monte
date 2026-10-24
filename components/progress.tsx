@@ -3,12 +3,24 @@
 import * as React from "react";
 import { Flame, Snowflake, Trophy } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, bump, exportProgress, getProgress, importProgress, levelOf, localDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
-import { callout, confetti } from "@/lib/fun";
+import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, exportProgress, getProgress, importProgress, levelOf, liveStreak, localDay, milestoneText, shiftDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-/** Turns events from anywhere (study pages, games, /decide/) into progress, and celebrates real milestones. */
+const TOAST_MS = 4000;
+
+/**
+ * Turns events from anywhere (study pages, games, /decide/) into progress, and celebrates real milestones.
+ * Confetti only plays in Fun mode without reduced motion, but every milestone is always said out loud
+ * (a polite live region) and shown as a small still toast, so Focus mode and screen readers get it too.
+ */
 export function ProgressBridge() {
+  const [toast, setToast] = React.useState<{ text: string; id: number } | null>(null);
+  React.useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), TOAST_MS);
+    return () => window.clearTimeout(t);
+  }, [toast]);
   React.useEffect(() => {
     const onXp = (e: Event) => {
       const d = (e as CustomEvent<{ xp: number; reason?: string }>).detail;
@@ -16,34 +28,34 @@ export function ProgressBridge() {
       if (d?.reason === "daily") track("Daily finished");
     };
     const onBadge = (e: Event) => unlockBadge((e as CustomEvent<string>).detail);
-    const onCount = (e: Event) => bump((e as CustomEvent<string>).detail);
     const onProgress = (e: Event) => {
       const d = (e as CustomEvent<ProgressEvent>).detail ?? {};
-      if (d.levelUp) {
-        confetti();
-        callout(`Level ${d.levelUp}`, true);
-        track("Level up", { level: d.levelUp });
-      } else if (d.badge) {
-        confetti(40);
-        callout(`Badge: ${BADGES[d.badge]?.name ?? d.badge}`, true);
-        track("Badge earned", { badge: d.badge });
-      } else if (d.goalHit) {
-        confetti(50);
-        callout("Daily goal done", true);
-      }
+      const text = milestoneText(d);
+      if (!text) return;
+      setToast({ text, id: Date.now() });
+      confetti(d.levelUp ? 70 : d.badge ? 40 : 50);
+      if (d.levelUp) track("Level up", { level: d.levelUp });
+      if (d.badge) track("Badge earned", { badge: d.badge });
     };
     window.addEventListener("monte:xp", onXp);
     window.addEventListener("monte:badge", onBadge);
-    window.addEventListener("monte:count", onCount);
     window.addEventListener("monte:progress", onProgress);
     return () => {
       window.removeEventListener("monte:xp", onXp);
       window.removeEventListener("monte:badge", onBadge);
-      window.removeEventListener("monte:count", onCount);
       window.removeEventListener("monte:progress", onProgress);
     };
   }, []);
-  return null;
+  // The live region is always in the page, so what lands in it is read out; the toast sits inside it.
+  return (
+    <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-4 top-[84px] z-[61] flex justify-center print:hidden">
+      {toast && (
+        <p key={toast.id} className="max-w-md rounded-2xl bg-ink px-4 py-2.5 text-center text-[15px] font-medium text-paper shadow-[0_12px_32px_-12px_rgba(0,0,0,.35)]">
+          {toast.text}
+        </p>
+      )}
+    </div>
+  );
 }
 
 function Ring({ value, size = 28 }: { value: number; size?: number }) {
@@ -72,16 +84,27 @@ function Ring({ value, size = 28 }: { value: number; size?: number }) {
 export function ProgressButton() {
   const p = useProgress();
   const [open, setOpen] = React.useState(false);
-  const [now] = React.useState(() => Date.now());
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  // "Today" is read again whenever progress changes or the tab comes back, so a page left open past
+  // midnight shows the new day's ring and the right streak.
+  const [now, setNow] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const onVisible = () => document.visibilityState === "visible" && tick();
+    window.addEventListener("monte:progress", tick);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("monte:progress", tick);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
   if (!p) return <span className="size-11" aria-hidden />;
   const day = localDay(now);
   const todayXp = p.days[day] ?? 0;
   const lv = levelOf(p.xp);
-  const gap = p.lastDay ? Math.round((Date.parse(day) - Date.parse(p.lastDay)) / 864e5) : 99;
-  const live = gap <= 1 || gap - 1 <= p.freezes;
-  const streak = live ? p.streak : 0;
+  const streak = liveStreak(p, day);
   const last7 = Array.from({ length: 7 }, (_, i) => {
-    const d = localDay(now - (6 - i) * 864e5);
+    const d = shiftDay(now, i - 6);
     return { d, xp: p.days[d] ?? 0, label: new Date(d + "T12:00").toLocaleDateString("en-US", { weekday: "narrow" }) };
   });
   return (
@@ -99,9 +122,11 @@ export function ProgressButton() {
         </span>
       </button>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-md">
+        <SheetContent side="right" initialFocus={titleRef} className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-md">
           <SheetHeader>
-            <SheetTitle className="font-display text-2xl font-[650]">Your progress</SheetTitle>
+            <SheetTitle ref={titleRef} tabIndex={-1} className="font-display text-2xl font-[650] outline-none">
+              Your progress
+            </SheetTitle>
             <SheetDescription>Saved in this browser. XP comes from answering, finishing and remembering, never from clicking around.</SheetDescription>
           </SheetHeader>
           <div className="grid gap-6 px-4 pb-8">
@@ -179,7 +204,7 @@ export function ProgressButton() {
 
             <section className="grid gap-1 text-sm text-ink-muted">
               <h3 className="text-sm font-semibold text-ink">How XP and chips work</h3>
-              <p>XP measures learning and never goes down: right answer 10, a try 2, finished drill 20, flashcard 3, read a topic to the end 5, quick math 2, election call 5 to 10.</p>
+              <p>XP measures learning and never goes down: right answer 10, a try 2, finished drill 20, a flashcard you move up a box 3 (once a day per card), read a topic to the end 5, quick math 2, election call 5 to 10.</p>
               <p>
                 Chips are play money you spend in the games. Learning earns them: {CHIPS_FOR.goal} for the daily goal, {CHIPS_FOR.level} for each level, {CHIPS_FOR.badge} for each badge.
               </p>

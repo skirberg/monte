@@ -1,8 +1,8 @@
 import { DATA } from "./data";
 import { Phi, fmt, mean, median, pick, plural, r2, r3, ri } from "./math";
 
-// Quick math: mental-math tricks that save minutes on an exam, each with its own generator.
-// Level 1 is easy, 2 is exam pace, 3 is hard; `lv` picks the value for the level.
+// Quick math: mental-math tricks that save minutes on any test, each with its own generator.
+// Level 1 is easy, 2 is medium, 3 is hard; `lv` picks the value for the level.
 
 export type Level = 1 | 2 | 3;
 export type TrickCat = "pct" | "mul" | "sq" | "stats" | "frac" | "z" | "est";
@@ -158,7 +158,7 @@ export const CATS: Record<TrickCat, string> = { pct: "Percents", mul: "Multiply 
 
 export const HABITS: [string, string][] = [
   ["Say the trick out loud, then the answer", "Saying 25 × 48 is a quarter of 4,800 builds the pathway. Saying 1,200 alone doesn't."],
-  ["Estimate before every calculator step on an exam", "Each problem becomes a free rep, and it catches typos. If the calculator disagrees with your ballpark by 10×, you typed it wrong."],
+  ["Estimate before every calculator step", "Each problem becomes a free rep, and it catches typos. If the calculator disagrees with your ballpark by 10×, you typed it wrong."],
   ["Two 60-second sprints a day", "Speed comes from many short retrievals spread over days, not one long session."],
   ["One trick per day in Learn mode", "Pick a trick, press Practice, do ten with hints on. Tomorrow, do it in a sprint."],
   ["Level up only above 80%", "Accuracy first. Speed follows once the method is automatic."],

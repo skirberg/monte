@@ -30,14 +30,14 @@ const azeret = Azeret_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME}: business statistics, one idea at a time`,
+    default: `${SITE_NAME}: statistics, one idea at a time`,
     template: `%s · ${SITE_NAME}`,
   },
   description:
-    "Fourteen topics of business statistics. Each one has a plain sentence, a real example, something to drag, and timed drills with fresh numbers until it sticks.",
+    "Statistics for everyone, one idea at a time. Fourteen topics, each with a plain sentence, a real example, something to drag and timed drills with fresh numbers, plus tools for real decisions and games.",
   openGraph: {
     title: SITE_NAME,
-    description: "Drop enough grains and the shape appears. Business statistics, one idea at a time.",
+    description: "Drop enough grains and the shape appears. Statistics, one idea at a time.",
     type: "website",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: `${SITE_NAME}: drop enough grains and the shape appears.` }],
   },

@@ -1,5 +1,5 @@
 // Numerical helpers for the study app: distributions, tables, formatting. Same approximations the
-// original engine used, so every drill answer and solver row matches what classmates already saw.
+// original engine used, so every drill answer and solver row comes out the same as before.
 
 /** Abramowitz and Stegun 7.1.26. */
 export function erf(x: number) {

@@ -9,37 +9,50 @@ import { DATA, TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/l
 import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
 import { mt, plural, shuffle } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
-import { getStudyProgress, isWon, statsFor, touchStreak, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { getStudyProgress, isWon, mastersTopic, recall, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
+import { liveStreak, useProgress } from "@/lib/progress";
+import { useStoredString } from "@/lib/hooks";
 import { burstFrom, callout, celebrate } from "@/lib/fun";
 import { blockTitle, btn, chip, eyebrow, input, linkBtn } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
 type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
-type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
-type Result = { pct: number; correct: number; n: number; answered: number; mock: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
+/** `timed` is false for a set run without a clock; `inARow` counts right answers since the last miss. */
+type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; timed: boolean; inARow: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
+type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
+
+/** Saved choice: "1" runs normal drills without a clock. Mock tests are always timed. */
+const UNTIMED_KEY = "sigmaUntimed";
 
 const scoreBand = (pct: number) => (pct >= 80 ? "80-100" : pct >= 60 ? "60-79" : pct >= 40 ? "40-59" : "0-39");
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 const NOTHING_DUE = "Nothing is due yet. Run a drill first; any question you miss comes back here.";
 
-function newRun(mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[]): Run {
+function newRun(mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[], timed = true): Run {
   const qs = fixed ?? shuffle(Array.from({ length: count }, (_, i) => generate(mods[i % mods.length])));
-  return { qs, i: 0, correct: 0, missed: [], end: Date.now() + seconds * 1000, mode, mock, answered: false, ok: null };
+  return { qs, i: 0, correct: 0, missed: [], end: Date.now() + seconds * 1000, timed: mock || timed, inARow: 0, mode, mock, answered: false, ok: null };
 }
 
-/** The set a link asks for (?go=start, mock, due, daily or ?topic=id), built as the page first renders. */
+/**
+ * The set a link asks for (?go=start, mock, due, daily or ?topic=id, with optional &n=5 and
+ * &timer=off), built as the page first renders.
+ */
 function fromLink(params: URLSearchParams): { run?: Run; msg?: string } | null {
   const go = params.get("go"), topic = params.get("topic");
-  if (go === "start") return { run: newRun("ten", TOPIC_IDS, 10, 600, false) };
+  const timed = params.get("timer") !== "off" && recall(UNTIMED_KEY) !== "1";
+  if (go === "start") return { run: newRun("ten", TOPIC_IDS, 10, 600, false, undefined, timed) };
   if (go === "mock") return { run: newRun("mock", TOPIC_IDS, 20, 1800, true) };
-  if (go === "daily") return { run: newRun("daily", TOPIC_IDS, 5, 600, false, dailyQuestions()) };
+  if (go === "daily") return { run: newRun("daily", TOPIC_IDS, 5, 600, false, dailyQuestions(), timed) };
   if (go === "due") {
     const list = getStudyProgress().due;
-    return list.length ? { run: newRun("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate)) } : { msg: NOTHING_DUE };
+    return list.length ? { run: newRun("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate), timed) } : { msg: NOTHING_DUE };
   }
-  if (isTopicId(topic)) return { run: newRun("topic", [topic], 8, 480, false) };
+  if (isTopicId(topic)) {
+    const n = Math.min(20, Math.max(3, Math.round(Number(params.get("n")) || 8)));
+    return { run: newRun("topic", [topic], n, n * 60, false, undefined, timed) };
+  }
   return go || topic ? {} : null;
 }
 
@@ -48,20 +61,20 @@ function Meter({ k, v, bar, c }: { k: string; v: string; bar?: number; c?: strin
     <div className="grid content-start gap-1.5 p-4">
       <span className={eyebrow}>{k}</span>
       <span className="font-mono text-[28px] font-medium tabular-nums tracking-[-0.03em]">{v}</span>
-      {bar != null ? (
+      {bar != null && (
         <span className="h-2 overflow-hidden rounded-full bg-sand-2">
           <i className="block h-full bg-clay" style={{ width: `${bar}%` }} />
         </span>
-      ) : (
-        <span className="text-xs text-ink-muted">{c}</span>
       )}
+      {c && <span className="text-xs text-ink-muted">{c}</span>}
     </div>
   );
 }
 
-/** Practice > Drill: timed sets with fresh numbers, the mock exam, Due today and Monte Daily. */
+/** Practice > Drill: sets with fresh numbers (timed unless you turn the clock off), the mock test, Due today and Monte Daily. */
 export function Drill() {
   const p = useStudyProgress();
+  const site = useProgress();
   const router = useRouter();
   const params = useSearchParams();
   const [mix, setMix] = React.useState<Set<TopicId>>(() => new Set(TOPIC_IDS));
@@ -77,6 +90,15 @@ export function Drill() {
   const cardRef = React.useRef<HTMLElement>(null);
 
   const due = p.due.length, won = wonCount(p), ready = Math.round((p.mock || 0) * 100);
+  const streak = site ? liveStreak(site) : 0;
+  // No timer: saved in this browser, read without a hydration mismatch, and changed here at once.
+  const storedUntimed = useStoredString(UNTIMED_KEY) === "1";
+  const [untimedPick, setUntimedPick] = React.useState<boolean | null>(null);
+  const untimed = untimedPick ?? storedUntimed;
+  const toggleUntimed = () => {
+    setUntimedPick(!untimed);
+    store(UNTIMED_KEY, untimed ? "0" : "1");
+  };
 
   const focusCard = () =>
     requestAnimationFrame(() => {
@@ -85,11 +107,10 @@ export function Drill() {
     });
 
   const start = (mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[]) => {
-    touchStreak();
     setMsg("");
     setResult(null);
     setValue("");
-    setRun(newRun(mode, mods, count, seconds, mock, fixed));
+    setRun(newRun(mode, mods, count, seconds, mock, fixed, !untimed));
     setNow(Date.now());
     track("Drill started", { mode });
     focusCard();
@@ -109,11 +130,10 @@ export function Drill() {
     start("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate));
   };
 
-  // A set started from a link: count the day, use up the due list, report it, and tidy the address.
+  // A set started from a link: use up the due list, report it, and tidy the address.
   React.useEffect(() => {
     if (!link) return;
     if (link.run) {
-      touchStreak();
       if (link.run.mode === "due") updateStudyProgress((s) => void (s.due = s.due.slice(10)));
       track("Drill started", { mode: link.run.mode });
       focusCard();
@@ -149,25 +169,24 @@ export function Drill() {
       s.due = [...s.due, ...r.missed.map((q) => q.mod)].slice(-40);
     });
     // A set ended before any answer earns nothing.
+    const mastered = mastersTopic(r.mode, n, pc);
     if (answered) {
       awardXp(answered >= n ? 20 : 5, "drill finished");
       awardBadge("first-drill");
-      if (pc >= 0.8 && n >= 8) {
-        awardBadge("topic-won");
-        if (r.mock) awardBadge("mock-pass");
-      }
+      if (mastered) awardBadge("topic-won");
+      if (r.mock && pc >= 0.8) awardBadge("mock-pass");
       if (wonCount(getStudyProgress()) === TOPICS.length) awardBadge("all-topics");
     }
     if (daily?.first) awardXp(15, "daily");
     track("Drill finished", { mode: r.mode, score: scoreBand(Math.round(pc * 100)) });
-    if (pc >= 0.8) celebrate();
+    if (pc >= 0.8) celebrate(mastered ? "Topic mastered." : "Great set.");
     setRun(null);
-    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mock: r.mock, missed: r.missed, daily });
+    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mastered, mock: r.mock, missed: r.missed, daily });
   }, []);
 
-  // The clock: tick twice a second, finish when it runs out.
+  // The clock: tick twice a second, finish when it runs out. Untimed sets have no clock.
   React.useEffect(() => {
-    if (!run) return;
+    if (!run?.timed) return;
     const id = window.setInterval(() => {
       setNow(Date.now());
       if (Date.now() >= run.end) finish(run);
@@ -178,11 +197,13 @@ export function Drill() {
   const check = () => {
     if (!run || run.answered || !value.trim()) return;
     const q = run.qs[run.i], ok = isCorrect(q, value.trim());
-    setRun({ ...run, answered: true, ok, correct: run.correct + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, q] });
+    const inARow = ok ? run.inARow + 1 : 0;
+    setRun({ ...run, answered: true, ok, inARow, correct: run.correct + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, q] });
     awardXp(ok ? 10 : 2, "drill");
     if (ok) {
       burstFrom(inRef.current);
-      callout();
+      // A word of praise only for a run of three or more, so it still means something.
+      if (inARow >= 3) callout();
     }
     requestAnimationFrame(() => nextRef.current?.focus({ preventScroll: true }));
   };
@@ -199,8 +220,14 @@ export function Drill() {
   const done = run ? run.correct + run.missed.length : 0;
   const card = "grid gap-5 rounded-[18px] border border-line bg-paper p-5 shadow-[0_1px_0_var(--line),0_12px_32px_-24px_color-mix(in_oklch,var(--ink)_30%,transparent)] md:p-7";
   const resultMsg = result
-    ? `${result.correct} of ${result.n} correct${result.answered < result.n ? ` (${result.n - result.answered} unanswered when time ran out)` : ""}. ${
-        result.pct >= 80 ? "Match won. That topic counts toward readiness." : result.pct >= 60 ? "Close. One more set and you have it." : "Warm-up set. Read the misses below, then go again."
+    ? `${result.correct} of ${result.n} correct${result.answered < result.n ? ` (${result.n - result.answered} left unanswered)` : ""}. ${
+        result.mastered
+          ? "Topic mastered."
+          : result.pct >= 80
+            ? "Strong set."
+            : result.pct >= 60
+              ? "Close. One more set and you have it."
+              : "Warm-up set. Read the misses below, then go again."
       }${result.mock ? ` ${DATA.copy.mockSaved}` : ""}`
     : "";
 
@@ -211,7 +238,7 @@ export function Drill() {
           Due today ({due})
         </button>
         <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
-          Timed closed-book mock
+          Mock test
         </button>
         <button type="button" data-start="daily" className={btn.ghost} onClick={() => start("daily", TOPIC_IDS, 5, 600, false, dailyQuestions())}>
           Monte Daily
@@ -219,9 +246,9 @@ export function Drill() {
       </div>
 
       <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
-        <Meter k="Topics won" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
-        <Meter k="Exam readiness" v={`${ready}%`} bar={ready} />
-        <Meter k="Study streak" v={plural(p.streak.count || 0, "day")} c="Practice once a day to keep it" />
+        <Meter k="Topics mastered" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
+        <Meter k="Readiness" v={`${ready}%`} bar={ready} c="How ready you are for any test or interview on this, from your best mock test" />
+        <Meter k="Streak" v={plural(streak, "day")} c="Learn something each day to keep it" />
         <Meter k="Due today" v={String(due)} c="Missed questions come back" />
       </div>
 
@@ -259,11 +286,22 @@ export function Drill() {
                   Start 10 questions
                 </button>
                 <button type="button" data-start="mock" className={btn.ghost} onClick={() => start("mock", TOPIC_IDS, 20, 1800, true)}>
-                  Mock exam, 20 questions, 30 minutes
+                  Mock test, 20 questions, 30 minutes
                 </button>
                 <button type="button" data-start="full" className={btn.ghost} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
                   Full mock, 20 questions, 2 hours
                 </button>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 max-md:-order-1">
+                <button type="button" aria-pressed={untimed} aria-describedby="untimed-note" className={chip} onClick={toggleUntimed}>
+                  <span aria-hidden className={cn("grid size-4 place-items-center rounded-[4px] border-[1.5px]", untimed ? "border-ink bg-ink text-paper" : "border-line-strong")}>
+                    {untimed && <Check className="size-3" strokeWidth={3} />}
+                  </span>
+                  No timer
+                </button>
+                <span id="untimed-note" className="text-sm text-ink-muted">
+                  Take your time on every set. Mock tests keep their clock.
+                </span>
               </div>
               <p role="status" className="text-sm empty:hidden">
                 {msg}
@@ -279,9 +317,13 @@ export function Drill() {
                   {run.mode === "daily" ? `Monte Daily, ${dayKey()}: ` : ""}Question {run.i + 1} of {run.qs.length}
                   {done ? `, score ${run.correct} of ${done}` : ""}
                 </span>
-                <span role="timer" aria-label="Time left" className={cn("text-[22px] font-medium normal-case tracking-normal tabular-nums", left < 30 && "text-danger")}>
-                  {clock(left)}
-                </span>
+                {run.timed ? (
+                  <span role="timer" aria-label="Time left" className={cn("text-[22px] font-medium normal-case tracking-normal tabular-nums", left < 30 && "text-danger")}>
+                    {clock(left)}
+                  </span>
+                ) : (
+                  <span>No timer</span>
+                )}
               </div>
               <div className="grid gap-2">
                 <p className={eyebrow}>{topicById(q.mod)?.short}</p>
@@ -380,9 +422,9 @@ export function Drill() {
         <aside aria-labelledby="draw-t" className="grid content-start gap-3">
           <div className="grid gap-1">
             <h2 id="draw-t" className={blockTitle}>
-              The draw
+              Your topics
             </h2>
-            <p className="text-sm text-ink-muted">Fourteen matches. Tap one for an 8-question drill. Win it by scoring 80% on a timed drill. Reading doesn&apos;t count; only fresh questions move the meters.</p>
+            <p className="text-sm text-ink-muted">{TOPICS.length} topics. Master each one. Tap a topic for an 8-question drill and score 80% to master it. Reading doesn&apos;t count; only fresh questions move the meters.</p>
           </div>
           <ol className="overflow-hidden rounded-[18px] border border-line">
             {TOPICS.map((t) => {
@@ -393,7 +435,7 @@ export function Drill() {
                     <span className="font-mono text-xs tabular-nums text-ink-muted">{t.n}</span>
                     <span className="grid">
                       {t.short}
-                      {(w || d.asked > 0) && <span className={cn(eyebrow, w && "text-clay-ink")}>{w ? `Won, best ${v}%` : `Best ${v}%`}</span>}
+                      {(w || d.asked > 0) && <span className={cn(eyebrow, w && "text-clay-ink")}>{w ? `Mastered, best ${v}%` : `Best ${v}%`}</span>}
                     </span>
                     <span aria-hidden className="h-1.5 overflow-hidden rounded-full bg-sand-2">
                       <i className="block h-full bg-clay" style={{ width: `${v}%` }} />

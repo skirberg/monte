@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { marketBreakEven, marketEvNo, marketEvYes, readNumber } from "@/lib/decide/math";
-import { ChanceMeter, HowItWorks, NumField, Presets, Slider, Stat, Stats, chance, signedMoney, useToolXp } from "@/components/decide/fields";
+import { ChanceMeter, HowItWorks, NumField, Presets, ResultBar, Slider, Stat, Stats, chance, signedMoney, useToolXp } from "@/components/decide/fields";
 
 type Preset = { label: string; question: string; price: string; you: number };
 
@@ -45,11 +45,21 @@ export function Market() {
   const better = evYes >= evNo ? "Yes" : "No";
   const cost = better === "Yes" ? c + fe : 100 - c + fe;
   const per100 = Math.max(evYes, evNo) * (100 / cost);
+  const bar: [string, string] =
+    ok && feeOk
+      ? [
+          chance(c / 100, 0),
+          Math.max(evYes, evNo) > 0.05
+            ? `is the crowd's chance. At your ${chance(p, 1)}, ${better} is worth ${cents(Math.max(evYes, evNo))} a contract.`
+            : `is the crowd's chance. At your ${chance(p, 1)}, neither side pays after the fee.`,
+        ]
+      : ["", !ok ? "A price is between 1¢ and 99¢." : "Fees are between 0¢ and 20¢."];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example questions" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">
@@ -60,7 +70,7 @@ export function Market() {
             <NumField id="mk-price" label="Yes price" suffix="¢" value={price} onChange={(v) => { setPrice(v); setPreset(-1); xp(); }} invalid={!ok} describedBy="mk-hint" />
             <NumField id="mk-fee" label="Fee per contract" suffix="¢" value={fee} onChange={(v) => { setFee(v); xp(); }} invalid={!feeOk} describedBy="mk-hint" />
           </div>
-          <p id="mk-hint" className="text-sm text-ink-muted" role={!ok || !feeOk ? "alert" : undefined}>
+          <p id="mk-hint" className="text-sm text-ink-muted">
             {!ok ? "A price is between 1¢ and 99¢." : !feeOk ? "Fees are between 0¢ and 20¢." : "Each contract pays $1 (100¢) if the answer is yes, and nothing if not."}
           </p>
           <Slider id="mk-you" label="Your own chance it happens" value={you} min={0.5} max={99.5} step={0.5} onChange={(v) => { setYou(v); xp(); }} shown={chance(p, 1)} />
@@ -78,7 +88,7 @@ export function Market() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {ok && feeOk
               ? Math.max(evYes, evNo) > 0.05
                 ? `At your ${chance(p, 1)}, ${better} is worth ${cents(Math.max(evYes, evNo))} per contract on average, or ${signedMoney(per100)} on every $100 spent. That only holds if your chance is closer to the truth than the crowd's.`

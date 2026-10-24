@@ -3,6 +3,8 @@ import {
   americanToDecimal, decimalToAmerican, decimalToFractional, formatOdds, fractionalToDecimal, impliedFromDecimal,
   kelly, marketBreakEven, marketEvYes, oneSdMove, overround, pctile, probAbove, readNumber, triCdf, triMean, triangular,
 } from "@/lib/decide/math";
+import { placeLabel, textWidth } from "@/lib/decide/chart";
+import { DISCLAIMER, GROUPS, TOOLS, TOOL_IDS, prevNext, toolHref, toolInfo, toolMetadata } from "@/lib/decide/tools";
 
 const implied = (a: number) => impliedFromDecimal(americanToDecimal(a));
 
@@ -67,5 +69,64 @@ describe("triangular ranges", () => {
   it("percentile interpolates", () => {
     expect(pctile([1, 2, 3, 4], 0.5)).toBe(2.5);
     expect(pctile([], 0.5)).toBeNaN();
+  });
+});
+
+describe("decide pages", () => {
+  it("nine tools in four groups, each with a unique id and a question", () => {
+    expect(GROUPS.map((g) => g.name)).toEqual(["Choose", "Money and risk", "Evidence", "Plan"]);
+    expect(TOOL_IDS).toEqual(["choose", "warranty", "bet", "market", "option", "bayes", "abtest", "goal", "staffing"]);
+    expect(new Set(TOOL_IDS).size).toBe(TOOLS.length);
+    for (const t of TOOLS) {
+      expect(t.question.endsWith("?")).toBe(true);
+      expect(t.description.length).toBeGreaterThan(60);
+      // House style: no em dashes in copy.
+      expect(`${t.question} ${t.line} ${t.lede} ${t.description}`).not.toContain("\u2014");
+    }
+    expect(DISCLAIMER).toBe("For learning, not financial, medical or betting advice.");
+  });
+  it("prev and next run through the groups in order, with nothing past the ends", () => {
+    expect(prevNext("choose").prev).toBeNull();
+    expect(prevNext("choose").next?.id).toBe("warranty");
+    expect(prevNext("option").next?.id).toBe("bayes");
+    expect(prevNext("staffing").next).toBeNull();
+    expect(toolInfo("abtest")).toMatchObject({ group: "Evidence", n: "07" });
+  });
+  it("each page has its own title and canonical URL", () => {
+    const m = toolMetadata("bayes");
+    expect(m.title).toBe("Is this test result real?");
+    expect(m.alternates?.canonical).toBe("/decide/bayes/");
+    expect(toolHref("goal")).toBe("/decide/goal/");
+  });
+});
+
+describe("chart labels stay off your line", () => {
+  const box = { min: 12, max: 548 };
+  it("sits right of the bar when there is room", () => {
+    expect(placeLabel({ x0: 100, x1: 200, lx: 400, w: 40, ...box })).toEqual({ x: 208, anchor: "start", beside: true });
+  });
+  it("moves left of the bar when the line is just past its end", () => {
+    const s = placeLabel({ x0: 100, x1: 200, lx: 220, w: 40, ...box });
+    expect(s).toEqual({ x: 92, anchor: "end", beside: true });
+  });
+  it("moves left of the bar at the right edge", () => {
+    expect(placeLabel({ x0: 400, x1: 530, lx: 100, w: 40, ...box })).toEqual({ x: 392, anchor: "end", beside: true });
+  });
+  it("goes above and to one side of the line when neither side fits", () => {
+    const s = placeLabel({ x0: 30, x1: 530, lx: 60, w: 60, ...box });
+    expect(s.beside).toBe(false);
+    expect(s.x >= 60 + 6 || s.x + 60 <= 60 - 6).toBe(true);
+  });
+  it("never covers the line, for any line position", () => {
+    const w = textWidth("Product B");
+    for (let lx = 12; lx <= 548; lx += 4) {
+      for (const [x0, x1] of [[20, 120], [200, 360], [420, 540], [15, 545]]) {
+        const s = placeLabel({ x0, x1, lx, w, ...box });
+        const a = s.anchor === "start" ? s.x : s.x - w;
+        expect(lx < a - 5 || lx > a + w + 5).toBe(true);
+        expect(a).toBeGreaterThanOrEqual(box.min);
+        expect(a + w).toBeLessThanOrEqual(box.max);
+      }
+    }
   });
 });

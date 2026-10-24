@@ -2,34 +2,23 @@
 
 import * as React from "react";
 import { cn } from "cn";
-import { DATA, TOPICS } from "@/lib/study/data";
-import { getStudyProgress, touchStreak, updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
+import { TOPICS } from "@/lib/study/data";
+import { DECK, dealOrder, type Card } from "@/lib/study/cards";
+import { localDay } from "@/lib/study/math";
+import { getStudyProgress, rateCard, recall, updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
 import { Select } from "@/components/study/chart";
 import { PageHead, btn, lead } from "@/components/study/ui";
 import { useHydrated } from "@/lib/hooks";
 import { sym } from "@/lib/study/symbols";
 
-type Card = { key: string; kind: "terms" | "formulas" | "hooks"; topic: string; kick: string; front: string; main: string; sub: string };
-
-const short = Object.fromEntries(TOPICS.map((t) => [t.id, t.short || t.name]));
-// Keys match the original engine's, so boxes already earned stay earned.
-const DECK: Card[] = [
-  ...DATA.terms.map(([term, topic, meaning, ex]) => ({ key: `t:${term}`, kind: "terms" as const, topic, kick: `Term · ${short[topic]}`, front: term, main: meaning, sub: `Example: ${ex}` })),
-  ...TOPICS.flatMap((t) =>
-    (DATA.sheet[t.id] ?? []).map(([name, f, ex, alias]) => ({
-      key: `f:${t.id}:${name}`, kind: "formulas" as const, topic: t.id as string, kick: `Formula · ${short[t.id]}`, front: name + (alias ? `, ${alias}` : ""), main: f, sub: `Example: ${ex}`,
-    })),
-  ),
-  ...DATA.hooks.map(([name, label, hook, expands]) => ({ key: `h:${name}`, kind: "hooks" as const, topic: "all", kick: "Memory hook", front: `${name}: ${label}`, main: hook, sub: expands })),
-];
-
 const boxOf = (c: Card) => getStudyProgress().cards?.[c.key] ?? 0;
 
-/** A Leitner box per card: missed cards come back sooner, three in a row counts as mastered. */
+/** A Leitner box per card: missed cards come back sooner, three in a row counts as mastered.
+ *  With no cards rated yet, the deal starts at the topic read last, or topic 1. */
 function deal(kind: string, topic: string) {
   const pool = DECK.filter((c) => (kind === "all" || c.kind === kind) && (topic === "all" || c.topic === topic || c.topic === "all"));
-  return { pool, queue: pool.map((c) => ({ c, r: Math.random() + boxOf(c) })).sort((a, b) => a.r - b.r).map((x) => x.c) };
+  return { pool, queue: dealOrder(pool, getStudyProgress().cards, recall("sigmaTopic")) };
 }
 
 export function Flashcards() {
@@ -50,11 +39,12 @@ export function Flashcards() {
     const c = state.cur;
     if (!c || !state.flipped) return;
     const b = boxOf(c);
+    // XP only when the card moves up a box, once a day per card: rating the same card again earns nothing.
+    let xp = 0;
     updateStudyProgress((s) => {
-      s.cards = { ...s.cards, [c.key]: got ? Math.min(4, b + 1) : 0 };
+      xp = rateCard(s, c.key, got, localDay(Date.now()));
     });
-    touchStreak();
-    awardXp(got ? 3 : 1, "flashcard");
+    if (xp) awardXp(xp, "flashcard");
     if (got && b === 2 && Object.values(getStudyProgress().cards ?? {}).filter((x) => x >= 3).length >= 50) awardBadge("cards-50");
     const queue = state.queue.slice();
     if (!got) queue.splice(Math.min(3, queue.length), 0, c);
@@ -83,14 +73,15 @@ export function Flashcards() {
   }, []);
 
   const mastered = state.pool.filter((c) => (p.cards?.[c.key] ?? 0) >= 3).length;
-  // The deal is random, so the first card shows after hydration (the server never picks one).
+  // The deal depends on this browser's progress, so the first card shows after hydration (the server never picks one).
   const ready = useHydrated();
   const cur = ready ? state.cur : null, flipped = ready && state.flipped;
   const left = cur ? state.queue.length + 1 : 0;
 
   return (
     <div className="mx-auto grid w-full max-w-[44rem] gap-6 pb-8">
-      <PageHead title="Flashcards">
+      {/* The practice layout holds the page's h1. */}
+      <PageHead title="Flashcards" as="h2">
         <p className={cn(lead, "text-ink-muted")}>Say the answer out loud, flip, then be honest. Cards you miss come back sooner; cards you know three times running count as mastered.</p>
       </PageHead>
       <div className="grid grid-cols-2 gap-3">

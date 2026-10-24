@@ -3,7 +3,7 @@
 import * as React from "react";
 import { readNumber, warranty } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { ChanceMeter, HowItWorks, NumField, Presets, Stat, Stats, chance, useToolXp } from "@/components/decide/fields";
+import { ChanceMeter, HowItWorks, NumField, Presets, ResultBar, Stat, Stats, chance, useToolXp } from "@/components/decide/fields";
 
 type Preset = { label: string; note: string; price: string; chance: string; loss: string; deductible: string };
 
@@ -84,6 +84,13 @@ export function Warranty() {
   const cheaper = w ? (w.extra > 0.005 ? "skip" : w.extra < -0.005 ? "buy" : "even") : null;
   const hurts = Number.isFinite(cash0) && cash0 >= 0 && L > cash0;
 
+  const bar: [string, string] = !w
+    ? ["", "Fix the numbers to compare the two choices."]
+    : cheaper === "skip"
+      ? [cash(w.extra), `less on average if you skip the plan${hurts ? ", but the full bill would hurt" : ""}.`]
+      : cheaper === "buy"
+        ? [cash(-w.extra), "less on average if you buy the plan."]
+        : ["", "The two choices cost about the same on average."];
   let read = "Fix the numbers to compare the two choices.";
   if (w) {
     read =
@@ -103,6 +110,7 @@ export function Warranty() {
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example plans" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them.</p>
@@ -113,7 +121,7 @@ export function Warranty() {
             <NumField id="wr-loss" label="Cost if it does" prefix="$" value={loss} onChange={edit(setLoss)} invalid={!(L > 0)} describedBy="wr-hint" />
             <NumField id="wr-ded" label="You still pay, with the plan" prefix="$" value={ded} onChange={edit(setDed)} invalid={!(D >= 0 && D <= L)} describedBy="wr-hint" className="col-span-2" />
           </div>
-          <p id="wr-hint" className="text-sm text-ink-muted" role={ok ? undefined : "alert"}>
+          <p id="wr-hint" className="text-sm text-ink-muted">
             {ok ? "The chance is over the whole plan, not per year. What you still pay is the deductible, if there is one." : errors.join(" ")}
           </p>
           <NumField id="wr-cushion" label="Cash you could spend on a surprise bill (optional)" prefix="$" value={cushion} onChange={(v) => { setCushion(v); xp(); }} invalid={cushion.trim() !== "" && !(cash0 >= 0)} />
@@ -134,7 +142,7 @@ export function Warranty() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {read}
           </p>
         </div>
@@ -233,11 +241,11 @@ function CostBars({ skip, buy, worstSkip, worstBuy }: { skip: number; buy: numbe
         const y = i * rowH + 30;
         return (
           <g key={r.name}>
-            <text x={L} y={y - 10} className="font-mono" fontSize="12" fill="var(--ink)">
+            <text x={L} y={y - 10} fontSize="12" fill="var(--ink)">
               {r.name}
             </text>
-            <text x={W - R} y={y - 10} textAnchor="end" className="font-mono" fontSize="12" fill="var(--ink-muted)">
-              {`average ${cash(r.avg)} · worst ${cash(r.worst)}`}
+            <text x={W - R} y={y - 10} textAnchor="end" fontSize="12" fill="var(--ink-muted)">
+              average <tspan className="font-mono">{cash(r.avg)}</tspan> · worst <tspan className="font-mono">{cash(r.worst)}</tspan>
             </text>
             <line x1={X(0)} x2={X(r.worst)} y1={y + 7} y2={y + 7} stroke={r.color} strokeWidth={2} strokeOpacity={0.55} />
             <line x1={X(r.worst)} x2={X(r.worst)} y1={y} y2={y + 14} stroke={r.color} strokeWidth={2} strokeOpacity={0.55} />
@@ -245,8 +253,8 @@ function CostBars({ skip, buy, worstSkip, worstBuy }: { skip: number; buy: numbe
           </g>
         );
       })}
-      <text x={L} y={H - 4} className="font-mono" fontSize="12" fill="var(--ink-muted)">
-        Bar: the average · line: the worst case
+      <text x={L} y={H - 4} fontSize="12" fill="var(--ink-muted)">
+        Bar: the average. Line: the worst case.
       </text>
     </svg>
   );

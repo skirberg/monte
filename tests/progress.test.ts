@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { CHIPS_FOR, DAILY_GOAL, START_CHIPS, addXp, exportProgress, getProgress, importProgress, levelOf, type Progress } from "@/lib/progress";
+import { BADGES, CHIPS_FOR, DAILY_GOAL, START_CHIPS, addXp, exportProgress, getProgress, importProgress, levelOf, liveStreak, milestoneText, shiftDay, type Progress } from "@/lib/progress";
 
 // progress.ts runs in the browser: give it a window that can dispatch events and a Map-backed localStorage.
 let store: Map<string, string>;
@@ -11,6 +11,10 @@ beforeEach(() => {
     setItem: (k: string, v: string) => void store.set(k, String(v)),
     removeItem: (k: string) => void store.delete(k),
     clear: () => store.clear(),
+    get length() {
+      return store.size;
+    },
+    key: (i: number) => [...store.keys()][i] ?? null,
   });
   vi.useFakeTimers();
 });
@@ -108,6 +112,50 @@ describe("streak", () => {
   });
 });
 
+describe("live streak (what the header and the drill page show)", () => {
+  const p = (streak: number, lastDay: string | null, freezes = 0) => ({ streak, lastDay, freezes });
+  it("is 0 before any learning", () => expect(liveStreak(p(0, null), "2026-01-10")).toBe(0));
+  it("holds today and yesterday", () => {
+    expect(liveStreak(p(4, "2026-01-10"), "2026-01-10")).toBe(4);
+    expect(liveStreak(p(4, "2026-01-10"), "2026-01-11")).toBe(4);
+  });
+  it("shows 0 after a missed day with no freeze, and holds with one", () => {
+    expect(liveStreak(p(4, "2026-01-10"), "2026-01-12")).toBe(0);
+    expect(liveStreak(p(4, "2026-01-10", 1), "2026-01-12")).toBe(4);
+  });
+  it("crosses a clock change by calendar days", () => {
+    expect(liveStreak(p(4, "2026-03-07"), "2026-03-08")).toBe(4);
+    expect(liveStreak(p(4, "2026-10-31"), "2026-11-01")).toBe(4);
+  });
+});
+
+describe("shiftDay", () => {
+  it("steps by calendar days across month and year ends", () => {
+    expect(shiftDay(new Date(2026, 0, 1, 12).getTime(), -1)).toBe("2025-12-31");
+    expect(shiftDay(new Date(2026, 1, 28, 12).getTime(), 1)).toBe("2026-03-01");
+  });
+  it("never skips a date near midnight on a clock-change day", () => {
+    // 00:30 the day after US clocks spring forward: minus 24 hours would land two dates back there.
+    expect(shiftDay(new Date(2026, 2, 9, 0, 30).getTime(), -1)).toBe("2026-03-08");
+    expect(shiftDay(new Date(2026, 10, 2, 23, 30).getTime(), -1)).toBe("2026-11-01");
+    expect(shiftDay(new Date(2026, 2, 9, 0, 30).getTime(), -6)).toBe("2026-03-03");
+  });
+});
+
+describe("milestones", () => {
+  it("says every milestone that landed, once", () => {
+    expect(milestoneText({ gained: 5 })).toBe("");
+    expect(milestoneText({ levelUp: 3 })).toBe("Level 3 reached.");
+    expect(milestoneText({ badge: "streak-7" })).toBe(`Badge earned: ${BADGES["streak-7"].name}.`);
+    expect(milestoneText({ goalHit: true, badge: "goal-hit" })).toBe("Daily goal done.");
+    expect(milestoneText({ levelUp: 2, goalHit: true, badge: "streak-7" })).toBe("Level 2 reached. Daily goal done. Badge earned: Seven days.");
+  });
+  it("names badges in plain words", () => {
+    expect(BADGES["topic-won"].name).toBe("Topic mastered");
+    expect(BADGES["mock-pass"].name).toBe("Test ready");
+  });
+});
+
 describe("chips for learning", () => {
   it("the daily goal pays 100, once a day", () => {
     // The first goal also pays a badge and a level pays too; start past both to isolate the goal (level 3 is at 300).
@@ -150,11 +198,18 @@ describe("chips for learning", () => {
 });
 
 describe("backup and restore", () => {
-  it("round-trips everything Monte saved", () => {
+  it("round-trips everything Monte saved, plain strings included, exactly", () => {
     at(2026, 1, 10);
     addXp(120);
     store.set("sigma", JSON.stringify({ cards: { a: 1 }, name: "Zoë ✓" }));
     store.set("monteElectionCalls", JSON.stringify([{ p: 0.7, o: 1 }]));
+    store.set("monteElectionStreak", "4");
+    store.set("sigmaTopic", "normal");
+    store.set("sigmaQuiz", "1");
+    store.set("sigmaUntimed", "1");
+    store.set("sigmaGuessR", "0.083");
+    store.set("monte-decide:warranty", "2026-01-09");
+    store.set("monte-decide:ab-test", "2026-01-10");
     store.set("unrelated", "keep out");
     const before = new Map(store);
     const code = exportProgress();
@@ -162,9 +217,23 @@ describe("backup and restore", () => {
 
     store.clear();
     expect(importProgress(code)).toBe(true);
-    for (const k of ["monte-progress", "sigma", "monteElectionCalls"]) expect(JSON.parse(store.get(k)!)).toEqual(JSON.parse(before.get(k)!));
+    for (const [k, v] of before) if (k !== "unrelated") expect(store.get(k)).toBe(v);
     expect(store.has("unrelated")).toBe(false);
     expect(getProgress().xp).toBe(120);
+  });
+  it("still restores an old (version 1) code, where values were parsed JSON", () => {
+    const v1 = btoa(JSON.stringify({ app: "monte", v: 1, data: { "monte-progress": { xp: 9 }, sigma: { due: ["prob"] }, monteElectionCalls: [{ p: 0.6, o: 0 }] } }));
+    expect(importProgress(v1)).toBe(true);
+    expect(getProgress().xp).toBe(9);
+    expect(JSON.parse(store.get("sigma")!)).toEqual({ due: ["prob"] });
+    expect(JSON.parse(store.get("monteElectionCalls")!)).toEqual([{ p: 0.6, o: 0 }]);
+  });
+  it("writes only Monte's own keys from a code", () => {
+    const json = JSON.stringify({ app: "monte", v: 2, data: { "monte-progress": '{"xp":3}', evil: "x", "monte-decide:tool": "2026-01-01" } });
+    expect(importProgress(json)).toBe(true);
+    expect(store.has("evil")).toBe(false);
+    expect(store.get("monte-decide:tool")).toBe("2026-01-01");
+    expect(getProgress().xp).toBe(3);
   });
   it("also takes the backup file's JSON text", () => {
     const json = JSON.stringify({ app: "monte", v: 1, data: { "monte-progress": { xp: 42 } } });

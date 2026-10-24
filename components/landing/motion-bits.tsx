@@ -43,11 +43,11 @@ const STEPS = [
   },
   {
     k: "Practice",
-    t: "Answer timed questions with fresh numbers. Score 80% on a topic to win its match.",
+    t: "Answer timed questions with fresh numbers. Score 80% on a topic to master it.",
   },
   {
     k: "Check",
-    t: "Misses come back in Due today, and the timed closed-book mock shows how ready you are.",
+    t: "Misses come back in Due today, and a 20-question mock test shows how ready you are.",
   },
 ];
 

@@ -22,12 +22,12 @@ function useProgress(): Record<string, Stat> {
 }
 
 function status(s?: Stat) {
-  if (!s || !s.asked) return { label: "Not played", won: false };
-  if (s.best >= 0.8 && s.asked >= 8) return { label: "Won", won: true };
+  if (!s || !s.asked) return { label: "Not started", won: false };
+  if (s.best >= 0.8 && s.asked >= 8) return { label: "Mastered", won: true };
   return { label: `Best ${Math.round(s.best * 100)}%`, won: false };
 }
 
-/** The curriculum as a distribution: fourteen columns, this topic's column in clay. */
+/** The fourteen topics as a distribution: fourteen columns, this topic's column in clay. */
 function MiniPile({ n, className }: { n: number; className?: string }) {
   const pmf = (k: number) => {
     let c = 1;
@@ -77,7 +77,7 @@ function Preview({ t, stat }: { t: Topic; stat?: Stat }) {
         <p className="text-[1.05rem] leading-relaxed text-ink-muted">{t.line}</p>
       </div>
       <p className="text-sm text-ink-muted">
-        {st.won ? <span className="text-clay-ink">Match won</span> : st.label}
+        {st.won ? <span className="text-clay-ink">Mastered</span> : st.label}
       </p>
       <div className="mt-auto flex flex-wrap gap-2">
         <a
@@ -132,7 +132,7 @@ export function TheDraw() {
                 <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">
                   {st.won ? (
                     <span className="inline-flex items-center gap-1 text-clay-ink">
-                      <Check className="size-3.5" /> Won
+                      <Check className="size-3.5" /> Mastered
                     </span>
                   ) : (
                     drill[x.id]?.asked ? <span className="hidden sm:inline">{st.label}</span> : null
@@ -143,9 +143,13 @@ export function TheDraw() {
             </li>
           );
         })}
-        <li className="flex items-center justify-between gap-3 py-4 pl-2 text-sm text-ink-muted">
-          <span>Final: timed closed-book mock, 20 questions</span>
-          <span className="tabular">{won} of {TOPICS.length} won</span>
+        <li className="flex items-center justify-between gap-3 py-2 pl-2 text-sm text-ink-muted">
+          <a href={studyHref("#practice/drill/mock")} className="inline-flex min-h-11 items-center gap-2 hover:text-ink">
+            Mock test, 20 questions <ArrowRight className="size-4" aria-hidden />
+          </a>
+          <span className="tabular">
+            {won} of {TOPICS.length} mastered
+          </span>
         </li>
       </ol>
 

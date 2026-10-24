@@ -11,7 +11,7 @@ import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Study",
-  description: "Learn, practice, solve. Fourteen topics, timed drills with fresh numbers, and solvers that show the work.",
+  description: "Statistics, one idea at a time. Fourteen topics in plain English, drills with fresh numbers, and solvers that show the work.",
   alternates: { canonical: "/study/" },
 };
 
@@ -22,7 +22,7 @@ export default function StudyPage() {
         data={{
           "@type": "LearningResource",
           name: `${SITE_NAME}: study`,
-          description: "Fourteen business statistics topics with labs, timed drills with fresh numbers, a mock exam and solvers that show the work.",
+          description: "Fourteen statistics topics in plain English, with labs, drills with fresh numbers, a mock test and solvers that show the work.",
           url: abs("/study/"),
           learningResourceType: "Interactive lessons and practice questions",
           teaches: TOPICS.map((t) => t.name),
@@ -37,7 +37,7 @@ export default function StudyPage() {
           id="hero-t"
           className="max-w-[22ch] font-display text-[clamp(2.4rem,1.4rem+4vw,4.4rem)] font-[650] leading-[0.98] tracking-[-0.02em] [font-variation-settings:'wdth'_82]"
         >
-          Learn business statistics one idea at a time.
+          Statistics, one idea at a time.
         </h1>
         <p className={`${lead} max-w-[62ch] text-ink-muted`}>{DATA.copy.heroSub}</p>
         <div className="flex flex-wrap gap-2">

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { readNumber, testResult, wholeCounts } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Stat, Stats, chance, oneIn, useToolXp } from "@/components/decide/fields";
+import { HowItWorks, NumField, Presets, ResultBar, Stat, Stats, chance, oneIn, useToolXp } from "@/components/decide/fields";
 
 /** The words each example uses, so the plain-English sentence reads right for people, purchases or emails. */
 type Words = { who: string; have: string; others: string; flagged: string; isIt: string; stillIs: string };
@@ -85,11 +85,13 @@ export function Bayes() {
   // The sentence pictures enough cases that at least 10 are real, so a rare thing never rounds to zero people.
   const N = [1000, 10000, 100000, 1000000].find((n) => b * n >= 10) ?? 1000000;
   const said = r ? wholeCounts([r.tp, r.fn, r.fp, r.tn], N) : null;
+  const bar: [string, string] = r ? [chance(r.realIfPos, 1), `of the ${words.who} that ${words.flagged} really ${words.have}.`] : ["", "Fix the numbers to see what a yes means."];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example tests" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Change any of them.</p>
@@ -103,7 +105,7 @@ export function Bayes() {
               <NumField id="by-catch" label="How often it catches it" suffix="%" value={catches} onChange={edit(setCatches)} invalid={!(c >= 0 && c <= 1)} describedBy="by-hint" />
               <NumField id="by-false" label="How often it false-alarms" suffix="%" value={falseAlarm} onChange={edit(setFalseAlarm)} invalid={!(f >= 0 && f <= 1)} describedBy="by-hint" />
             </div>
-            <p id="by-hint" className="text-sm text-ink-muted" role={errors.length ? "alert" : undefined}>
+            <p id="by-hint" className="text-sm text-ink-muted">
               {errors.length ? errors.join(" ") : !ok ? "A test that never says yes has nothing to read. Give it a catch rate." : "Catches: of the real cases, the share it says yes to. False-alarms: of the rest, the share it says yes to anyway."}
             </p>
           </div>
@@ -115,14 +117,14 @@ export function Bayes() {
               <figure className="space-y-3 rounded-[28px] bg-sand p-4 sm:p-5">
                 <DotGrid counts={grid} who={words.who} />
                 <figcaption>
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono text-xs text-ink-muted tabular sm:grid-cols-4">
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-ink-muted sm:grid-cols-4">
                     {GROUPS.map((g, i) => (
                       <li key={g.key} className="flex items-center gap-2">
                         <svg viewBox="0 0 12 12" className="size-3 shrink-0" aria-hidden="true">
                           <Dot kind={g.key} x={6} y={6} cell={12} />
                         </svg>
                         <span>
-                          <span className="text-ink">{k(grid[i])}</span> {g.name}
+                          <span className="font-mono text-ink tabular">{k(grid[i])}</span> {g.name}
                         </span>
                       </li>
                     ))}
@@ -138,7 +140,7 @@ export function Bayes() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {r && said
               ? `Picture ${k(N)} ${words.who}: ${k(said[0] + said[1])} ${words.have}, and ${k(said[0])} of those ${words.flagged}. Of the ${k(said[2] + said[3])} ${words.others}, ${k(said[2])} ${words.flagged} too. So ${k(said[0] + said[2])} ${words.flagged} in all, and ${k(said[0])} of them really ${words.have}: about ${chance(r.realIfPos, 1)}.`
               : "Fix the numbers to see what a yes means."}

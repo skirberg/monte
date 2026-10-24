@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowUpRight, Moon, Search, Sparkles, Sun, Target } from "lucide-react";
+import { ArrowRight, Moon, Search, Sparkles, Sun, Target } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "cn";
 import { Wordmark } from "@/components/brand/logo";
 import { CommandMenu } from "@/components/command-menu";
-import { STUDY_NAV, playHref, studyHref } from "@/lib/site-data";
+import { usePathname } from "next/navigation";
+import { SITE_NAV, navKeyFor, studyHref, type SiteNavKey } from "@/lib/site-data";
 import { useHydrated } from "@/lib/hooks";
-import { useStudySection } from "@/lib/use-hash-page";
 import { setMode, useMode } from "@/lib/mode";
 import { ProgressButton } from "@/components/progress";
 
@@ -28,63 +28,45 @@ function ThemeButton() {
   );
 }
 
-/** Fun or Focus. Full labels on wide screens, one icon button below that. */
-function ModeToggle() {
+/**
+ * Fun or Focus, as one compact icon button. The icon shows the current mode; the label and tooltip say what a press does.
+ * On phones it lives in the More sheet instead (components/study/bottom-nav.tsx); ⌘K has it everywhere.
+ */
+export function ModeToggle({ className }: { className?: string }) {
   const mode = useMode();
   const hydrated = useHydrated();
   const focus = hydrated && mode === "focus";
-  const seg = "flex h-11 items-center gap-1.5 rounded-full px-3.5 text-[0.85rem] transition-colors";
+  const label = focus ? "Focus mode is on: only the work. Switch to Fun mode" : "Fun mode is on: games and celebrations. Switch to Focus mode";
   return (
-    <>
-      <div role="radiogroup" aria-label="Site mode" className="hidden h-12 items-center rounded-full bg-sand p-0.5 xl:flex">
-        {(["fun", "focus"] as const).map((m) => {
-          const on = (m === "focus") === focus;
-          return (
-            <button
-              key={m}
-              type="button"
-              role="radio"
-              aria-checked={on}
-              onClick={() => setMode(m)}
-              className={cn(seg, on ? "bg-paper font-medium text-ink shadow-[0_0_0_1px_var(--line)]" : "text-ink-muted hover:text-ink")}
-            >
-              {m === "fun" ? <Sparkles className="size-3.5" /> : <Target className="size-3.5" />}
-              {m === "fun" ? "Fun" : "Focus"}
-            </button>
-          );
-        })}
-      </div>
-      <button
-        type="button"
-        onClick={() => setMode(focus ? "fun" : "focus")}
-        className="grid size-11 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sand hover:text-ink xl:hidden"
-        aria-label={focus ? "Focus mode is on. Switch to fun mode" : "Fun mode is on. Switch to focus mode"}
-        title={focus ? "Focus mode" : "Fun mode"}
-      >
-        {focus ? <Target className="size-[18px]" /> : <Sparkles className="size-[18px]" />}
-      </button>
-    </>
+    <button
+      type="button"
+      onClick={() => setMode(focus ? "fun" : "focus")}
+      className={cn(
+        "grid size-11 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sand hover:text-ink",
+        className,
+      )}
+      aria-label={label}
+      title={focus ? "Focus mode (press for Fun)" : "Fun mode (press for Focus)"}
+    >
+      {focus ? <Target className="size-[18px]" /> : <Sparkles className="size-[18px]" />}
+    </button>
   );
 }
 
-type Item = { key: string; label: string; href: string; active: boolean; funOnly?: boolean };
+type Item = { key: SiteNavKey; label: string; href: string; active: boolean; funOnly?: boolean };
 
 export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
   const study = mode === "study";
-  const section = useStudySection();
-  const active = study ? section : null;
+  const current = navKeyFor(usePathname());
   const [open, setOpen] = React.useState(false);
 
-  const items: Item[] = [
-    ...STUDY_NAV.filter((n) => study || !["home", "sources"].includes(n.page)).map((n) => ({
-      key: n.page,
-      label: n.label,
-      href: studyHref(n.hash),
-      active: study && active === n.page,
-    })),
-    { key: "decide", label: "Decide", href: "/decide/", active: false },
-    { key: "play", label: "Play", href: playHref(), active: mode === "play", funOnly: true },
-  ];
+  const items: Item[] = SITE_NAV.map((n) => ({
+    key: n.key,
+    label: n.label,
+    href: n.href,
+    active: current === n.key,
+    funOnly: n.key === "play",
+  }));
 
   const navLink = (n: Item, extra?: string) => (
     <Link
@@ -128,7 +110,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
             <Wordmark />
           </Link>
 
-          <nav aria-label="Main" className={cn("hidden self-stretch", study ? "lg:flex" : "md:flex")}>
+          <nav aria-label="Main" className="hidden self-stretch md:flex">
             {items.map((n) => navLink(n, "self-stretch"))}
           </nav>
 
@@ -137,7 +119,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
               type="button"
               onClick={() => setOpen(true)}
               className="flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-sm text-ink-muted transition-colors hover:bg-sand hover:text-ink xl:border xl:border-line xl:pr-2"
-              aria-label="Search topics, drills and solvers"
+              aria-label="Search everything: topics, drills, solvers, decisions and games"
             >
               <Search className="size-[18px]" />
               <span className="hidden xl:inline">Jump to</span>
@@ -146,14 +128,14 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
               </kbd>
             </button>
             <ProgressButton />
-            <ModeToggle />
+            <ModeToggle className="hidden lg:grid" />
             <ThemeButton />
             {!study && (
               <a
                 href={studyHref("#learn/topics/data")}
                 className="ml-1 hidden h-11 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-paper transition-colors hover:bg-ink/85 sm:flex md:hidden xl:flex"
               >
-                Start studying <ArrowUpRight className="size-4" />
+                Start studying <ArrowRight className="size-4" />
               </a>
             )}
           </div>

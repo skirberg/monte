@@ -199,17 +199,73 @@ export function Toggle<T extends string>({ label, value, options, onChange }: { 
 
 /* ---------------- results ---------------- */
 
+/**
+ * A grid of numbers. The rounded frame draws the outer edge; each cell draws only its top and left line, and the grid is pulled up and left by
+ * one pixel so the first row's and column's lines hide under the frame. One background, so no slivers show at the rounded corners in dark mode.
+ */
 export function Stats({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <dl className={cn("grid gap-px overflow-hidden rounded-2xl bg-line font-mono tabular", className)}>{children}</dl>;
+  return (
+    <div className="overflow-hidden rounded-2xl border border-line bg-paper">
+      <dl className={cn("-ml-px -mt-px grid tabular-nums", className)}>{children}</dl>
+    </div>
+  );
 }
 
 export function Stat({ k, v, sub, tone }: { k: string; v: React.ReactNode; sub?: React.ReactNode; tone?: "clay" | "danger" }) {
   return (
-    <div className="min-w-0 bg-paper p-4 sm:p-5">
-      <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
-      <dd className={cn("mt-1 break-words text-[1.7rem] font-medium leading-tight tracking-[-0.03em]", tone === "clay" && "text-clay-ink", tone === "danger" && "text-[var(--danger)]")}>{v}</dd>
+    <div className="min-w-0 border-l border-t border-line p-4 sm:p-5">
+      <dt className="text-sm text-ink-muted">{k}</dt>
+      <dd className={cn("mt-1 break-words font-display text-[1.75rem] font-[650] leading-tight tracking-[-0.02em]", tone === "clay" && "text-clay-ink", tone === "danger" && "text-[var(--danger)]")}>{v}</dd>
       {sub && <dd className="mt-1 font-sans text-xs text-ink-muted">{sub}</dd>}
     </div>
+  );
+}
+
+/* ---------------- the answer, first ---------------- */
+
+/** The short answer for screen readers: said once typing settles, not on every keystroke, and not on page load. */
+export function LiveSummary({ text }: { text: string | null }) {
+  const [said, setSaid] = React.useState("");
+  const first = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    if (!text) return;
+    if (first.current === null) first.current = text;
+    if (text === first.current && said === "") return;
+    const t = setTimeout(() => setSaid(text), 600);
+    return () => clearTimeout(t);
+  }, [text, said]);
+  return (
+    <p aria-live="polite" className="sr-only">
+      {said}
+    </p>
+  );
+}
+
+/**
+ * The answer in one line. On phones it sticks under the header while the inputs are on screen, so changing a number visibly changes the answer
+ * without scrolling; on wide screens the results sit beside the inputs and it hides. It also carries the tool's one live region.
+ * While a simulation is still drawing (lead and rest null), the last answer stays, dimmed.
+ */
+export function ResultBar({ lead, rest }: { lead: string | null; rest: string | null }) {
+  const [shown, setShown] = React.useState<{ lead: string; rest: string } | null>(lead !== null && rest !== null ? { lead, rest } : null);
+  if (lead !== null && rest !== null && (shown?.lead !== lead || shown?.rest !== rest)) setShown({ lead, rest });
+  const pending = lead === null || rest === null;
+  const sentence = pending ? null : `${lead} ${rest}`.trim();
+  return (
+    <>
+      <LiveSummary text={sentence} />
+      <div className="sticky top-14 z-30 -mx-4 border-b border-line bg-paper/90 px-4 py-2.5 backdrop-blur-md md:top-16 md:-mx-6 md:px-6 lg:hidden">
+        <p className={cn("text-[0.95rem] leading-snug transition-colors", pending && "text-ink-muted")}>
+          {shown ? (
+            <>
+              {shown.lead && <span className="font-semibold text-clay-ink tabular-nums">{shown.lead}</span>} {shown.rest}
+            </>
+          ) : (
+            <span className="text-ink-muted">Working it out…</span>
+          )}
+        </p>
+      </div>
+    </>
   );
 }
 
@@ -225,10 +281,10 @@ export function ChanceMeter({ market, mine, marketLabel, mineLabel }: { market: 
         <span className={cn("absolute inset-y-0 rounded-full", edge ? "bg-clay" : "bg-line-strong")} style={{ left: at(lo), width: `calc(${at(hi)} - ${at(lo)})` }} />
         <span className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-ink" style={{ left: at(market) }} />
         <span className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-clay" style={{ left: at(mine) }} />
-        <span className="absolute -top-7 -translate-x-1/2 whitespace-nowrap font-mono text-xs text-ink-muted" style={{ left: `clamp(2.5rem, ${at(market)}, calc(100% - 2.5rem))` }}>
+        <span className="absolute -top-7 -translate-x-1/2 whitespace-nowrap text-xs text-ink-muted tabular" style={{ left: `clamp(2.5rem, ${at(market)}, calc(100% - 2.5rem))` }}>
           {marketLabel}
         </span>
-        <span className="absolute top-4 -translate-x-1/2 whitespace-nowrap font-mono text-xs text-clay-ink" style={{ left: `clamp(2.5rem, ${at(mine)}, calc(100% - 2.5rem))` }}>
+        <span className="absolute top-4 -translate-x-1/2 whitespace-nowrap text-xs text-clay-ink tabular" style={{ left: `clamp(2.5rem, ${at(mine)}, calc(100% - 2.5rem))` }}>
           {mineLabel}
         </span>
       </div>
@@ -268,31 +324,6 @@ export function HowItWorks({ id, steps, after }: { id: string; steps: Step[]; af
         {after && <div className="max-w-[62ch] space-y-3 self-start border-t border-line pt-5 leading-relaxed lg:col-span-5 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-1 [&_p]:text-ink-muted">{after}</div>}
       </div>
     </details>
-  );
-}
-
-/* ---------------- one tool's frame ---------------- */
-
-export function ToolSection({ id, kicker, title, line, children }: { id: string; n?: string; kicker: string; title: string; line: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <section id={id} aria-labelledby={`${id}-t`} className="scroll-mt-20 border-t border-line pt-12 md:scroll-mt-24 md:pt-16">
-      <div className="mb-8 grid gap-3 md:grid-cols-12 md:gap-4">
-        <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-3">
-          {kicker}
-        </p>
-        <div className="space-y-3 md:col-span-9">
-          <h2
-            id={`${id}-t`}
-            className="font-display text-[clamp(2rem,1.3rem+2.8vw,3.4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
-            style={{ fontVariationSettings: "'wdth' 84" }}
-          >
-            {title}
-          </h2>
-          <p className="max-w-[58ch] text-lg text-ink-muted">{line}</p>
-        </div>
-      </div>
-      {children}
-    </section>
   );
 }
 

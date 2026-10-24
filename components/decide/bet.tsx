@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { evPer100, formatOdds, impliedFromDecimal, kelly, overround, readNumber, toDecimal, type OddsFormat } from "@/lib/decide/math";
-import { ChanceMeter, HowItWorks, NumField, Presets, Slider, Stat, Stats, Toggle, chance, dollars, signedMoney, useToolXp } from "@/components/decide/fields";
+import { ChanceMeter, HowItWorks, NumField, Presets, ResultBar, Slider, Stat, Stats, Toggle, chance, dollars, signedMoney, useToolXp } from "@/components/decide/fields";
 
 type Preset = { label: string; note: string; mine: string; other: string; mineName: string; otherName: string; you: number };
 
@@ -93,6 +93,9 @@ export function Bet() {
   const bankroll = readNumber(bank);
   const bankOk = bankroll > 0;
 
+  const bar: [string, string] = ok
+    ? [chance(implied, 1), `is what the odds say. At your ${chance(p, 1)}, a $100 bet is worth ${signedMoney(ev)} on average.`]
+    : ["", "Type odds to see what they mean."];
   const read = (
     <>
       {ok ? (
@@ -112,6 +115,7 @@ export function Bet() {
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example lines" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up lines, not live prices.</p>
@@ -137,7 +141,7 @@ export function Bet() {
               describedBy="bet-hint"
             />
           </div>
-          <p id="bet-hint" className="text-sm text-ink-muted" role={!ok || otherBad ? "alert" : undefined}>
+          <p id="bet-hint" className="text-sm text-ink-muted">
             {!ok || otherBad
               ? format === "american"
                 ? "American odds are −100 or lower, or +100 or higher."
@@ -183,7 +187,7 @@ export function Bet() {
               )}
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {read}
           </p>
         </div>

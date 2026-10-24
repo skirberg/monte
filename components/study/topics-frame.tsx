@@ -15,11 +15,11 @@ import { eyebrow } from "@/components/study/ui";
 function Status({ id, current }: { id: TopicId; current: boolean }) {
   const p = useStudyProgress();
   const d = statsFor(p, id);
-  const cls = cn(eyebrow, "ml-auto flex items-center gap-1", current ? "text-paper/75" : isWon(p, id) && "text-clay-ink");
+  const cls = cn(eyebrow, "ml-auto flex shrink-0 items-center gap-1", current ? "text-paper/75" : isWon(p, id) && "text-clay-ink");
   if (isWon(p, id))
     return (
       <span className={cls}>
-        <Check className="size-3.5" aria-hidden /> Won
+        <Check className="size-3.5" aria-hidden /> Mastered
       </span>
     );
   if (d.asked) return <span className={cls}>{Math.round(d.best * 100)}%</span>;

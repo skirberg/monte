@@ -3,7 +3,7 @@
 import * as React from "react";
 import { breakeven, oneSdMove, priceDensity, probAbove, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Stat, Stats, Toggle, aChance, chance, useToolXp } from "@/components/decide/fields";
+import { HowItWorks, NumField, Presets, ResultBar, Stat, Stats, Toggle, aChance, chance, useToolXp } from "@/components/decide/fields";
 
 type Kind = "call" | "put";
 type Preset = { label: string; note: string; kind: Kind; S: string; K: string; days: string; iv: string; premium: string };
@@ -67,11 +67,13 @@ export function OptionTrade() {
   const be = ok ? breakeven(kind, k, prem) : NaN;
   const pBe = ok && be > 0 ? (kind === "call" ? probAbove(s, be, sigma, d) : 1 - probAbove(s, be, sigma, d)) : kind === "put" ? 0 : NaN;
   const side = kind === "call" ? "above" : "below";
+  const bar: [string, string] = ok ? [chance(pBe, 1), `chance of a profit: the stock ends ${side} the ${usd(be)} breakeven.`] : ["", "Fix the numbers to see the odds."];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example trades" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up stock and prices.</p>
@@ -84,7 +86,7 @@ export function OptionTrade() {
             <NumField id="op-iv" label="Implied volatility" suffix="%" value={iv} onChange={edit(setIv)} invalid={!(sigma > 0 && sigma <= 3)} />
             <NumField id="op-p" label="Premium per share" prefix="$" value={premium} onChange={edit(setPremium)} invalid={!(prem >= 0)} className="col-span-2" />
           </div>
-          <p id="op-d-hint" className="text-sm text-ink-muted" role={ok ? undefined : "alert"}>
+          <p id="op-d-hint" className="text-sm text-ink-muted">
             {ok ? "Calendar days, weekends included. One contract usually covers 100 shares." : errors.join(" ")}
           </p>
         </div>
@@ -103,7 +105,7 @@ export function OptionTrade() {
               </Stats>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {ok
               ? `With ${chance(sigma, 0)} volatility and ${d} day${d === 1 ? "" : "s"} to go, a typical move is about ${usd(move)} either way. The model gives the stock ${aChance(pStrike, 1)} chance of ending ${side} the ${usd(k)} strike, and ${aChance(pBe, 1)} chance of ending past the ${usd(be)} breakeven, where the ${kind} starts to make money.`
               : "Fix the numbers to see the odds."}
@@ -237,8 +239,8 @@ function ExpiryCurve({ S, K, be, sigma, days, kind }: { S: number; K: number; be
         return (
           <g key={mk.label}>
             <line x1={x} x2={x} y1={top - 2} y2={base} stroke={mk.color} strokeWidth={1.5} strokeDasharray={mk.label === "now" ? "3 4" : undefined} />
-            <text x={x + (right ? 5 : -5)} y={mk.y} textAnchor={anchor} className="font-mono" fontSize="12" fill={mk.color}>
-              {mk.label} {fmt(mk.v)}
+            <text x={x + (right ? 5 : -5)} y={mk.y} textAnchor={anchor} fontSize="12" fill={mk.color}>
+              {mk.label} <tspan className="font-mono">{fmt(mk.v)}</tspan>
             </text>
           </g>
         );

@@ -44,6 +44,48 @@ export const STUDY_NAV = [
   { page: "sources", label: "Sources", hash: "#sources" },
 ] as const;
 
+/**
+ * The one navigation vocabulary (DESIGN.md, "Navigation"): Learn · Practice · Solve · Decide · Play,
+ * in this order, in the header, the phone bar's More sheet, the footer and the ⌘K menu.
+ * Tools (the Excel, R, Python and SQL guides) and Sources live under Learn and keep their URLs.
+ * Today is the study landing (/study/), reached from the phone bar, "Start studying" and ⌘K.
+ */
+export const SITE_NAV = [
+  { key: "learn", label: "Learn", href: pathForHash("#learn") },
+  { key: "practice", label: "Practice", href: pathForHash("#practice") },
+  { key: "solve", label: "Solve", href: pathForHash("#solve") },
+  { key: "decide", label: "Decide", href: "/decide/" },
+  { key: "play", label: "Play", href: "/play/" },
+] as const;
+export type SiteNavKey = (typeof SITE_NAV)[number]["key"];
+
+/** Which of the five a pathname belongs to. Study sections are read from the path, so Tools and Sources light up Learn. */
+export function navKeyFor(pathname: string | null): SiteNavKey | null {
+  if (!pathname) return null;
+  if (pathname.startsWith("/decide")) return "decide";
+  if (pathname.startsWith("/play")) return "play";
+  if (!pathname.startsWith("/study")) return null;
+  const seg = pathname.replace(/^\/study\/?/, "").split("/")[0];
+  if (seg === "learn" || seg === "tools" || seg === "sources") return "learn";
+  if (seg === "practice") return "practice";
+  if (seg === "solve") return "solve";
+  return null;
+}
+
+/** The decisions on /decide/, each with its own page at /decide/<id>/. */
+export const DECIDE_TOOLS = [
+  { id: "choose", name: "Choose between options", keywords: "monte carlo jobs products compare" },
+  { id: "warranty", name: "Should I buy the warranty?", keywords: "insurance expected value extended plan" },
+  { id: "bet", name: "What are these odds really saying?", keywords: "bet betting line kelly bookmaker" },
+  { id: "market", name: "What does 30¢ mean?", keywords: "prediction market cents fees" },
+  { id: "option", name: "How likely is the stock to get there?", keywords: "option strike volatility" },
+  { id: "bayes", name: "Is this test result real?", keywords: "bayes base rate false positive screening" },
+  { id: "abtest", name: "Did my change really work?", keywords: "a/b test ab conversion significance" },
+  { id: "goal", name: "Will I hit my goal?", keywords: "savings retirement monte carlo invest" },
+  { id: "staffing", name: "How many people do I need?", keywords: "staffing poisson queue busy hour" },
+] as const;
+export const decideHref = (id?: string) => (id ? `/decide/${id}/` : "/decide/");
+
 export const STUDY_PATH = "/study/";
 /** Link to a study page by its view name, spelled like the old hash routes (#learn/topics/normal). */
 export const studyHref = (hash: string) => pathForHash(hash);

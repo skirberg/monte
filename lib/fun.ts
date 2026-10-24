@@ -2,11 +2,13 @@
 
 /**
  * Fun-mode flourishes, written against the DOM so the study engine can trigger them too.
- * Both are no-ops in Focus mode and with reduced motion, and both are decorative
- * (aria-hidden): the real feedback is always the text on the page.
+ * All are no-ops in Focus mode and with reduced motion, and all are decorative
+ * (aria-hidden): the real feedback is always the text on the page. Milestones (level, badge,
+ * daily goal) are also announced and shown as a still toast by <ProgressBridge />, in every mode.
  */
 
-const TENNIS_CALLS = ["Ace.", "Clean winner.", "Down the line.", "Unreturnable.", "On the line. Good.", "Point."];
+/** Short, plain praise for a run of right answers. */
+const CALLS = ["Nice.", "Right.", "Clean.", "Sharp.", "Spot on."];
 
 function quiet() {
   if (typeof window === "undefined") return true;
@@ -56,12 +58,12 @@ export function burstFrom(el: Element | null, n?: number) {
   burst(r.left + r.width / 2, r.top + r.height / 2, n);
 }
 
-/** A line call that drops in at the top of the screen, then leaves. */
+/** A short word that drops in at the top of the screen, then leaves. */
 export function callout(text?: string, big = false) {
   if (quiet()) return;
   const t = document.createElement("div");
   t.setAttribute("aria-hidden", "true");
-  t.textContent = text ?? TENNIS_CALLS[Math.floor(Math.random() * TENNIS_CALLS.length)];
+  t.textContent = text ?? CALLS[Math.floor(Math.random() * CALLS.length)];
   Object.assign(t.style, {
     position: "fixed",
     left: "50%",
@@ -92,8 +94,8 @@ export function callout(text?: string, big = false) {
   ).onfinish = () => t.remove();
 }
 
-/** The big one: a match won. */
-export function celebrate(text = "Game, set, match.") {
+/** The big one: a set finished at 80% or better. */
+export function celebrate(text = "Great set.") {
   if (quiet()) return;
   callout(text, true);
   const w = window.innerWidth;

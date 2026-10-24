@@ -18,7 +18,8 @@ export const study = {
   drill: "/study/practice/drill/",
   /** Opens the drill page and starts a set right away. */
   drillStart: (go: "start" | "mock" | "due" | "daily") => `/study/practice/drill/?go=${go}`,
-  drillTopic: (id: string) => `/study/practice/drill/?topic=${id}`,
+  /** A drill on one topic: 8 questions unless `n` says otherwise; `untimed` drops the clock for this set. */
+  drillTopic: (id: string, n?: number, untimed?: boolean) => `/study/practice/drill/?topic=${id}${n ? `&n=${n}` : ""}${untimed ? "&timer=off" : ""}`,
   math: "/study/practice/math/",
   cards: "/study/practice/cards/",
   solve: (id: string = "tree") => `/study/solve/${id}/`,

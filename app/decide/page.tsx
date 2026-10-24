@@ -1,20 +1,13 @@
-import type { ComponentType } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
+import { cn } from "cn";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Motion } from "@/components/landing/motion-bits";
 import { JsonLd } from "@/components/json-ld";
-import { ToolSection } from "@/components/decide/fields";
-import { MonteCarlo } from "@/components/decide/monte-carlo";
-import { Bet } from "@/components/decide/bet";
-import { Market } from "@/components/decide/market";
-import { OptionTrade } from "@/components/decide/option-trade";
-import { Warranty } from "@/components/decide/warranty";
-import { Bayes } from "@/components/decide/bayes";
-import { AbTest } from "@/components/decide/ab-test";
-import { Goal } from "@/components/decide/goal";
-import { Staffing } from "@/components/decide/staffing";
+import { HashRedirect } from "@/components/decide/hash-redirect";
+import { DISCLAIMER, GROUPS, TOOLS, toolHref } from "@/lib/decide/tools";
 import { playHref, studyHref } from "@/lib/site-data";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
 
@@ -37,134 +30,22 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: `${TITLE} · ${SITE_NAME}`, description: DESCRIPTION, images: ["/og.png"] },
 };
 
-type Tool = { id: string; name: string; line: string; kicker: string; title: string; lede: string; Body: ComponentType };
-
-/** The page in order, grouped. Numbers come from the order, so the nav and the sections never drift apart. */
-const GROUPS: { name: string; tools: Tool[] }[] = [
-  {
-    name: "Choose",
-    tools: [
-      {
-        id: "choose",
-        name: "Choose between options",
-        line: "Two jobs, two products, two cars",
-        kicker: "Monte Carlo",
-        title: "Choose between options.",
-        lede: "Give each option a worst, a likely and a best case. We play out 10,000 possible futures and count how often each one comes out on top.",
-        Body: MonteCarlo,
-      },
-    ],
-  },
-  {
-    name: "Money and risk",
-    tools: [
-      {
-        id: "warranty",
-        name: "Buy the warranty?",
-        line: "Insurance, by expected value",
-        kicker: "Expected value",
-        title: "Should I buy the warranty?",
-        lede: "Price, chance and cost: what each choice costs on average, the chance where the plan starts to pay, and when to buy it anyway.",
-        Body: Warranty,
-      },
-      {
-        id: "bet",
-        name: "Read a bet",
-        line: "Odds into a chance, and how much",
-        kicker: "A bet",
-        title: "What are these odds really saying?",
-        lede: "Turn any betting line into a chance, find the bookmaker's cut, and see what a careful bettor would stake.",
-        Body: Bet,
-      },
-      {
-        id: "market",
-        name: "Read a market price",
-        line: "Cents into a chance",
-        kicker: "A market price",
-        title: "What does 30¢ mean?",
-        lede: "A prediction market price is the crowd's chance. Compare it with yours, after fees.",
-        Body: Market,
-      },
-      {
-        id: "option",
-        name: "Read an option",
-        line: "The odds of ending past a price",
-        kicker: "An option, for learning only",
-        title: "How likely is the stock to get there?",
-        lede: "From a stock price, a strike, the days left and the volatility: the typical move, the chance of ending past the strike, and where you break even.",
-        Body: OptionTrade,
-      },
-    ],
-  },
-  {
-    name: "Evidence",
-    tools: [
-      {
-        id: "bayes",
-        name: "Is the test right?",
-        line: "Base rates and false alarms",
-        kicker: "Base rates",
-        title: "Is this test result real?",
-        lede: "A yes from a good test feels like an answer. How common the thing is changes what it means, often more than the test does.",
-        Body: Bayes,
-      },
-      {
-        id: "abtest",
-        name: "Did the change work?",
-        line: "An A/B test, in plain words",
-        kicker: "A/B test",
-        title: "Did my change really work?",
-        lede: "Two versions, two counts. Is the gap real or luck, how big could it be, and how many people would settle it.",
-        Body: AbTest,
-      },
-    ],
-  },
-  {
-    name: "Plan",
-    tools: [
-      {
-        id: "goal",
-        name: "Will I hit my goal?",
-        line: "5,000 futures for your savings",
-        kicker: "Monte Carlo",
-        title: "Will I hit my goal?",
-        lede: "A start amount, a monthly saving and a guess at returns. We play out 5,000 possible futures, month by month, and count how often you get there.",
-        Body: Goal,
-      },
-      {
-        id: "staffing",
-        name: "How many do I need?",
-        line: "Staff for a busy hour",
-        kicker: "Poisson",
-        title: "How many people do I need?",
-        lede: "Customers arrive at random. See how often a busy hour brings more than the team can serve, and the fewest people that keep it rare.",
-        Body: Staffing,
-      },
-    ],
-  },
-];
-
-const NUMBERED = GROUPS.map((g, gi) => {
-  const before = GROUPS.slice(0, gi).reduce((sum, x) => sum + x.tools.length, 0);
-  return { ...g, slug: `nav-${g.name.split(" ")[0].toLowerCase()}`, tools: g.tools.map((t, i) => ({ ...t, n: String(before + i + 1).padStart(2, "0") })) };
-});
-const ALL = NUMBERED.flatMap((g) => g.tools);
+/** Numbers come from the page order, so the cards and the tool pages agree. */
+const NUMBER = new Map(TOOLS.map((t, i) => [t.id, String(i + 1).padStart(2, "0")]));
 
 export default function Decide() {
   return (
     <Motion>
+      <HashRedirect />
       <JsonLd
         data={{
-          "@type": "LearningResource",
+          "@type": "CollectionPage",
           name: TITLE,
           description: DESCRIPTION,
           url: abs("/decide/"),
-          learningResourceType: "Interactive simulation",
-          teaches:
-            "Monte Carlo simulation, expected value, base rates and Bayes' rule, the two-proportion z test, confidence intervals, sample size and power, the Poisson distribution, implied probability, the Kelly criterion and the lognormal model",
           inLanguage: "en",
-          isAccessibleForFree: true,
           isPartOf: { "@type": "WebSite", name: SITE_NAME, url: `${SITE_URL}/` },
+          hasPart: TOOLS.map((t) => ({ "@type": "LearningResource", name: t.question, url: abs(toolHref(t.id)), learningResourceType: "Interactive simulation", teaches: t.teaches })),
         }}
       />
       <SiteHeader mode="landing" />
@@ -185,43 +66,64 @@ export default function Decide() {
                 Statistics sounds scary. Most of it is a way to choose when you can&rsquo;t know what happens next. Which job offer, whether the warranty is worth it, what a
                 positive test means, whether a change really worked, if your savings will get there, how many people to put on shift.
               </p>
-              <p>Type in your own numbers, see the odds, and read how each one works in plain words.</p>
+              <p>Pick a question, type in your own numbers, see the odds, and read how each one works in plain words.</p>
             </div>
             <p className="rise mt-5 text-sm text-ink-muted" style={{ animationDelay: "120ms" }}>
-              For learning, not financial, medical or betting advice.
+              {DISCLAIMER}
             </p>
-
-            <nav aria-label="Tools on this page" className="rise mt-10" style={{ animationDelay: "160ms" }}>
-              <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-                {NUMBERED.map((g) => (
-                  <div key={g.name}>
-                    <p id={g.slug} className="border-b border-ink pb-2 font-mono text-[11px] uppercase tracking-[0.1em] text-ink-muted">
-                      {g.name}
-                    </p>
-                    <ol aria-labelledby={g.slug}>
-                      {g.tools.map((t) => (
-                        <li key={t.id} className="border-b border-line">
-                          <a href={`#${t.id}`} className="group flex min-h-11 flex-col gap-0.5 py-4 pr-4">
-                            <span className="font-mono text-xs text-ink-muted tabular">{t.n}</span>
-                            <span className="font-display text-xl font-[650] group-hover:underline group-hover:underline-offset-4">{t.name}</span>
-                            <span className="text-sm text-ink-muted">{t.line}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                ))}
-              </div>
-            </nav>
           </div>
         </header>
 
-        <div className="space-y-20 md:space-y-24">
-          {ALL.map(({ id, n, kicker, title, lede, Body }) => (
-            <ToolSection key={id} id={id} n={n} kicker={kicker} title={title} line={lede}>
-              <Body />
-            </ToolSection>
-          ))}
+        {/* ---------- the decisions, one row per group ---------- */}
+        <div className="space-y-12 md:space-y-16">
+          {GROUPS.map((g) => {
+            const slug = `nav-${g.name.split(" ")[0].toLowerCase()}`;
+            const odd = g.tools.length % 2 === 1;
+            return (
+              <section key={g.name} aria-labelledby={slug} className="grid gap-4 border-t border-ink pt-5 md:grid-cols-12 md:gap-4">
+                <div className="md:col-span-3">
+                  <h2 id={slug} className="font-display text-2xl font-[650] leading-tight">
+                    {g.name}
+                  </h2>
+                  <p className="mt-1.5 max-w-[30ch] text-sm text-ink-muted">{g.line}</p>
+                </div>
+                <ul className="grid gap-3 sm:grid-cols-2 md:col-span-9">
+                  {g.tools.map((t, i) => {
+                    const wide = odd && i === g.tools.length - 1;
+                    return (
+                      <li key={t.id} className={cn("min-w-0", wide && "sm:col-span-2")}>
+                        <Link
+                          href={toolHref(t.id)}
+                          className={cn(
+                            "group flex h-full min-h-40 flex-col justify-between gap-6 rounded-2xl border border-line p-5 transition-colors hover:border-ink sm:p-6",
+                            wide && "sm:min-h-44",
+                          )}
+                        >
+                          <span className="block space-y-2">
+                            <span className="flex items-baseline gap-3 text-xs text-ink-muted">
+                              <span className="font-mono tabular">{NUMBER.get(t.id)}</span>
+                              <span>{t.kicker}</span>
+                            </span>
+                            <span
+                              className={cn("block font-display font-[650] leading-[1.02] tracking-[-0.012em]", wide ? "text-[clamp(1.7rem,1.2rem+1.6vw,2.4rem)]" : "text-[1.6rem]")}
+                              style={{ fontVariationSettings: "'wdth' 84" }}
+                            >
+                              {t.question}
+                            </span>
+                            <span className="block max-w-[52ch] text-ink-muted">{t.line}</span>
+                          </span>
+                          <span className="inline-flex items-center gap-2 text-sm font-medium">
+                            Work it out
+                            <ArrowRight className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            );
+          })}
         </div>
 
         {/* ---------- where next ---------- */}

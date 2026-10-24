@@ -44,6 +44,7 @@ const BURST_MS = 1200;
 const HOLD_MS = 180;
 const POUR_MS = 30;
 const CAP = 2000;
+const FULL_TEXT = "Board full, clear to pour again.";
 const CURVE_AT = 60;
 const SEED = 7;
 
@@ -105,6 +106,12 @@ function createBoard(
   let visible = false;
   let pouring = false;
   let nextPour = 0;
+  // The grain color, read from --clay once and again when the theme flips, never per frame.
+  let fill = "#cd5811";
+  const recolor = () => {
+    fill = getComputedStyle(canvas).getPropertyValue("--clay").trim() || "#cd5811";
+  };
+  recolor();
 
   const total = () => pile.length + flying.length;
   const target = () => {
@@ -173,8 +180,7 @@ function createBoard(
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!s) return;
     ctx.setTransform(s, 0, 0, s, 0, 0);
-    ctx.fillStyle = "#cd5811";
-    ctx.fillStyle = getComputedStyle(canvas).getPropertyValue("--clay").trim() || "#cd5811";
+    ctx.fillStyle = fill;
     ctx.beginPath();
     const dot = (x: number, y: number) => {
       ctx.moveTo(x + R, y);
@@ -255,6 +261,10 @@ function createBoard(
 
   return {
     draw,
+    recolor: () => {
+      recolor();
+      draw();
+    },
     drop,
     settle,
     clear,
@@ -338,6 +348,7 @@ export function HeroBoard({ className }: { className?: string }) {
     "A Galton board: grains fall through twelve rows of pegs and pile into a bell curve across thirteen bins, centered on 7 with a spread of 1.73.",
   );
   const [status, setStatus] = React.useState("");
+  const [full, setFull] = React.useState(false);
 
   React.useEffect(() => {
     const c = canvas.current!;
@@ -345,8 +356,16 @@ export function HeroBoard({ className }: { className?: string }) {
       setShowCurve(s.n >= CURVE_AT);
       if (!settled) return;
       setLabel(describe(s));
+      const isFull = s.n >= CAP;
+      setFull(isFull);
       if (acted.current)
-        setStatus(s.n ? `${s.n} grain${s.n === 1 ? "" : "s"}. Mean ${s.mean.toFixed(2)}, sd ${s.sd.toFixed(2)}.` : "Board cleared.");
+        setStatus(
+          isFull
+            ? `${s.n} grains. Mean ${s.mean.toFixed(2)}, sd ${s.sd.toFixed(2)}. ${FULL_TEXT}`
+            : s.n
+              ? `${s.n} grain${s.n === 1 ? "" : "s"}. Mean ${s.mean.toFixed(2)}, sd ${s.sd.toFixed(2)}.`
+              : "Board cleared.",
+        );
     });
     board.current = b;
 
@@ -361,8 +380,8 @@ export function HeroBoard({ className }: { className?: string }) {
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(c);
-    // Recolor an idle pile when the theme flips.
-    const mo = new MutationObserver(() => b.draw());
+    // Recolor an idle pile when the theme flips: the cached grain color is read again here, not every frame.
+    const mo = new MutationObserver(() => b.recolor());
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "style", "data-mode"] });
     let started = false;
     const io = new IntersectionObserver(
@@ -403,15 +422,22 @@ export function HeroBoard({ className }: { className?: string }) {
     board.current?.startPour();
   };
   const onUp = () => board.current?.stopPour();
+  /** Drops 100, or only the room left. A full board stays put and says so instead of clearing itself. */
   const drop100 = () => {
     const b = board.current;
     if (!b) return;
     act();
-    if (b.total() + 100 > CAP) b.clear();
-    b.drop(100, BURST_MS);
+    const room = CAP - b.total();
+    if (room <= 0) {
+      setFull(true);
+      setStatus(FULL_TEXT);
+      return;
+    }
+    b.drop(Math.min(100, room), BURST_MS);
   };
   const clear = () => {
     act();
+    setFull(false);
     board.current?.clear();
   };
 
@@ -485,7 +511,7 @@ export function HeroBoard({ className }: { className?: string }) {
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-3 pl-2">
-        <p className="text-sm leading-snug text-ink-muted">{coarse ? "Tap" : "Click"} to drop a grain. Hold to pour.</p>
+        <p className="text-sm leading-snug text-ink-muted">{full ? FULL_TEXT : `${coarse ? "Tap" : "Click"} to drop a grain. Hold to pour.`}</p>
         <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"

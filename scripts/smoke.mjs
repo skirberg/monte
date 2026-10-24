@@ -159,8 +159,8 @@ try {
   const iconStatus = await Promise.all(["/favicon.ico", ...icons.map((h) => new URL(h).pathname)].map((p) => fetch(ORIGIN + p, { method: "HEAD" }).then((r) => `${p} ${r.status}`).catch(() => `${p} failed`)));
   const hasFavicon = icons.some((h) => /icon\.svg|favicon\.ico/.test(h));
   check(hasFavicon && iconStatus.every((s) => s.endsWith(" 200")), "favicon, app icons and manifest are linked and served", iconStatus.filter((s) => !s.endsWith(" 200")).join("; ") || (hasFavicon ? "" : "no favicon link"));
-  await evaluate(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); h?.parentElement.querySelector('svg')?.scrollIntoView({ block: 'center' }); return true; })()`);
-  const closingDone = await waitFor(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); const c = [...(h?.parentElement.querySelector('svg')?.querySelectorAll('circle') ?? [])]; const g = c[3]; return c.length === 4 && getComputedStyle(g).opacity === '1' && getComputedStyle(g).transform === 'none'; })()`, 8000);
+  await evaluate(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); h?.closest('section')?.querySelector('svg')?.scrollIntoView({ block: 'center' }); return true; })()`);
+  const closingDone = await waitFor(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); const c = [...(h?.closest('section')?.querySelector('svg')?.querySelectorAll('circle') ?? [])]; const g = c[3]; return c.length === 4 && getComputedStyle(g).opacity === '1' && getComputedStyle(g).transform === 'none'; })()`, 8000);
   check(closingDone, "closing mark finishes (grain under the last cup)");
 
   console.log("\nAnalytics (page views and custom events queued for Vercel)");

@@ -1,9 +1,9 @@
 import { Phi, PhiInv, choose, fmt, mean, pick, r2, ri, tcdf, tinv } from "./math";
 import type { SolverId } from "./routes";
 
-// The Solve calculators: type the numbers from a homework or exam question and get every answer
+// The Solve calculators: type the numbers from any problem and get every answer
 // it could ask for, with the work. Ported line by line from the original engine, so every string,
-// rounding and branch is what classmates already saw (scripts compare the two under one seed).
+// rounding and branch matches the original engine (scripts compare the two under one seed).
 
 export type Field = {
   k: string;
@@ -608,7 +608,7 @@ const ci: Solver = {
       if (isFinite(E1)) {
         const nz = Math.pow((zc * s) / E1, 2), nt = Math.pow((crit * s) / E1, 2);
         rows.push(row(`Sample size for ± ${sF(E1)} (z)`, String(Math.ceil(nz - 1e-9)), `(zσ/E)² = (${zc} × ${sF(s)} / ${sF(E1)})² = ${sF(nz)}. Round up. The usual textbook answer.`, true));
-        if (kind === "t") rows.push(row(`Same, if you keep t = ${crit}`, String(Math.ceil(nt - 1e-9)), `(${crit} × ${sF(s)} / ${sF(E1)})² = ${sF(nt)}. Check which one the course uses.`));
+        if (kind === "t") rows.push(row(`Same, if you keep t = ${crit}`, String(Math.ceil(nt - 1e-9)), `(${crit} × ${sF(s)} / ${sF(E1)})² = ${sF(nt)}. Check which one your book or teacher uses.`));
       }
     }
     rows.push(

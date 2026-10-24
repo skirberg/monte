@@ -255,7 +255,11 @@ function PollToProbability({ markets }: { markets: { name: string; p: number }[]
       </div>
 
       <div className="space-y-4 lg:col-span-7">
-        <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2" aria-live="polite">
+        {/* One short live sentence for the number that changes as you type; the tiles themselves stay quiet. */}
+        <p className="sr-only" aria-live="polite">
+          {implied === null ? "" : `Polls, if only luck mattered: ${fine(implied)}.`}
+        </p>
+        <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2">
           <div className="bg-paper p-5">
             <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Polls, if only luck mattered</dt>
             <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{implied === null ? "?" : fine(implied)}</dd>
@@ -268,7 +272,7 @@ function PollToProbability({ markets }: { markets: { name: string; p: number }[]
           </div>
         </dl>
         {moeMatch !== null && lead > 0 && (
-          <p className="text-sm text-ink-muted" aria-live="polite">
+          <p className="text-sm text-ink-muted">
             To get the markets&rsquo; {marketText} from a {lead}-point lead, the margin on the lead would have to be about ±{moeMatch.toFixed(1)} points.
           </p>
         )}

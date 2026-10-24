@@ -4,7 +4,8 @@ import * as React from "react";
 import { cn } from "cn";
 import { capacity, fewestStaff, overload, poissonPmf, poissonQuantile, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
-import { HowItWorks, NumField, Presets, Slider, chance, useToolXp } from "@/components/decide/fields";
+import { HowItWorks, NumField, Presets, ResultBar, Slider, chance, useToolXp } from "@/components/decide/fields";
+import { ChartList, useScrub } from "@/components/decide/scrub";
 
 type Words = { who: string; staff: string };
 type Preset = { label: string; note: string; lam: string; per: string; target: number; words: Words };
@@ -87,11 +88,17 @@ export function Staffing() {
       read = "Even 200 people can't keep it that rare. Check the numbers.";
     }
   }
+  const bar: [string, string] = !ok
+    ? ["", "Fix the numbers to see how many you need."]
+    : Number.isFinite(best)
+      ? [String(best), `${best === 1 ? "person" : words.staff}: too many in ${chance(overload(lam, per, best), 1)} of hours, under your ${target}%.`]
+      : ["", "Even 200 people can't keep it that rare."];
 
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-5">
+          <ResultBar lead={bar[0]} rest={bar[1]} />
           <div className="space-y-2">
             <Presets label="Example places" items={PRESETS.map((x) => x.label)} value={preset} onChange={choose} />
             <p className="text-sm text-ink-muted">{preset >= 0 ? `${PRESETS[preset].note} ` : ""}Made-up numbers. Use your busiest hour, not the day&rsquo;s average.</p>
@@ -100,7 +107,7 @@ export function Staffing() {
             <NumField id="st-lam" label="Arrivals per hour, on average" value={lamText} onChange={edit(setLamText)} invalid={!lamOk} describedBy="st-hint" />
             <NumField id="st-per" label="One person serves per hour" value={perText} onChange={edit(setPerText)} invalid={!perOk} describedBy="st-hint" />
           </div>
-          <p id="st-hint" className="text-sm text-ink-muted" role={ok ? undefined : "alert"}>
+          <p id="st-hint" className="text-sm text-ink-muted">
             {ok ? "Arrivals can be customers, calls, tickets or patients. Partly served people round down: 2.5 an hour serves 2." : "Both numbers run from just above 0 to 500 an hour."}
           </p>
           <Slider
@@ -159,7 +166,7 @@ export function Staffing() {
               </div>
             </>
           )}
-          <p aria-live="polite" className="text-ink-muted">
+          <p className="text-ink-muted">
             {read}
           </p>
         </div>
@@ -231,14 +238,14 @@ export function Staffing() {
   );
 }
 
-/** How many arrive in an hour: one bar per count, with the hours that bring too many in ink past the team's capacity. */
+/** How many arrive in an hour: one bar per count, with the hours that bring too many shaded in the danger color past the team's capacity. Hover or tap a bar to read it. */
 function ArrivalChart({ lam, cap, staff, who }: { lam: number; cap: number; staff: number; who: string }) {
   const narrow = useMediaQuery("(max-width: 639px)");
   const W = narrow ? 360 : 560;
-  const H = 200;
+  const H = 186;
   const L = 8;
   const R = 8;
-  const top = 44;
+  const top = 30;
   const base = H - 30;
   const sd = Math.sqrt(lam);
   const lo = Math.max(0, Math.floor(lam - 4 * sd - 1));
@@ -252,36 +259,71 @@ function ArrivalChart({ lam, cap, staff, who }: { lam: number; cap: number; staf
   const cx = capIn ? X(cap + 1) : NaN;
   const ticks = [lo, Math.round(lam), hi];
   const capLabel = `${staff} staff serve ${k(cap)}`;
-  const right = cx + capLabel.length * 7.3 + 8 < W;
+  const right = cx + capLabel.length * 7 + 8 < W;
+  const scrub = useScrub(ks.length, W, (x) => Math.floor((x - L) / bw));
+  const at = scrub.at;
+  const over = (x: number) => Number.isFinite(cap) && x > cap;
   return (
-    <svg
-      viewBox={`0 0 ${W} ${H}`}
-      className="w-full"
-      role="img"
-      aria-label={`Chance of each count of ${who} in an hour, centered on ${k(Math.round(lam))}.${Number.isFinite(cap) ? ` ${staff} staff can serve ${k(cap)}; counts above that are too many.` : ""}`}
-    >
-      {ks.map((x, i) => {
-        const h = (ps[i] / peak) * (base - top);
-        const over = Number.isFinite(cap) && x > cap;
-        return <rect key={x} x={X(x) + Math.min(1, bw * 0.15)} y={base - h} width={Math.max(1, bw - Math.min(2, bw * 0.3))} height={h} fill={over ? "var(--ink)" : "var(--clay)"} fillOpacity={over ? 0.9 : 0.5} />;
-      })}
-      <line x1={L} x2={W - R} y1={base} y2={base} stroke="var(--line-strong)" />
-      {ticks.map((x, i) => (
-        <text key={i} x={X(x) + bw / 2} y={H - 10} textAnchor={i === 0 ? "start" : i === 2 ? "end" : "middle"} className="font-mono" fontSize="12" fill="var(--ink-muted)">
-          {k(x)}
-        </text>
-      ))}
-      {capIn && (
-        <g>
-          <line x1={cx} x2={cx} y1={top - 16} y2={base} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="4 4" />
-          <text x={cx + (right ? 6 : -6)} y={top - 8} textAnchor={right ? "start" : "end"} className="font-mono" fontSize="12" fill="var(--ink)">
-            {capLabel}
+    <figure>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full select-none"
+        role="img"
+        aria-label={`Chance of each count of ${who} in an hour, centered on ${k(Math.round(lam))}.${Number.isFinite(cap) ? ` ${staff} staff can serve ${k(cap)}; counts above that are too many.` : ""}`}
+        {...scrub.bind}
+      >
+        {ks.map((x, i) => {
+          const h = (ps[i] / peak) * (base - top);
+          const o = over(x);
+          const on = at === i;
+          return (
+            <rect
+              key={x}
+              x={X(x) + Math.min(1, bw * 0.15)}
+              y={base - h}
+              width={Math.max(1, bw - Math.min(2, bw * 0.3))}
+              height={h}
+              fill={o ? "var(--danger)" : "var(--clay)"}
+              fillOpacity={on ? 0.95 : o ? 0.4 : 0.5}
+              stroke={on ? "var(--ink)" : undefined}
+              strokeWidth={on ? 1 : undefined}
+            />
+          );
+        })}
+        <line x1={L} x2={W - R} y1={base} y2={base} stroke="var(--line-strong)" />
+        {ticks.map((x, i) => (
+          <text key={i} x={X(x) + bw / 2} y={H - 10} textAnchor={i === 0 ? "start" : i === 2 ? "end" : "middle"} className="font-mono" fontSize="12" fill="var(--ink-muted)">
+            {k(x)}
           </text>
-        </g>
-      )}
-      <text x={L} y={13} className="font-mono" fontSize="11.5" fill="var(--ink-muted)">
-        {`${who} in one hour${Number.isFinite(cap) ? " · past the dashed line: too many" : ""}`}
-      </text>
-    </svg>
+        ))}
+        {capIn && (
+          <g pointerEvents="none">
+            <line x1={cx} x2={cx} y1={top - 16} y2={base} stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="4 4" />
+            <text x={cx + (right ? 6 : -6)} y={top - 8} textAnchor={right ? "start" : "end"} fontSize="12" fill="var(--ink)">
+              <tspan className="font-mono">{staff}</tspan> staff serve <tspan className="font-mono">{k(cap)}</tspan>
+            </text>
+          </g>
+        )}
+        <rect x={L} y={top} width={W - L - R} height={base - top} fill="transparent" />
+      </svg>
+      <figcaption className="mt-2 min-h-10 text-sm text-ink-muted">
+        {at !== null ? (
+          <span className="text-ink">
+            <span className="font-mono tabular">{k(ks[at])}</span> {ks[at] === 1 ? who.replace(/s$/, "") : who}: <span className="font-mono tabular">{chance(ps[at], 1)}</span> of hours
+            {over(ks[at]) ? <span className="text-[var(--danger)]">, more than {staff} staff can serve</span> : ""}.
+          </span>
+        ) : (
+          <>
+            How many {who} arrive in one hour. {Number.isFinite(cap) ? "Past the dashed line, in red: too many for the team. " : ""}Hover or tap a bar.
+          </>
+        )}
+      </figcaption>
+      <ChartList
+        summary="Every count, as a list"
+        caption={`Share of hours that bring each count of ${who}`}
+        head={[`${who[0].toUpperCase()}${who.slice(1)} in an hour`, "Share of hours", "Too many?"]}
+        rows={ks.map((x, i) => ({ key: x, mark: i === at, cells: [k(x), chance(ps[i], 1), over(x) ? "yes" : "no"] }))}
+      />
+    </figure>
   );
 }

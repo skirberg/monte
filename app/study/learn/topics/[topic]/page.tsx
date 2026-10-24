@@ -83,9 +83,14 @@ export default async function TopicPage({ params }: Props) {
         <Html as="p" html={t.ex.text} />
       </Box>
 
-      {t.labs.map((l) => (
-        <TopicLab key={l} id={l} />
-      ))}
+      {t.labs.length > 0 && (
+        // #lab: the "Your first ten minutes" path links straight here.
+        <div id="lab" className="grid scroll-mt-24 gap-8 lg:gap-10">
+          {t.labs.map((l) => (
+            <TopicLab key={l} id={l} />
+          ))}
+        </div>
+      )}
 
       <QuizList id={t.id} />
 

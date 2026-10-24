@@ -210,6 +210,8 @@ export function Election() {
   const progress = useProgress();
   const [refill, setRefill] = React.useState<"done" | "used" | null>(null);
   const resultRef = React.useRef<HTMLParagraphElement>(null);
+  // The one live region for this game: a short sentence per action, never a whole column.
+  const [say, setSay] = React.useState("");
   const firstPoll = React.useRef<HTMLButtonElement>(null);
 
   const winner: Side = truth > 0.5 ? "A" : "B";
@@ -227,7 +229,9 @@ export function Election() {
 
   const commission = (n: number) => {
     if (called || polls.length >= MAX_POLLS) return;
-    setPolls((ps) => [...ps, poll(truth, n)]);
+    const q = poll(truth, n);
+    setPolls((ps) => [...ps, q]);
+    setSay(`Poll ${polls.length + 1}: A ${share(q.a)}, B ${share(1 - q.a)}, margin ±${pts(moe(q.a, q.n))} points.`);
   };
 
   const lockIn = () => {
@@ -242,7 +246,10 @@ export function Election() {
       localStorage.setItem(HIST_KEY, JSON.stringify(next));
     } catch {}
     addChips(d, "election");
-    addXp(5 + (good ? 5 : 0), "election");
+    // Exactly 50% is no call at all, so it earns no XP.
+    if (p !== 0.5) addXp(5 + (good ? 5 : 0), "election");
+    const head = p === 0.5 ? "No lean." : good ? "Good call." : "Wrong way.";
+    setSay(`${head} ${winner} won. Chips ${signed(d)}.${chips !== null && chips + d <= 0 ? " Out of chips; you can refill." : ""}`);
     const avg = next.reduce((s, r) => s + brier(r), 0) / next.length;
     if (next.length >= CAL_AFTER && avg < 0.2) unlockBadge("calibrated");
 
@@ -265,15 +272,23 @@ export function Election() {
     setPolls([]);
     setLocked(null);
     setSure(50);
+    setSay("New race. Commission a poll.");
     requestAnimationFrame(() => firstPoll.current?.focus());
   };
 
-  const askRefill = () => setRefill(refillChips() ? "done" : "used");
+  const askRefill = () => {
+    const ok = refillChips();
+    setRefill(ok ? "done" : "used");
+    setSay(ok ? `Refilled to ${START_CHIPS.toLocaleString()} chips.` : "You already refilled today.");
+  };
 
   const sideText = (v: number) => `${Math.round(v * 100)}% A · ${Math.round((1 - v) * 100)}% B`;
 
   return (
     <div className="space-y-10">
+      <p className="sr-only" aria-live="polite">
+        {say}
+      </p>
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="space-y-5 lg:col-span-7">
           <div className="rounded-[28px] bg-sand p-3 sm:p-6">
@@ -313,7 +328,8 @@ export function Election() {
           <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line font-mono tabular sm:grid-cols-4 lg:grid-cols-2">
             {[
               ["Chips", chips === null ? "…" : chips.toLocaleString(), "play chips, not money"],
-              ["Brier", avgBrier === null ? "?" : avgBrier.toFixed(3), "lower is better"],
+              // "Brier" means nothing until a call has been scored and explained under the result, so the tile says when it fills in.
+              avgBrier === null ? ["Score", "–", "after your first call"] : ["Brier score", avgBrier.toFixed(3), "lower is better"],
               ["Right", history.length ? `${rightCount}/${history.length}` : "0", "calls on the winner"],
               ["Streak", String(streak), `best ${best}`],
             ].map(([k, v, sub]) => (
@@ -326,7 +342,7 @@ export function Election() {
           </dl>
 
           {chips === 0 && (
-            <div className="space-y-3 rounded-2xl bg-sand p-4" aria-live="polite">
+            <div className="space-y-3 rounded-2xl bg-sand p-4">
               <p>Out of chips. They are play chips, so you can start again.</p>
               {refill === "used" ? (
                 <p className="text-sm text-ink-muted">You already refilled today. Keep playing for the Brier score, and come back tomorrow for chips.</p>
@@ -338,12 +354,12 @@ export function Election() {
             </div>
           )}
           {refill === "done" && chips !== 0 && (
-            <p className="text-sm text-ink-muted" aria-live="polite">
+            <p className="text-sm text-ink-muted">
               Refilled to {START_CHIPS.toLocaleString()} chips. One refill a day.
             </p>
           )}
 
-          <div aria-live="polite" className="space-y-2">
+          <div className="space-y-2">
             <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">{last ? `Poll ${polls.length} · ${last.n.toLocaleString()} people` : "Latest poll"}</p>
             {last ? (
               <>
@@ -403,7 +419,7 @@ export function Election() {
             </div>
           ) : null}
 
-          <div aria-live="polite">
+          <div>
             {called && (
               <div className="space-y-4 rounded-2xl border border-line p-5">
                 <p ref={resultRef} className={cn("font-display text-4xl font-[680]", right ? "text-clay-ink" : "text-ink")}>
@@ -413,7 +429,10 @@ export function Election() {
                   {winner} won with {share(winner === "A" ? truth : 1 - truth)} · you said {sideText(locked)}
                 </p>
                 <p className="font-mono text-sm tabular">
-                  Brier {brier({ p: locked, o: outcome }).toFixed(3)} · chips {signed(delta)}
+                  Brier score {brier({ p: locked, o: outcome }).toFixed(3)} · chips {signed(delta)}
+                </p>
+                <p className="text-sm text-ink-muted">
+                  The Brier score is the squared gap between what you said and what happened: 0 is perfect, and always saying 50% scores 0.25.
                 </p>
                 <p className="text-ink-muted">
                   All {polls.length} poll{polls.length > 1 ? "s" : ""} together: A {share(all.a)}, ±{pts(allMoe)}.{" "}
@@ -463,7 +482,7 @@ function Calibration({ history, avg }: { history: Race[]; avg: number | null }) 
           A perfect seer scores 0. Saying exactly what you believe earns the most chips on average, so honesty pays.
         </p>
       </div>
-      <div className="space-y-3 lg:col-span-7" aria-live="polite">
+      <div className="space-y-3 lg:col-span-7">
         {left > 0 ? (
           <p className="rounded-2xl bg-paper p-5 text-ink-muted">
             Your report appears after {CAL_AFTER} races. {left} to go.
@@ -594,7 +613,10 @@ function ThousandElections() {
         </button>
       </div>
 
-      <div className="space-y-4 lg:col-span-7" aria-live="polite">
+      <div className="space-y-4 lg:col-span-7">
+        <p className="sr-only" aria-live="polite">
+          {rates ? `Done. One poll named the wrong leader ${pct(rates[0], 1)} of the time; the average of ten, ${pct(rates[2], 1)}.` : ""}
+        </p>
         <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-3">
           {ks.map((k, i) => (
             <div key={k} className="bg-paper p-5">

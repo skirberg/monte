@@ -6,7 +6,7 @@ import { Check, ChevronDown, X } from "lucide-react";
 import { cn } from "cn";
 import { fmt, mt, parseAnswer, pick, plural, r3 } from "@/lib/study/math";
 import { CATS, HABITS, TRICKS, mathCorrect, type Level, type MathQ, type Trick, type TrickCat } from "@/lib/study/tricks";
-import { touchStreak, updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
+import { updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
 import { awardXp } from "@/lib/study/events";
 import { burstFrom } from "@/lib/fun";
 import { blockTitle, btn, chip, input, segBtn } from "@/components/study/ui";
@@ -35,7 +35,6 @@ export function QuickMath() {
   const cardRef = React.useRef<HTMLElement>(null);
 
   const start = (secs: number, pool: Trick[], learn: boolean, label: string, mode: string) => {
-    touchStreak();
     setDone(null);
     setValue("");
     setRun({ pool, learn, secs, label, end: Date.now() + secs * 1000, n: 0, c: 0, missed: [], q: ask(pool, level), last: null, level });
@@ -120,7 +119,7 @@ export function QuickMath() {
                 <div role="group" aria-labelledby="lvl-label" className="flex w-fit gap-0.5 rounded-full bg-sand p-[3px]">
                   {([1, 2, 3] as Level[]).map((l) => (
                     <button key={l} type="button" aria-pressed={level === l} className={segBtn} onClick={() => setLevel(l)}>
-                      {l} {["easy", "exam", "hard"][l - 1]}
+                      {l} {["easy", "medium", "hard"][l - 1]}
                     </button>
                   ))}
                 </div>

@@ -1,8 +1,9 @@
 import { Wordmark } from "@/components/brand/logo";
-import { playHref, studyHref } from "@/lib/site-data";
+import { decideHref, playHref, studyHref } from "@/lib/site-data";
 import { StudyBottomNav } from "@/components/study/bottom-nav";
 
-const COLUMNS: { title: string; className?: string; links: [string, string, string?][] }[] = [
+/** Footer columns use the site's one vocabulary (DESIGN.md, "Navigation"). Play hides whole in Focus mode. */
+const COLUMNS: { title: string; className?: string; links: [string, string][] }[] = [
   {
     title: "Learn",
     links: [
@@ -10,6 +11,8 @@ const COLUMNS: { title: string; className?: string; links: [string, string, stri
       ["Terms", studyHref("#learn/terms")],
       ["Formula sheet", studyHref("#learn/formulas")],
       ["Which formula?", studyHref("#learn/frameworks")],
+      ["Excel, R, Python, SQL", studyHref("#tools")],
+      ["Free sources", studyHref("#sources")],
       ["Why statistics", "/story/"],
     ],
   },
@@ -18,25 +21,38 @@ const COLUMNS: { title: string; className?: string; links: [string, string, stri
     links: [
       ["Drill", studyHref("#practice/drill")],
       ["Flashcards", studyHref("#practice/cards")],
-      ["Mock exam", studyHref("#practice/drill/mock")],
+      ["Mock test", studyHref("#practice/drill/mock")],
       ["Quick math", studyHref("#practice/math")],
     ],
   },
   {
-    title: "Apply",
+    title: "Solve",
     links: [
-      ["Solvers", studyHref("#solve")],
-      ["Excel, R, Python, SQL", studyHref("#tools")],
-      ["The odds of anything", "/decide/"],
+      ["All solvers", studyHref("#solve")],
+      ["Tree and Bayes", studyHref("#solve/tree")],
+      ["Normal", studyHref("#solve/normal")],
+      ["Intervals", studyHref("#solve/ci")],
       ["Free workbook (.xlsx)", "/downloads/monte-statistics-workbook.xlsx"],
     ],
   },
   {
-    title: "More",
+    title: "Decide",
     links: [
-      ["Play", playHref(), "fun-only"],
-      ["Free sources", studyHref("#sources")],
-      ["How it’s built", "/built/"],
+      ["All decisions", decideHref()],
+      ["Is this test result real?", decideHref("bayes")],
+      ["Should I buy the warranty?", decideHref("warranty")],
+      ["Did my change really work?", decideHref("abtest")],
+      ["Will I hit my goal?", decideHref("goal")],
+    ],
+  },
+  {
+    title: "Play",
+    className: "fun-only",
+    links: [
+      ["All games", playHref()],
+      ["Three doors", playHref("monty-hall")],
+      ["Election night", playHref("election")],
+      ["The long run", playHref("long-run")],
     ],
   },
 ];
@@ -45,13 +61,13 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-line">
       <div className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 py-12 md:px-6">
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:[html[data-mode=focus]_&]:grid-cols-4">
           {COLUMNS.map((col) => (
             <div key={col.title} className={col.className}>
               <p className="mb-2 text-sm font-semibold">{col.title}</p>
               <ul className="grid text-sm text-ink-muted">
-                {col.links.map(([label, href, cls]) => (
-                  <li key={label} className={cls}>
+                {col.links.map(([label, href]) => (
+                  <li key={label}>
                     <a className="inline-flex min-h-11 items-center hover:text-ink" href={href}>
                       {label}
                     </a>
@@ -62,7 +78,12 @@ export function SiteFooter() {
           ))}
         </nav>
         <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
-          <Wordmark />
+          <div className="flex items-center gap-5">
+            <Wordmark />
+            <a href="/built/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              How it&rsquo;s built
+            </a>
+          </div>
           <a
             href="https://github.com/skirberg"
             target="_blank"
