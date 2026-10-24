@@ -46,3 +46,17 @@ npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in p
 Import this repository on Vercel; it detects Next.js and needs no settings. The public URL lives in one place, `lib/seo.ts` (used for canonical links, social cards, robots and the sitemap). Change it there if the site moves to its own domain.
 
 Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. Every study view is its own page, so page views need no extra code. Custom events (Vercel Pro), sent from the components that cause them: Drill started and Drill finished (mode, score band), Solver used, Quick math started, Formula sheet printed, Game played (`components/play/game-played.tsx`) and Mode switched. Only fixed names are sent, never anything a visitor types.
+
+## Backlog
+
+Ideas agreed with the owner and parked for later, newest first. Free tools only unless the owner says otherwise.
+
+- **Sign-in and sync across devices.** Supabase (free plan) through the Vercel Marketplace on the personal team, so the Tickerz Supabase account is never used. Waiting on one click: accepting Supabase's terms in Vercel (Storage, Create Database, Supabase). After that: magic-link and Google sign-in, a `progress` table with row-level security, and sync of the `monte-progress`, `sigma` and `monteElectionCalls` stores (the backup code in the progress panel already uses that shape).
+- **A private "My course" space** once sign-in exists: your own notes, flashcards and topic list, never public.
+- **Narrated audio per topic.** Generate MP3s for free with an open-source voice (Kokoro or Piper) in a GitHub Action, store them in the repo or Vercel Blob, and play them in place of the browser voice.
+- **Monte as a tool inside AI assistants.** A small MCP server (a separate Vercel project) exposing the verified calculators and the open data in `public/api/v1`, so a chat can call Monte and link back to the interactive page.
+- **Forecasting leagues.** Weekly questions on real events (elections, the Fed, sports, earnings), Brier-scored, with class and company leagues. Needs sign-in.
+- **Seasonal modules.** The big game, March Madness brackets, earnings season, election night, each with a simulator and a plain-English lesson.
+- **Paste your own data.** Drop in a spreadsheet column or CSV and get the summary, the right chart, outliers and a plain-English readout, with the formulas shown.
+- **Installable app.** Offline support (service worker) so it works like an app from the home screen; a store app later if it earns it.
+- **Unit tests** for the statistics math (vitest) as part of `npm run check`.
