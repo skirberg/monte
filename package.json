@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/fetch-markets.mjs",
     "build": "next build",
+    "markets": "node scripts/fetch-markets.mjs",
     "start": "next start",
     "lint": "eslint",
     "smoke": "node scripts/smoke.mjs",

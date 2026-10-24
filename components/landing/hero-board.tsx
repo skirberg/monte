@@ -8,7 +8,7 @@ import { useMode } from "@/lib/mode";
 
 /**
  * The hero: a Galton board the visitor plays with. Grains (data points) fall through twelve rows of pegs,
- * each bounce a coin flip, and pile into thirteen bins, one per topic. A short pour plays on load; tap to
+ * each bounce a coin flip, and pile into the board's thirteen bins (0 to 12 bounces right). A short pour plays on load; tap to
  * drop a grain, hold to pour. The ink curve is Binomial(12, .5) scaled to the grains landed so far, and the
  * running mean and sd settle toward its 7 and 1.73. The board is SVG; the grains are one canvas, drawn only
  * while something moves. With reduced motion or in Focus mode the pile arrives finished and grains land at once.
