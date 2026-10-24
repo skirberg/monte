@@ -82,6 +82,13 @@ export default function Home() {
             >
               Never clicked for you? Start with why it matters <ArrowRight className="size-4" />
             </a>
+            <a
+              href="/decide/"
+              className="rise inline-flex min-h-11 items-center gap-2 self-start font-medium text-clay-ink underline-offset-4 hover:underline"
+              style={{ animationDelay: "220ms" }}
+            >
+              Facing a real decision? Run the odds <ArrowRight className="size-4" />
+            </a>
           </div>
 
           <div className="rise lg:col-span-6" style={{ animationDelay: "100ms" }}>

@@ -82,6 +82,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
       href: studyHref(n.hash),
       active: study && active === n.page,
     })),
+    { key: "decide", label: "Decide", href: "/decide/", active: false },
     { key: "play", label: "Play", href: playHref(), active: mode === "play", funOnly: true },
   ];
 

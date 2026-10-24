@@ -117,6 +117,9 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             <CommandItem value="why statistics story history matters" onSelect={() => run(() => go("/story/"))}>
               <BookOpen /> Why statistics: the stories behind it
             </CommandItem>
+            <CommandItem value="decide odds of anything bet betting market prediction option monte carlo kelly expected value" onSelect={() => run(() => go("/decide/"))}>
+              <Compass /> The odds of anything: decide, bets, markets, options
+            </CommandItem>
             <CommandItem value="how it's built colophon stack data math sources" onSelect={() => run(() => go("/built/"))}>
               <BookOpen /> How it&rsquo;s built
             </CommandItem>

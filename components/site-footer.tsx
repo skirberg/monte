@@ -27,6 +27,7 @@ const COLUMNS: { title: string; className?: string; links: [string, string, stri
     links: [
       ["Solvers", studyHref("#solve")],
       ["Excel, R, Python, SQL", studyHref("#tools")],
+      ["The odds of anything", "/decide/"],
       ["Free workbook (.xlsx)", "/downloads/monte-statistics-workbook.xlsx"],
     ],
   },
