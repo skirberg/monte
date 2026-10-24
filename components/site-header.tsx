@@ -77,7 +77,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
     ...STUDY_NAV.filter((n) => study || !["home", "sources"].includes(n.page)).map((n) => ({
       key: n.page,
       label: n.label,
-      href: study ? n.hash : studyHref(n.hash),
+      href: studyHref(n.hash),
       active: study && active === n.page,
     })),
     { key: "play", label: "Play", href: playHref(), active: mode === "play", funOnly: true },

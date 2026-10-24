@@ -22,7 +22,7 @@ const TABS = [
 export function StudyBottomNav({ site = false }: { site?: boolean }) {
   const hashPage = useHashPage(true);
   const active = site ? null : hashPage;
-  const to = (hash: string) => (site ? studyHref(hash) : hash);
+  const to = (hash: string) => studyHref(hash);
   const [open, setOpen] = React.useState(false);
   const moreActive = active === "tools" || active === "sources";
   const item = "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors";

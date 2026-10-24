@@ -9,6 +9,7 @@
 
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
+import { rmSync } from "node:fs";
 import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join, normalize } from "node:path";
@@ -16,7 +17,7 @@ import { extname, join, normalize } from "node:path";
 const OUT = join(process.cwd(), "out");
 const CHROME = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const GAMES = ["correlation", "monty-hall", "fake-coin", "serve", "house-edge", "odds", "ab-test", "long-run", "options", "election"];
-const ROUTES = ["/", "/study/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/built/"];
+const ROUTES = ["/", "/study/", "/study/learn/", "/study/learn/topics/normal/", "/study/learn/formulas/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/story/", "/built/"];
 // Requests that only resolve on Vercel (analytics) or that browsers make on their own.
 const IGNORE = [/\/_vercel\//, /favicon\.ico/];
 // Tightest tracking a display heading may use before condensed glyphs start to touch.
@@ -167,10 +168,16 @@ try {
   const events = "(window.vaq ?? []).filter((c) => c[0] === 'event').map((c) => c[1].name + ' ' + JSON.stringify(c[1].data ?? {}))";
   await load("/study/#practice/drill");
   check(await waitFor(`${queued}.includes('/study/practice/drill/')`, 4000), "a study section counts as its own page");
-  await evaluate("location.hash = '#learn/topics/Typed Search'; true");
-  await waitFor(`${queued}.includes('/study/learn/topics/')`, 3000);
-  check(!(await evaluate(`${queued}.some((p) => /Typed|Search|\\s/.test(p))`)), "typed text never reaches analytics", JSON.stringify(await evaluate(queued)));
-  await evaluate("location.hash = '#practice/drill'; true");
+  await load("/study/learn/topics/normal/");
+  check(await waitFor(`${queued}.includes('/study/learn/topics/normal/')`, 4000), "a topic page counts as its own page");
+  console.log("\nOld study links");
+  await load("/study/#learn/topics/normal");
+  check(await waitFor("location.pathname === '/study/learn/topics/normal/'", 6000), "an old #hash link lands on its page", await evaluate("location.href"));
+  await load("/study/#learn/topics/Typed Search");
+  const landed = await waitFor("location.pathname === '/study/learn/'", 6000);
+  await sleep(600);
+  check(landed && !(await evaluate(`${queued}.some((p) => /Typed|Search|\\s/.test(p))`)), "an unknown topic falls back to Learn, and typed text never reaches analytics", JSON.stringify(await evaluate(queued)));
+  await load("/study/#practice/drill");
   await waitFor("!!document.querySelector('button[data-start=\"ten\"]')", 3000);
   await evaluate("document.querySelector('button[data-start=\"ten\"]').click(); true");
   check(await waitFor(`${events}.some((e) => e.startsWith('Drill started') && e.includes('ten'))`, 3000), "event: drill started, with its mode");
@@ -198,6 +205,8 @@ try {
   }
 } finally {
   ws.close();
+  // Delete the throwaway Chrome profile (about 60 MB) even when the script exits early.
+  process.once("exit", () => rmSync(profile, { recursive: true, force: true }));
   chrome.kill();
   if (server.listening) server.close();
 }

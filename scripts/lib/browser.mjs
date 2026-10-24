@@ -2,6 +2,7 @@
 // index.html) and headless Chrome driven over the DevTools protocol in real time.
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
+import { rmSync } from "node:fs";
 import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join, normalize } from "node:path";
@@ -81,12 +82,15 @@ export async function launch() {
     },
     png: async ({ full = false } = {}) => Buffer.from((await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: full })).data, "base64"),
   };
-  return { page, close: () => { ws.close(); chrome.kill(); } };
+  // Remove the throwaway profile once Chrome has exited; each one is about 60 MB.
+  const cleanup = () => rmSync(profile, { recursive: true, force: true });
+  return { page, close: () => { ws.close(); chrome.once("exit", cleanup); process.once("exit", cleanup); chrome.kill(); } };
 }
 
-// Every route worth checking, including the study app's main hash sections.
+// Every route worth checking. Study sections still in the legacy engine are listed by #hash.
 export const ROUTES = [
-  "/", "/study/", "/study/#learn/topics/data", "/study/#learn/topics/normal", "/study/#learn/topics/clt", "/study/#learn/formulas", "/study/#learn/frameworks", "/study/#learn/terms", "/study/#learn/topics/test", "/study/#practice/cards",
+  "/", "/study/", "/study/learn/", "/study/learn/topics/data/", "/study/learn/topics/normal/", "/study/learn/topics/clt/", "/study/learn/topics/test/",
+  "/study/learn/formulas/", "/study/learn/frameworks/", "/study/learn/terms/", "/study/#practice/cards",
   "/study/#practice/drill", "/study/#practice/math", "/study/#solve/normal", "/study/#solve/samp", "/study/#solve/test", "/study/#tools", "/study/#sources",
   "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",
   "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/built/", "/missing-page/",
