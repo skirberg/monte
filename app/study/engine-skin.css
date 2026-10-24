@@ -350,3 +350,17 @@ html:has(.engine) { scroll-padding-top: 72px; }
   .engine #drill-setup > :first-child { order: -2; }
   .engine #drill-setup > .row { order: -1; }
 }
+
+/* Every-possible-sample lab: the full list of samples at n = 1 or 2. */
+.engine .evlist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 2px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--ink-muted);
+}

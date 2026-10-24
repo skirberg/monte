@@ -24,6 +24,7 @@ export const SOLVERS = [
   { id: "trials", name: "Repeated trials" },
   { id: "poisson", name: "Poisson" },
   { id: "normal", name: "Normal" },
+  { id: "samp", name: "Sampling" },
   { id: "ci", name: "Intervals" },
   { id: "bday", name: "Birthday" },
   { id: "data", name: "Describe data" },

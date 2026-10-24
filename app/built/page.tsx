@@ -99,7 +99,7 @@ export default function Built() {
         <Block title="The study engine">
           <p className="max-w-[62ch]">
             Learn, Practice and Solve run on the study engine Monte grew out of (it began as a class study app called Sigma Sandbox), in plain JavaScript: question generators that make fresh numbers
-            every time, eleven interactive labs, nine solvers that show the work, a timed mock exam and spaced review of missed questions.
+            every time, twelve interactive labs, ten solvers that show the work, a timed mock exam and spaced review of missed questions.
           </p>
         </Block>
 
