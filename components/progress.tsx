@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Flame, Snowflake, Trophy } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, bump, daysTo, exportProgress, getProgress, importProgress, levelOf, localDay, setExam, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, bump, exportProgress, getProgress, importProgress, levelOf, localDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
 import { callout, confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
@@ -175,8 +175,6 @@ export function ProgressButton() {
               </ul>
             </section>
 
-            <ExamCard exam={p.exam} now={now} />
-
             <BackupCard />
 
             <section className="grid gap-1 text-sm text-ink-muted">
@@ -203,39 +201,6 @@ export function ProgressButton() {
         </SheetContent>
       </Sheet>
     </>
-  );
-}
-
-function ExamCard({ exam, now }: { exam?: { date: string; name: string }; now: number }) {
-  const [date, setDate] = React.useState(exam?.date ?? "");
-  const [name, setName] = React.useState(exam?.name ?? "");
-  const left = exam ? daysTo(exam.date, now) : null;
-  return (
-    <section className="grid gap-2">
-      <h3 className="text-sm font-semibold">Exam countdown</h3>
-      {exam && left !== null && (
-        <p className="rounded-2xl bg-clay-tint p-3 text-sm">
-          <b className="font-display text-2xl font-[650] tabular-nums">{left > 0 ? left : left === 0 ? "Today" : "Done"}</b>
-          {left > 0 ? ` day${left === 1 ? "" : "s"} to ${exam.name || "your exam"}. ` : left === 0 ? `: ${exam.name || "your exam"}. Good luck. ` : ". "}
-          {left > 0 && "Do the Daily, clear Due today, and take one mock exam a week before."}
-        </p>
-      )}
-      <form
-        className="grid grid-cols-[1fr_auto] gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          setExam(date ? { date, name } : null);
-        }}
-      >
-        <label className="sr-only" htmlFor="exam-name">Exam name</label>
-        <input id="exam-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Exam name (optional)" className="col-span-2 h-11 rounded-xl border border-line-strong bg-paper px-3 text-base" />
-        <label className="sr-only" htmlFor="exam-date">Exam date</label>
-        <input id="exam-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11 rounded-xl border border-line-strong bg-paper px-3 text-base" />
-        <button type="submit" className="h-11 rounded-full bg-ink px-4 text-sm font-medium text-paper">
-          {date ? "Save" : "Clear"}
-        </button>
-      </form>
-    </section>
   );
 }
 

@@ -31,8 +31,6 @@ export type Progress = {
   chips: number;
   badges: string[];
   counts: Record<string, number>;
-  /** Optional exam the learner is working toward (local date YYYY-MM-DD and a name). */
-  exam?: { date: string; name: string };
 };
 
 export type ProgressEvent = { gained?: number; reason?: string; levelUp?: number; goalHit?: boolean; badge?: string; chips?: number };
@@ -184,18 +182,6 @@ export function useProgress() {
     };
   }, []);
   return p;
-}
-
-export function setExam(exam: { date: string; name: string } | null) {
-  const p = getProgress();
-  if (exam && /^\d{4}-\d{2}-\d{2}$/.test(exam.date)) p.exam = { date: exam.date, name: exam.name.slice(0, 60) };
-  else delete p.exam;
-  save(p, {});
-}
-
-/** Days from today to the exam (0 on the day, negative after it). */
-export function daysTo(date: string, now = Date.now()) {
-  return Math.round((Date.parse(date) - Date.parse(localDay(now))) / 864e5);
 }
 
 // ---------- Backup and move: progress lives in this browser, so let people carry it.
