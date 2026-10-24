@@ -34,8 +34,8 @@ const CHAPTERS: Chapter[] = [
         id: "graunt",
         year: "1662",
         title: "A haberdasher counts the dead",
-        body: "Every week London printed its Bills of Mortality: who was christened, who was buried, and what each death was blamed on. Most readers checked them for plague. John Graunt, a haberdasher, kept years of them and added them up. Patterns that no single week could show came into view. About 14 boys were christened for every 13 girls, year after year. Roughly a third of children died before age six. London held about 384,000 people, far fewer than the two million some claimed.",
-        idea: "One record is an anecdote. Thousands of records, added up, are evidence.",
+        body: "Every week London printed its Bills of Mortality: christenings, burials and what each death was blamed on. John Graunt, a haberdasher, kept years of them and added them up. About 14 boys were christened for every 13 girls, year after year. Roughly a third of children died before six. London held about 384,000 people, not the two million some claimed.",
+        idea: "One record is an anecdote. Thousands, added up, are evidence.",
         topic: "data",
         figure: { value: "14:13", caption: "Boys to girls christened in London, steady year after year." },
       },
@@ -43,8 +43,8 @@ const CHAPTERS: Chapter[] = [
         id: "bernoulli",
         year: "1713",
         title: "How many draws until you’re sure?",
-        body: "Picture an urn holding 3,000 white tokens and 2,000 black ones, and you can’t see inside. Draw one, note the color, put it back, repeat. Jacob Bernoulli proved that the share of white you see closes in on the true 60%, and he worked out how long that takes: after 25,550 draws, landing between 58% and 62% is more than a thousand times likelier than landing outside. He wrote that he had kept the result to himself for twenty years. The Art of Conjecturing came out in 1713, eight years after his death.",
-        idea: "The average of many repeats settles on the truth, and you can work out how many repeats is enough.",
+        body: "Picture an urn with 3,000 white tokens and 2,000 black. Draw, note the color, replace, repeat. Jacob Bernoulli proved the share of white closes in on the true 60%, and worked out how fast: after 25,550 draws, landing between 58% and 62% is over a thousand times likelier than not. His book came out in 1713, after his death.",
+        idea: "Averages of many repeats settle on the truth, and you can work out how many is enough.",
         topic: "rv",
         figure: { value: "25,550", caption: "Draws to be a thousand to one sure the share is within two points of 60%." },
       },
@@ -52,8 +52,8 @@ const CHAPTERS: Chapter[] = [
         id: "de-moivre",
         year: "1733",
         title: "A bell hiding in a coin toss",
-        body: "Abraham de Moivre fled France as a Protestant and made his living in London tutoring mathematics, often in coffee houses. His specialty was games of chance. Questions about many tosses, like the chance of between 4,900 and 5,100 heads in 10,000, meant adding thousands of exact terms by hand. In a Latin pamphlet dated November 1733 he found a shortcut: for many tosses, the counts trace a smooth, bell-shaped curve, and the area under it gives the answer. It is usually counted as the birth of what we now call the normal curve.",
-        idea: "Add up many small chances and the total falls into a bell, so the area under that bell is a probability.",
+        body: "Abraham de Moivre, a Protestant who fled France, tutored mathematics in London, often in coffee houses. The chance of 4,900 to 5,100 heads in 10,000 tosses meant adding thousands of exact terms by hand. In November 1733 he found a shortcut: for many tosses, the counts trace a smooth bell, and the area under it gives the answer.",
+        idea: "Many small chances add up to a bell, and the area under the bell is a probability.",
         topic: "normal",
         figure: { art: "bell", caption: "De Moivre’s shortcut: the curve that coin-toss counts settle into." },
       },
@@ -61,8 +61,8 @@ const CHAPTERS: Chapter[] = [
         id: "bayes",
         year: "1763",
         title: "A minister’s note on changing your mind",
-        body: "Thomas Bayes, a Presbyterian minister in Tunbridge Wells, died in 1761 with an essay among his papers. His friend Richard Price found it, edited it and sent it to the Royal Society, where it was read in December 1763. It asked a question backwards. Everyone knew how to go from a known chance to likely results. Bayes went from results to the chance: after some successes and failures, how sure can you be about the odds behind them? Start with a belief, weigh the evidence, update. Spam filters still work this way.",
-        idea: "New evidence should move your belief, by an amount that depends on what you believed before.",
+        body: "Thomas Bayes, a minister, died in 1761 with an essay among his papers. His friend Richard Price sent it to the Royal Society, where it was read in December 1763. It asked a question backwards: after some successes and failures, how sure can you be about the odds behind them? Spam filters still work this way.",
+        idea: "Evidence should move your belief, by an amount that depends on what you believed before.",
         topic: "prob",
       },
     ],
@@ -77,8 +77,8 @@ const CHAPTERS: Chapter[] = [
         id: "gauss",
         year: "1801",
         title: "Finding a lost planet with a pencil",
-        body: "On 1 January 1801 Giuseppe Piazzi spotted Ceres, then counted as a new planet, and tracked it for about 40 days before it slipped into the Sun’s glare. Astronomers had a sliver of its path and no idea where it would come back. Carl Friedrich Gauss, 24, worked out an orbit from those few, slightly wrong sightings. That December, Ceres turned up almost exactly where he said. His tool, he later wrote, was least squares: choose the path that makes the squared misses as small as possible. Adrien-Marie Legendre published the method first, in 1805. Gauss published his in 1809.",
-        idea: "When every measurement is a little off, the best line is the one that keeps the squared misses smallest.",
+        body: "In January 1801 Giuseppe Piazzi spotted Ceres and tracked it for about 40 days before it slipped into the Sun’s glare. Carl Friedrich Gauss, 24, worked out an orbit from those few, slightly wrong sightings. That December, Ceres turned up almost exactly where he said. His tool, he later wrote, was least squares: keep the squared misses smallest.",
+        idea: "When every measurement is a little off, the best line keeps the squared misses smallest.",
         topic: "reg",
         figure: { value: "40 days", caption: "Of sightings before Ceres vanished. Gauss found it again on paper." },
       },
@@ -86,7 +86,7 @@ const CHAPTERS: Chapter[] = [
         id: "nightingale",
         year: "1858",
         title: "A chart that argued with an army",
-        body: "Florence Nightingale came back from the Crimean War sure that soldiers were dying of the wrong things. With help from the statistician William Farr, she drew twelve wedges, one per month, each sized by that month’s deaths and colored by cause. Blue, for diseases that could have been prevented, swamped red, for wounds. The chart went into a confidential report in 1858. Army doctors pushed back, so she passed copies to writers and reformers, and a year later it was in a book anyone could buy. The point was plain at a glance: most of those deaths came from disease that cleaner, better-fed camps could prevent.",
+        body: "Florence Nightingale returned from the Crimean War sure soldiers were dying of the wrong things. With William Farr, she drew twelve wedges, one per month, sized by deaths and colored by cause. Blue, for preventable disease, swamped red, for wounds. It went into a confidential report in 1858. When army doctors pushed back, she passed copies to writers and reformers.",
         idea: "A clear picture of the data makes the size of a problem impossible to ignore.",
         topic: "data",
       },
@@ -94,8 +94,8 @@ const CHAPTERS: Chapter[] = [
         id: "galton",
         year: "1874",
         title: "Beads, pins and a bell",
-        body: "For a talk at the Royal Institution in 1874, Francis Galton built a board studded with rows of pins. Beads poured in at the top, and at every pin each one bounced left or right by chance. Nobody could say where a single bead would land. Together they piled into the same bell every time, tall in the middle and thin at the edges. Galton called it a wonderful form of cosmic order. He also used his statistics to argue for eugenics, a legacy the field still reckons with. The board on this site’s front page is the same machine.",
-        idea: "Add up many small random nudges and the totals form a bell, which is why averages are so predictable.",
+        body: "For an 1874 talk, Francis Galton built a board of pins. Beads bounced left or right at each pin. No one could say where a bead would land, but together they piled into the same bell every time. Galton also used statistics to argue for eugenics, a legacy the field still reckons with. Our front page runs the same machine.",
+        idea: "Many small random nudges add up to a bell, which is why averages are so predictable.",
         topic: "clt",
         figure: { art: "pile", caption: "Each grain is one bead. No single one is predictable; the pile always is." },
       },
@@ -105,22 +105,22 @@ const CHAPTERS: Chapter[] = [
     id: "samples",
     years: "1908 to 1943",
     title: "Small samples, big stakes",
-    dek: "Beer, tea, an election and a war. Each one turned on what a slice of data can and can’t tell you.",
+    dek: "Beer, tea, an election, a war: what can a slice of data really tell you?",
     stories: [
       {
         id: "gosset",
         year: "1908",
         title: "The brewer who signed his work ‘Student’",
-        body: "William Sealy Gosset joined Guinness in Dublin in 1899 as a chemist. His brewery experiments ran on a handful of batches, while the formulas of the day assumed big samples. With only a few measurements, those formulas made results look surer than they were. Gosset worked out the fix, a curve with fatter tails built for small samples. Guinness didn’t let staff publish under their own names, so his 1908 paper, The Probable Error of a Mean, was signed ‘Student’. Every statistics class still teaches Student’s t.",
-        idea: "With a small sample, admit more doubt: use t instead of z, and your interval gets wider.",
+        body: "William Sealy Gosset joined Guinness in 1899 as a chemist. His experiments ran on a handful of batches, but the formulas of the day assumed big samples and made small ones look surer than they were. His fix was a curve with fatter tails. Guinness didn’t let staff publish under their own names, so his 1908 paper was signed ‘Student’.",
+        idea: "With a small sample, admit more doubt: use t instead of z, and the interval widens.",
         topic: "ci",
       },
       {
         id: "fisher",
         year: "1935",
         title: "Milk first, or tea first?",
-        body: "At afternoon tea at Rothamsted, an agricultural research station, the scientist Muriel Bristol said she could taste whether the milk had gone into the cup before the tea. A colleague said: let’s test her. Ronald Fisher later used the moment to show how to test any claim. Pour eight cups, four each way, serve them in random order, and ask her to pick out the four with milk first. Guessing would get all four right just 1 time in 70. He wrote it up in The Design of Experiments in 1935. By most accounts, she got every cup right.",
-        idea: "Assume nothing is going on, then ask how surprising the result would be. That is a hypothesis test.",
+        body: "At tea at Rothamsted, Muriel Bristol said she could taste whether the milk went in first. Ronald Fisher later used it to show how to test any claim: pour eight cups, four each way, in random order, and ask her to pick the four milk-first. Guessing gets all four 1 time in 70. By most accounts, she got them all.",
+        idea: "Assume nothing is going on, then ask how surprising the result is. That is a hypothesis test.",
         topic: "test",
         figure: { value: "1 in 70", caption: "The chance of picking all four milk-first cups by pure guessing." },
       },
@@ -128,7 +128,7 @@ const CHAPTERS: Chapter[] = [
         id: "literary-digest",
         year: "1936",
         title: "2.4 million answers, the wrong winner",
-        body: "In 1936 the Literary Digest mailed about 10 million mock ballots, with names drawn largely from phone books and car registrations, and got about 2.4 million back. Its forecast: Alf Landon would beat Franklin Roosevelt with 57% of the vote. Roosevelt carried 46 of 48 states. The list leaned toward households with phones and cars, but later studies found a bigger problem in who answered: Landon voters mailed their ballots back, and Roosevelt voters were likelier to stay silent. George Gallup asked about 50,000 people chosen to mirror the voters, and called it for Roosevelt. The Digest never recovered.",
+        body: "In 1936 the Literary Digest mailed about 10 million mock ballots, got about 2.4 million back, and called it for Alf Landon. Franklin Roosevelt carried 46 of 48 states. The lists leaned toward phone and car owners, and later studies found Landon voters were likelier to answer. George Gallup asked about 50,000 people chosen to mirror voters, and was right.",
         idea: "A huge sample that leans one way loses to a small one picked fairly.",
         topic: "data",
         figure: { value: "2.4M", caption: "Ballots the Digest got back. Gallup asked about 50,000 and got it right." },
@@ -137,8 +137,8 @@ const CHAPTERS: Chapter[] = [
         id: "wald",
         year: "1943",
         title: "The planes that didn’t come back",
-        body: "Abraham Wald, working with Columbia University’s Statistical Research Group during the Second World War, took on a hard question: how vulnerable are bombers to hits in different places? The only data came from planes that returned, peppered with holes. The tempting reading is to armor where the holes are. Wald saw that the sample itself was the clue. Those planes were hit and still made it home. Planes hit in the deadliest places mostly didn’t, so they never got counted. His memos showed how to estimate the missing losses from the survivors’ damage.",
-        idea: "Every number in your data is conditional on making it into the data, so ask who never made it back.",
+        body: "During the Second World War, Abraham Wald of Columbia’s Statistical Research Group studied where bombers were most vulnerable. The only data came from planes that returned, peppered with holes. The tempting move is to armor where the holes are. Wald saw that the sample was the clue: planes hit in the deadliest places mostly never came back to be counted.",
+        idea: "Your data holds only what made it into the data. Ask who never made it back.",
         topic: "prob",
       },
     ],
@@ -153,16 +153,16 @@ const CHAPTERS: Chapter[] = [
         id: "deming",
         year: "1950",
         title: "Teaching a country to read variation",
-        body: "In the summer of 1950 the Union of Japanese Scientists and Engineers invited the American statistician W. Edwards Deming to teach. Between June and August he trained hundreds of engineers and managers, and spoke to company heads at Hakone. His lesson, built on Walter Shewhart’s control charts: every process varies, so learn to tell its everyday wobble from a real signal, then shrink the wobble. Better quality, he argued, would cut costs and win markets. He gave back the royalties from his lectures, and JUSE used them to found the Deming Prize, still awarded today.",
-        idea: "Manage the spread, not just the average: a process that is right on average but all over the place is still broken.",
+        body: "In 1950 the Union of Japanese Scientists and Engineers (JUSE) invited the American statistician W. Edwards Deming, who taught hundreds of engineers and managers. His lesson, built on Walter Shewhart’s control charts: every process varies, so tell everyday wobble from a real signal, then shrink it. He gave back his royalties, and JUSE used them to found the Deming Prize.",
+        idea: "Manage the spread, not just the average: right on average but all over the place is still broken.",
         topic: "spread",
       },
       {
         id: "moneyball",
         year: "2002",
         title: "Buying the wins nobody else priced",
-        body: "The 2002 Oakland A’s spent about $42 million on players. The New York Yankees spent about $133 million. Both won 103 games. General manager Billy Beane and his assistant Paul DePodesta trusted the numbers over the scouts’ eye. Their model said getting on base drove runs far more than the market paid for. In Michael Lewis’s telling, a point of on-base percentage was worth about three points of slugging. So they bought walks cheaply. The A’s won 20 games in a row, an American League record at the time, and still lost in the first round of the playoffs.",
-        idea: "Weigh each factor while holding the others fixed, and you find what really drives the result and what is overpriced.",
+        body: "The 2002 Oakland A’s spent about $42 million; the Yankees, about $133 million. Both won 103 games. Billy Beane and Paul DePodesta trusted the numbers over the scouts’ eye: getting on base drove runs far more than the market paid for. They bought walks cheaply. The A’s won 20 straight, then a league record, yet lost in the first round.",
+        idea: "Hold the other factors fixed and you see what really drives results, and what is overpriced.",
         topic: "mreg",
         figure: { value: "$42M", caption: "Oakland’s payroll. The Yankees spent about $133M. Both won 103 games." },
       },
@@ -170,8 +170,8 @@ const CHAPTERS: Chapter[] = [
         id: "41-shades",
         year: "2009",
         title: "Forty-one shades of blue",
-        body: "In March 2009 Douglas Bowman, Google’s first visual designer, quit and explained why on his blog. A team couldn’t decide between two blues, he wrote, so they tested 41 shades between them to see which one performed best. He had been asked to prove whether a border should be 3, 4 or 5 pixels wide. Bowman felt data had crowded out judgment. The method he complained about now runs most of the web: show two versions to random halves of the visitors, and let the difference decide.",
-        idea: "Split people at random, change one thing, and check whether the gap is bigger than chance alone would make.",
+        body: "In March 2009 Douglas Bowman, Google’s first visual designer, quit and explained why on his blog. A team couldn’t decide between two blues, he wrote, so they tested 41 shades between them. Bowman felt data had crowded out judgment. The method now runs most of the web: random halves of visitors see two versions, and the difference decides.",
+        idea: "Split people at random, change one thing, and check if the gap beats chance.",
         topic: "test",
         figure: { value: "41", caption: "Shades of blue tested between the two a team couldn’t choose from." },
       },
@@ -180,14 +180,14 @@ const CHAPTERS: Chapter[] = [
 ];
 
 const EVERYDAY: { name: string; line: string; topic: TopicId }[] = [
-  { name: "Pricing", line: "How many sales do you lose per dollar of price? That is a regression slope.", topic: "reg" },
-  { name: "A/B tests", line: "Apps try two versions on random users and keep the one that clears the margin of error.", topic: "ci" },
-  { name: "Risk", line: "Insurers and lenders price a policy or a loan from its expected loss and its spread.", topic: "rv" },
-  { name: "Quality", line: "A plant checks a few parts an hour and stops the line when the variation jumps.", topic: "spread" },
-  { name: "Forecasting", line: "A call center staffs the next hour from the average number of calls per hour.", topic: "poisson" },
-  { name: "Sports", line: "Win 60% of your serve points and you hold about 74% of your service games.", topic: "count" },
-  { name: "Medicine", line: "A drug is approved when the gap between treated and untreated is too big for chance.", topic: "test" },
-  { name: "Polls", line: "A thousand people speak for millions only if they were picked at random.", topic: "data" },
+  { name: "Pricing", line: "Sales lost per dollar of price? That is a regression slope.", topic: "reg" },
+  { name: "A/B tests", line: "Two versions, random users; the winner must clear the margin of error.", topic: "ci" },
+  { name: "Risk", line: "Insurers and lenders price from the expected loss and its spread.", topic: "rv" },
+  { name: "Quality", line: "A plant checks a few parts an hour, stopping when variation jumps.", topic: "spread" },
+  { name: "Forecasting", line: "A call center staffs each hour from its average call rate.", topic: "poisson" },
+  { name: "Sports", line: "Win 60% of serve points; hold about 74% of service games.", topic: "count" },
+  { name: "Medicine", line: "Drugs are approved when treated beat untreated by more than chance.", topic: "test" },
+  { name: "Polls", line: "A thousand people speak for millions only if picked at random.", topic: "data" },
 ];
 
 const SOURCES: { story: string; title: string; url: string }[] = [
@@ -355,10 +355,10 @@ export default function Story() {
             </h1>
             <div className="rise mt-7 max-w-[56ch] space-y-4 text-lg text-ink-muted md:text-xl" style={{ animationDelay: "80ms" }}>
               <p>
-                Statistics is deciding what to do when you can only see a slice of the data. You can&rsquo;t ask every voter, taste every
-                batch or inspect every plane, so you look closely at some of them and say something careful about all of them.
+                Statistics is deciding what to do from a slice of the data. You can&rsquo;t ask every voter or inspect every plane, so you
+                study some and speak carefully about all.
               </p>
-              <p>Here are fourteen times people did that, or failed to, and the one idea each one leaves you with.</p>
+              <p>Here are fourteen times people did that, or failed to, and what each teaches.</p>
             </div>
 
             <nav aria-label="Chapters" className="rise mt-12" style={{ animationDelay: "140ms" }}>
@@ -417,7 +417,7 @@ export default function Story() {
                 >
                   Where you already use it
                 </h2>
-                <p className="max-w-[52ch] text-lg text-paper/70">None of this stayed in the history books. It runs the jobs you&rsquo;re studying for.</p>
+                <p className="max-w-[52ch] text-lg text-paper/70">None of this stayed in the history books. You use it every day.</p>
               </div>
             </Reveal>
             <ul className="grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-4">

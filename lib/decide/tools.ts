@@ -30,7 +30,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "choose",
         question: "Which option should I choose?",
-        line: "Two jobs, two products, two cars: give each a worst, likely and best case and see which comes out ahead.",
+        line: "Give each option a worst, likely and best case; see which wins.",
         kicker: "Monte Carlo",
         lede: "Give each option a worst, a likely and a best case. We play out 10,000 possible futures and count how often each one comes out on top.",
         description: "Compare two or three options with uncertain outcomes. Type a worst, likely and best case for each, and 10,000 simulated futures show how often each comes out ahead.",
@@ -45,7 +45,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "warranty",
         question: "Should I buy the warranty?",
-        line: "Price, chance and cost: what each choice costs on average, and when to buy it anyway.",
+        line: "What each choice costs on average, and when to buy anyway.",
         kicker: "Expected value",
         lede: "Price, chance and cost: what each choice costs on average, the chance where the plan starts to pay, and when to buy it anyway.",
         description: "Should you buy the extended warranty or insurance? Compare what each choice costs on average, find the break-even chance, and see when buying it still makes sense.",
@@ -54,7 +54,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "bet",
         question: "What are these odds really saying?",
-        line: "Turn a betting line into a chance, find the bookmaker's cut, and see what a careful stake would be.",
+        line: "Turn a betting line into a chance and find the bookmaker's cut.",
         kicker: "A bet",
         lede: "Turn any betting line into a chance, find the bookmaker's cut, and see what a careful bettor would stake.",
         description: "Turn American, decimal or fractional odds into a plain chance, find the bookmaker's margin, and see the expected value and Kelly stake for your own estimate.",
@@ -63,7 +63,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "market",
         question: "What does a 30¢ price mean?",
-        line: "A prediction market price is the crowd's chance. Compare it with yours, after fees.",
+        line: "A market price is the crowd's chance. Compare yours, after fees.",
         kicker: "A market price",
         lede: "A prediction market price is the crowd's chance. Compare it with yours, after fees.",
         description: "Read a prediction market price as a chance, compare it with your own, and see what Yes and No are worth on average after fees.",
@@ -72,7 +72,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "option",
         question: "How likely is the stock to get there?",
-        line: "From a price, a strike, the days left and the volatility: the chance of ending past the strike.",
+        line: "The chance a stock ends past the strike by expiry.",
         kicker: "An option, for learning only",
         lede: "From a stock price, a strike, the days left and the volatility: the typical move, the chance of ending past the strike, and where you break even.",
         description: "From a stock price, strike, days to expiry and implied volatility: the typical move, the chance of ending past the strike, and the chance of a profit. For learning only.",
@@ -87,7 +87,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "bayes",
         question: "Is this test result real?",
-        line: "A yes from a good test feels like an answer. How common the thing is changes what it means.",
+        line: "How common the thing is changes what a yes means.",
         kicker: "Base rates",
         lede: "A yes from a good test feels like an answer. How common the thing is changes what it means, often more than the test does.",
         description: "What a positive test, a fraud alert or a spam flag really means. See how the base rate changes the chance a yes is real, with 1,000 dots.",
@@ -96,7 +96,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "abtest",
         question: "Did my change really work?",
-        line: "Two versions, two counts. Is the gap real or luck, and how many people would settle it?",
+        line: "Two versions, two counts: is the gap real or luck?",
         kicker: "A/B test",
         lede: "Two versions, two counts. Is the gap real or luck, how big could it be, and how many people would settle it.",
         description: "Type the counts from an A/B test and see in plain words whether the gap is real or luck, how big it could be, and how many people you need.",
@@ -111,7 +111,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "goal",
         question: "Will I hit my goal?",
-        line: "A start amount, a monthly saving and a guess at returns, played out 5,000 ways.",
+        line: "Start amount, monthly saving and returns, played out 5,000 ways.",
         kicker: "Monte Carlo",
         lede: "A start amount, a monthly saving and a guess at returns. We play out 5,000 possible futures, month by month, and count how often you get there.",
         description: "Will your savings reach the goal? 5,000 simulated futures, month by month, show your chance, the middle outcome and the bad case.",
@@ -120,7 +120,7 @@ export const GROUPS: ToolGroup[] = [
       {
         id: "staffing",
         question: "How many people do I need?",
-        line: "Customers arrive at random. Find the fewest people that keep a busy hour from overflowing.",
+        line: "The fewest people that keep a busy hour from overflowing.",
         kicker: "Poisson",
         lede: "Customers arrive at random. See how often a busy hour brings more than the team can serve, and the fewest people that keep it rare.",
         description: "How many staff for a busy hour? See how often random arrivals outrun the team, and the fewest people that keep it rare.",
