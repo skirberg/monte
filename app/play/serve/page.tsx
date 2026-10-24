@@ -24,12 +24,12 @@ export default function Page() {
             <code>P(hold) = p⁴(1 + 4q + 10q²) + 20p³q³ · p² / (1 − 2pq)</code>
           </p>
           <p>
-            The 1, 4 and 10 count the orders in which you can win 4-0, 4-1 or 4-2 (your fourth point always comes last), and the 20
-            counts the orders that reach deuce at 3-3. That is the binomial coefficient at work. From deuce you need two points in a row
+            The 1, 4 and 10 count the orders in which you can win 4–0, 4–1 or 4–2 (your fourth point always comes last), and the 20
+            counts the orders that reach deuce at 3–3. That is the binomial coefficient at work. From deuce you need two points in a row
             before they do, which works out to p² / (1 − 2pq).
           </p>
           <p>
-            The set adds alternating serve and a tiebreak at 6-6, so the page computes it exactly with a recursion over every score. At
+            The set adds alternating serve and a tiebreak at 6–6, so the page computes it exactly with a recursion over every score. At
             p = 0.5 you hold exactly half your games; at 0.6 you hold 73.6%.
           </p>
           <p>

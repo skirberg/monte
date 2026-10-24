@@ -30,7 +30,7 @@ function simulate(games: number) {
   return out;
 }
 
-const pct = (t: Tally) => (t.plays ? `${((t.wins / t.plays) * 100).toFixed(1)}%` : "?");
+const pct = (t: Tally) => (t.plays ? `${((t.wins / t.plays) * 100).toFixed(1)}%` : "–");
 
 function Bar({ label, t }: { label: string; t: Tally }) {
   const w = t.plays ? (t.wins / t.plays) * 100 : 0;

@@ -13,7 +13,7 @@ const STAKE = 10;
 const PLAYERS = 1000;
 const PLAYER_SPINS = 1000;
 
-/** One spin: +payout on a win, −1 on a loss, per $1 staked. Pockets 1 to 18 are red; 0 (and 00) are green. */
+/** One spin: +payout on a win, −1 on a loss, per $1 staked. Pockets 1–18 are red; 0 (and 00) are green. */
 function spin(wheel: Wheel, bet: Bet) {
   const p = Math.floor(Math.random() * POCKETS[wheel]);
   if (bet === "red") return p >= 1 && p <= 18 ? 1 : -1;
@@ -189,7 +189,7 @@ export function HouseEdge() {
             ["Wagered", money(wagered)],
             ["You are", money(net)],
             ["Expected", money(expected)],
-            ["Your return per $1", wagered ? pct(net / wagered, 2) : "?"],
+            ["Your return per $1", wagered ? pct(net / wagered, 2) : "–"],
             ["House edge", pct(EDGE[wheel], 2)],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-4">
