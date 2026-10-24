@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BookA, Layers, Printer, Timer } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookA, Download, Layers, Printer, Timer } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GameArt } from "@/components/play/game-art";
@@ -75,6 +75,13 @@ export default function Home() {
                 Take a 10-question drill
               </a>
             </div>
+            <a
+              href="/story/"
+              className="rise mt-6 inline-flex min-h-11 items-center gap-2 self-start font-medium text-clay-ink underline-offset-4 hover:underline"
+              style={{ animationDelay: "180ms" }}
+            >
+              Never clicked for you? Start with why it matters <ArrowRight className="size-4" />
+            </a>
           </div>
 
           <div className="rise lg:col-span-6" style={{ animationDelay: "100ms" }}>
@@ -110,9 +117,7 @@ export default function Home() {
         <section className="bg-ink py-16 text-paper md:py-28 [--line:color-mix(in_oklch,var(--paper)_18%,transparent)]">
           <div className={wrap}>
             <Reveal className="mb-12 grid gap-4 md:grid-cols-12">
-              <p className="font-mono text-xs uppercase tracking-[0.1em] text-paper/60 md:col-span-3 md:pt-3">
-                <span className="text-paper">04</span> / When you&rsquo;re stuck
-              </p>
+              <p className="text-sm font-medium text-paper/75 md:col-span-3 md:pt-3">When you&rsquo;re stuck</p>
               <div className="space-y-4 md:col-span-9">
                 <h2
                   className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
@@ -136,7 +141,7 @@ export default function Home() {
               ))}
             </Reveal>
 
-            <div className="mt-20 grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-20 grid gap-px overflow-hidden rounded-[24px] bg-paper/15 sm:grid-cols-2 lg:grid-cols-5">
               {TOOLS.map((t, i) => (
                 <Reveal key={t.id} delay={i * 0.05} className="bg-ink">
                   <a href={studyHref(`#tools/${t.id}`)} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
@@ -167,6 +172,12 @@ export default function Home() {
                 <a href={studyHref("#practice/drill/mock")} className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
                   Mock exam
                   <Timer className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
+                </a>
+              </Reveal>
+              <Reveal delay={0.4} className="bg-ink">
+                <a href="/downloads/monte-statistics-workbook.xlsx" download className="group flex h-full min-h-28 items-end justify-between gap-3 p-6 font-display text-2xl font-[650] transition-colors hover:bg-paper/5">
+                  Free workbook
+                  <Download className="size-5 shrink-0 text-paper/40 transition-colors group-hover:text-clay" />
                 </a>
               </Reveal>
             </div>

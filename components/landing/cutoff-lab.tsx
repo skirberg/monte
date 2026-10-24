@@ -92,20 +92,20 @@ export function CutoffLab() {
       <div className="space-y-6 lg:col-span-5" aria-live="polite">
         <p className="text-ink-muted">{L.sub} How often do you sell more than the cutoff?</p>
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">P(more than {x} coffees)</p>
-          <p className="font-mono text-[clamp(3.5rem,8vw,5.5rem)] font-medium leading-none tracking-[-0.05em] text-clay-ink tabular">
+          <p className="text-sm text-ink-muted">P(more than {x} coffees)</p>
+          <p className="font-display text-[clamp(3.5rem,8vw,5.5rem)] font-[650] leading-none tracking-[-0.03em] text-clay-ink tabular-nums">
             {(above * 100).toFixed(1)}%
           </p>
         </div>
         <dl className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-paper font-mono text-sm tabular">
           <div className="flex items-baseline justify-between gap-4 px-5 py-4">
-            <dt className="text-xs uppercase tracking-[0.08em] text-ink-muted">z</dt>
+            <dt className="font-sans text-sm text-ink-muted">z score</dt>
             <dd className="text-right text-base">
               ({x} − {L.m}) / {L.s} = {z.toFixed(2).replace("-", "−")}
             </dd>
           </div>
           <div className="flex items-baseline justify-between gap-4 px-5 py-4">
-            <dt className="text-xs uppercase tracking-[0.08em] text-ink-muted">How often</dt>
+            <dt className="font-sans text-sm text-ink-muted">How often</dt>
             <dd className="text-right text-base">{above > 0.0005 ? `about 1 day in ${Math.max(1, Math.round(1 / above))}` : "almost never"}</dd>
           </div>
         </dl>

@@ -76,7 +76,7 @@ function Preview({ t, stat }: { t: Topic; stat?: Stat }) {
         </h3>
         <p className="text-[1.05rem] leading-relaxed text-ink-muted">{t.line}</p>
       </div>
-      <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+      <p className="text-sm text-ink-muted">
         {st.won ? <span className="text-clay-ink">Match won</span> : st.label}
       </p>
       <div className="mt-auto flex flex-wrap gap-2">
@@ -143,7 +143,7 @@ export function TheDraw() {
             </li>
           );
         })}
-        <li className="flex items-center justify-between gap-3 py-4 pl-2 font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+        <li className="flex items-center justify-between gap-3 py-4 pl-2 text-sm text-ink-muted">
           <span>Final: timed closed-book mock, 20 questions</span>
           <span className="tabular">{won} of {TOPICS.length} won</span>
         </li>

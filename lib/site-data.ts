@@ -5,7 +5,7 @@ import DATA from "@/lib/engine/data.json";
 
 const stripTags = (s: string) => s.replace(/<[^>]+>/g, "");
 
-export type Topic = { id: string; n: number; name: string; line: string; hook: string };
+export type Topic = { id: string; n: number; name: string; line: string; hook: string; keywords: string };
 
 export const TOPICS: Topic[] = DATA.topics.map((t) => ({
   id: t.id,
@@ -13,6 +13,7 @@ export const TOPICS: Topic[] = DATA.topics.map((t) => ({
   name: t.name,
   line: stripTags(t.line),
   hook: stripTags(t.hook ?? ""),
+  keywords: t.keywords ?? "",
 }));
 
 export const COPY = DATA.copy;
@@ -132,10 +133,18 @@ export const GAMES = [
     topic: "normal",
     topicName: "The normal curve and z",
   },
+  {
+    slug: "election",
+    group: "chance",
+    name: "Election night",
+    line: "Commission polls, call the race, then see why a 2-point lead is often a coin flip.",
+    topic: "ci",
+    topicName: "Confidence intervals",
+  },
 ] as const;
 
 export const GAME_GROUPS = [
-  { id: "chance", name: "Chance", line: "Correlation, randomness and a tennis racket." },
+  { id: "chance", name: "Chance", line: "Correlation, randomness, a tennis racket and an election." },
   { id: "money", name: "Money", line: "Casinos, betting lines, A/B tests, markets and options. For learning, not advice." },
 ] as const;
 

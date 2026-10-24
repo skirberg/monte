@@ -1,6 +1,6 @@
 # Monte
 
-Business statistics, one idea at a time. Fourteen topics with labs, timed drills with fresh numbers, solvers that show the work, and nine games that each hide a real statistics idea.
+Business statistics, one idea at a time. Fourteen topics with labs, timed drills with fresh numbers, solvers that show the work, and ten games that each hide a real statistics idea.
 
 ## Pages
 

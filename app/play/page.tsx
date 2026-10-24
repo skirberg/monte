@@ -9,7 +9,7 @@ import { GAMES, GAME_GROUPS, playHref, studyHref } from "@/lib/site-data";
 export const metadata: Metadata = {
   title: "Play",
   alternates: { canonical: "/play/" },
-  description: "Nine games, each hiding a real statistics idea: correlation, Monty Hall, randomness, tennis, casinos, betting odds, A/B tests, market history and options.",
+  description: "Ten games, each hiding a real statistics idea: correlation, Monty Hall, randomness, tennis, casinos, betting odds, A/B tests, market history, options and election polls.",
 };
 
 export default function PlayHub() {
@@ -48,18 +48,18 @@ export default function PlayHub() {
                   <Reveal as="li" key={g.slug} delay={i * 0.05}>
                     <a
                       href={playHref(g.slug)}
-                      className="group grid h-full grid-rows-[auto_1fr] overflow-hidden rounded-[28px] border border-line transition-colors hover:border-ink"
+                      className="group grid h-full grid-cols-[6.5rem_1fr] overflow-hidden rounded-[24px] border border-line transition-colors hover:border-ink sm:grid-cols-1 sm:grid-rows-[auto_1fr] sm:rounded-[28px]"
                     >
-                      <div className="bg-sand px-10 py-7 transition-colors group-hover:bg-sand-2">
+                      <div className="grid place-items-center bg-sand p-3 transition-colors group-hover:bg-sand-2 sm:px-10 sm:py-7">
                         <GameArt slug={g.slug} />
                       </div>
-                      <div className="flex flex-col gap-3 p-6">
+                      <div className="flex flex-col gap-1.5 p-4 sm:gap-3 sm:p-6">
                         <p className="text-sm text-ink-muted">{g.topicName}</p>
-                        <h3 className="flex items-center justify-between gap-3 font-display text-2xl font-[650]" style={{ fontVariationSettings: "'wdth' 88" }}>
+                        <h3 className="flex items-center justify-between gap-3 font-display text-xl font-[650] sm:text-2xl" style={{ fontVariationSettings: "'wdth' 88" }}>
                           {g.name}
                           <ArrowRight className="size-5 shrink-0 text-ink-muted transition-transform group-hover:translate-x-1 group-hover:text-ink" />
                         </h3>
-                        <p className="text-ink-muted">{g.line}</p>
+                        <p className="text-sm text-ink-muted sm:text-base">{g.line}</p>
                       </div>
                     </a>
                   </Reveal>

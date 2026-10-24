@@ -70,7 +70,8 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             {TOPICS.map((t) => (
               <CommandItem
                 key={t.id}
-                value={`topic ${t.n} ${t.name} ${t.line}`}
+                value={`topic ${t.n} ${t.name}`}
+                keywords={[t.keywords, t.line]}
                 onSelect={() => run(() => goStudy(`#learn/topics/${t.id}`))}
               >
                 <span className="w-6 font-mono text-xs text-muted-foreground tabular">{String(t.n).padStart(2, "0")}</span>
@@ -119,6 +120,9 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             </CommandItem>
             <CommandItem value="terms glossary definitions vocabulary words" onSelect={() => run(() => goStudy("#learn/terms"))}>
               <BookOpen /> Terms: every key word in plain English
+            </CommandItem>
+            <CommandItem value="why statistics story history matters" onSelect={() => run(() => go("/story/"))}>
+              <BookOpen /> Why statistics: the stories behind it
             </CommandItem>
             <CommandItem value="how it's built colophon stack data math sources" onSelect={() => run(() => go("/built/"))}>
               <BookOpen /> How it&rsquo;s built

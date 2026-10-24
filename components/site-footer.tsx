@@ -2,24 +2,66 @@ import { Wordmark } from "@/components/brand/logo";
 import { playHref, studyHref } from "@/lib/site-data";
 import { StudyBottomNav } from "@/components/study/bottom-nav";
 
+const COLUMNS: { title: string; className?: string; links: [string, string, string?][] }[] = [
+  {
+    title: "Learn",
+    links: [
+      ["Topics", studyHref("#learn/topics")],
+      ["Terms", studyHref("#learn/terms")],
+      ["Formula sheet", studyHref("#learn/formulas")],
+      ["Which formula?", studyHref("#learn/frameworks")],
+      ["Why statistics", "/story/"],
+    ],
+  },
+  {
+    title: "Practice",
+    links: [
+      ["Drill", studyHref("#practice/drill")],
+      ["Flashcards", studyHref("#practice/cards")],
+      ["Mock exam", studyHref("#practice/drill/mock")],
+      ["Quick math", studyHref("#practice/math")],
+    ],
+  },
+  {
+    title: "Apply",
+    links: [
+      ["Solvers", studyHref("#solve")],
+      ["Excel, R, Python, SQL", studyHref("#tools")],
+      ["Free workbook (.xlsx)", "/downloads/monte-statistics-workbook.xlsx"],
+    ],
+  },
+  {
+    title: "More",
+    links: [
+      ["Play", playHref(), "fun-only"],
+      ["Free sources", studyHref("#sources")],
+      ["How it’s built", "/built/"],
+    ],
+  },
+];
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between md:px-6">
-        <Wordmark />
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap gap-x-6 text-sm text-ink-muted [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center"
-        >
-          <a className="hover:text-ink" href={studyHref("#home")}>Study</a>
-          <a className="hover:text-ink" href={studyHref("#learn/formulas")}>Formula sheet</a>
-          <a className="hover:text-ink" href={studyHref("#practice/drill/mock")}>Mock exam</a>
-          <a className="fun-only hover:text-ink" href={playHref()}>Play</a>
-          <a className="hover:text-ink" href={studyHref("#sources")}>Free sources</a>
-          <a className="hover:text-ink" href="/built/">How it&rsquo;s built</a>
+      <div className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 py-12 md:px-6">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
+          {COLUMNS.map((col) => (
+            <div key={col.title} className={col.className}>
+              <p className="mb-2 text-sm font-semibold">{col.title}</p>
+              <ul className="grid text-sm text-ink-muted">
+                {col.links.map(([label, href, cls]) => (
+                  <li key={label} className={cls}>
+                    <a className="inline-flex min-h-11 items-center hover:text-ink" href={href}>
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </nav>
-        <div className="flex items-center gap-4 md:justify-end">
-          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Next.js · shadcn/ui · Remotion · Motion</p>
+        <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
+          <Wordmark />
           <a
             href="https://github.com/skirberg"
             target="_blank"

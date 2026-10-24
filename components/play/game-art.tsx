@@ -116,6 +116,23 @@ export function GameArt({ slug }: { slug: string }) {
       </svg>
     );
   }
+  if (slug === "election") {
+    // poll intervals around the tie line; the thick clay one is every poll together
+    const rows = [[36, 36], [62, 32], [52, 40], [70, 30], [42, 36]];
+    return (
+      <svg viewBox="0 0 100 80" className="w-full" aria-hidden>
+        <line x1={50} x2={50} y1={6} y2={74} stroke="var(--line-strong)" strokeWidth={1.2} strokeDasharray="3 3" />
+        {rows.map(([c, w], i) => (
+          <g key={i}>
+            <line x1={c - w / 2} x2={c + w / 2} y1={12 + i * 11} y2={12 + i * 11} stroke="var(--ink)" strokeWidth={1.8} strokeLinecap="round" />
+            <circle cx={c} cy={12 + i * 11} r={2.6} fill="var(--clay)" />
+          </g>
+        ))}
+        <line x1={46} x2={66} y1={68} y2={68} stroke="var(--clay)" strokeWidth={4.4} strokeLinecap="round" />
+        <circle cx={56} cy={68} r={3.4} fill="var(--ink)" />
+      </svg>
+    );
+  }
   // serve: the hold curve against the diagonal
   let d = "";
   for (let i = 0; i <= 40; i++) {

@@ -89,5 +89,5 @@ export const ROUTES = [
   "/", "/study/", "/study/#learn/topics/data", "/study/#learn/topics/normal", "/study/#learn/topics/clt", "/study/#learn/formulas", "/study/#learn/frameworks", "/study/#learn/terms", "/study/#learn/topics/test", "/study/#practice/cards",
   "/study/#practice/drill", "/study/#practice/math", "/study/#solve/normal", "/study/#solve/samp", "/study/#solve/test", "/study/#tools", "/study/#sources",
   "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",
-  "/play/ab-test/", "/play/long-run/", "/play/options/", "/built/", "/missing-page/",
+  "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/built/", "/missing-page/",
 ];

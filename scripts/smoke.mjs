@@ -15,7 +15,7 @@ import { extname, join, normalize } from "node:path";
 
 const OUT = join(process.cwd(), "out");
 const CHROME = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const GAMES = ["correlation", "monty-hall", "fake-coin", "serve", "house-edge", "odds", "ab-test", "long-run", "options"];
+const GAMES = ["correlation", "monty-hall", "fake-coin", "serve", "house-edge", "odds", "ab-test", "long-run", "options", "election"];
 const ROUTES = ["/", "/study/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/built/"];
 // Requests that only resolve on Vercel (analytics) or that browsers make on their own.
 const IGNORE = [/\/_vercel\//, /favicon\.ico/];

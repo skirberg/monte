@@ -36,6 +36,7 @@ const MATH: Record<string, string> = {
   "ab-test": "Pooled two-proportion z-test after every simulated day. With no real difference, daily peeking flagged about 24% of tests versus about 5% for a single look.",
   "long-run": "Arithmetic vs geometric mean on 98 years of real returns, then a bootstrap Monte Carlo of 2,000 futures. Parsed from the source and checked against its own growth column.",
   options: "Black-Scholes in closed form next to risk-neutral Monte Carlo with a 95% band. At 100/100, one year, 5%, σ 20%: $10.45 both ways.",
+  election: "Each poll is a binomial draw from a hidden true share, with a 95% margin of 1.96 √[p̂(1 − p̂)/n]. At a 2-point lead and 1,000 people, one poll names the wrong leader 26.4% of the time by the exact binomial; averages of 5 and 10 polls cut that to 7.9% and 2.3%.",
 };
 
 const SOURCES: [string, string][] = [
@@ -47,7 +48,7 @@ const SOURCES: [string, string][] = [
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="grid gap-4 border-t border-line pt-8 md:grid-cols-12 md:pt-10">
-      <h2 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-1.5">{title}</h2>
+      <h2 className="text-sm font-semibold text-ink md:col-span-3 md:pt-1.5">{title}</h2>
       <div className="space-y-4 md:col-span-9">{children}</div>
     </section>
   );
@@ -59,7 +60,7 @@ export default function Built() {
       <SiteHeader mode="landing" />
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] space-y-12 px-4 pb-20 pt-8 outline-none md:px-6 md:pt-14">
         <header className="grid gap-4 md:grid-cols-12">
-          <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted md:col-span-3 md:pt-4">Colophon</p>
+          <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">How it&rsquo;s built</p>
           <div className="space-y-4 md:col-span-9">
             <h1 className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.2rem)] font-[680] leading-[0.92] tracking-[-0.02em]" style={{ fontVariationSettings: "'wdth' 78" }}>
               How it&rsquo;s built
