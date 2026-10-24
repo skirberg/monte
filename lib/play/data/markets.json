@@ -4,8 +4,8 @@
     {
       "id": "polymarket",
       "name": "Polymarket",
-      "asOf": "2026-10-24T05:00:44.612Z",
-      "asOfText": "Oct 24, 2026, 1:00 AM ET",
+      "asOf": "2026-10-24T15:51:49.870Z",
+      "asOfText": "Oct 24, 2026, 11:51 AM ET",
       "house": {
         "dem": 0.915,
         "rep": 0.085
@@ -18,21 +18,21 @@
     {
       "id": "kalshi",
       "name": "Kalshi",
-      "asOf": "2026-10-24T05:00:44.612Z",
-      "asOfText": "Oct 24, 2026, 1:00 AM ET",
+      "asOf": "2026-10-24T15:51:49.870Z",
+      "asOfText": "Oct 24, 2026, 11:51 AM ET",
       "house": {
-        "dem": 0.911,
-        "rep": 0.089
+        "dem": 0.905,
+        "rep": 0.095
       },
       "senate": {
-        "dem": 0.658,
-        "rep": 0.342
+        "dem": 0.655,
+        "rep": 0.345
       }
     }
   ],
   "polls": {
-    "asOf": "2026-10-24T05:00:44.612Z",
-    "asOfText": "Oct 24, 2026, 1:00 AM ET",
+    "asOf": "2026-10-24T15:51:49.870Z",
+    "asOfText": "Oct 24, 2026, 11:51 AM ET",
     "lead": 8.6,
     "leader": "Democrats",
     "averages": [
