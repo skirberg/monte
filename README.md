@@ -6,7 +6,7 @@ Business statistics, one idea at a time. Fourteen topics with labs, timed drills
 
 | Route | What it is |
 |---|---|
-| `/` | Landing page with the Remotion hero film (`remotion/galton-pile.tsx`) |
+| `/` | Landing page with the interactive hero board (`components/landing/hero-board.tsx`): tap to drop grains, hold to pour |
 | `/study/` | The study app: Learn, Practice, Solve, Tools, Sources (hash routes such as `#learn/topics/normal`) |
 | `/play/` | Nine games: correlation, Monty Hall, fake a coin, tennis serve math, house edge, betting odds, A/B peeking, 98 years of market returns, option pricing |
 | `/built/` | How it's built: stack, fonts, data sources and the math behind each game |
@@ -20,18 +20,18 @@ npm run build      # static site in out/
 npm run check      # build, then contrast, qa and smoke: run before every deploy
 npm run contrast   # WCAG contrast for every color pair, light and dark (app/globals.css)
 npm run qa         # every route at 375, 768, 1024, 1440 px, light and dark: axe, sideways scroll, tap targets
-npm run smoke      # behavior: hero film, closing mark, reduced motion, analytics, share links, favicon
+npm run smoke      # behavior: hero board, closing mark, reduced motion, analytics, share links, favicon
 npm run shots      # full-page screenshots of every route into screenshots/review/ for design review
 npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in public/og/
 ```
 
-`npm run smoke` loads every route at desktop and phone sizes and fails on page errors, sideways scrolling, display type tracked tight enough for glyphs to collide, a hero film that does not start without a click, a closing mark that does not finish, reduced-motion behavior, study analytics, and share links that point at another host. Run it after `npm run build` and before every deploy. It needs Google Chrome (set `CHROME_PATH` to use another Chromium).
+`npm run smoke` loads every route at desktop and phone sizes and fails on page errors, sideways scrolling, display type tracked tight enough for glyphs to collide, a hero board that does not pour without a click, a closing mark that does not finish, reduced-motion behavior, study analytics, and share links that point at another host. Run it after `npm run build` and before every deploy. It needs Google Chrome (set `CHROME_PATH` to use another Chromium).
 
 ## How it is built
 
-- Next.js static export (`output: "export"`), Tailwind CSS 4, shadcn/ui on Base UI, Motion, Remotion Player.
+- Next.js static export (`output: "export"`), Tailwind CSS 4, shadcn/ui on Base UI, Motion. The hero board is SVG plus one canvas, no video engine.
 - The study engine in `lib/engine/` is carried from the original Sigma Sandbox study app Monte grew out of: math, question generators, labs and solvers. It mounts once on `/study/` (`components/study/engine-mount.tsx`) and is skinned by `app/study/engine-skin.css`.
-- Fun or Focus mode (`lib/mode.ts`): Fun shows Play and celebrates right answers; Focus hides both and stills the hero film.
+- Fun or Focus mode (`lib/mode.ts`): Fun shows Play and celebrates right answers; Focus hides both and shows the hero pile finished.
 - Brand rules (concept, voice, type, color, motion) live in `DESIGN.md`.
 - App icons come from `scripts/make-icons.tsx` and the share card from `scripts/make-og.tsx` (`npx tsx scripts/<name>.tsx`); the favicon is `app/icon.svg`.
 - Browser storage keys keep the original `sigma` prefix so renaming the site never wiped anyone's progress.

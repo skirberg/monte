@@ -2,7 +2,7 @@ import { ArrowRight, ArrowUpRight, BookA, Download, Layers, Printer, Timer } fro
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GameArt } from "@/components/play/game-art";
-import { HeroFilm } from "@/components/landing/hero-film";
+import { HeroBoard } from "@/components/landing/hero-board";
 import { TheDraw } from "@/components/landing/the-draw";
 import { CutoffLab } from "@/components/landing/cutoff-lab";
 import { LoopSteps, MarkBuild, Motion, Reveal } from "@/components/landing/motion-bits";
@@ -86,7 +86,7 @@ export default function Home() {
 
           <div className="rise lg:col-span-6" style={{ animationDelay: "100ms" }}>
             <figure className="rounded-[32px] bg-sand p-3 sm:p-5">
-              <HeroFilm className="mx-auto w-full max-w-[560px]" />
+              <HeroBoard className="mx-auto w-full max-w-[560px]" />
             </figure>
           </div>
         </section>

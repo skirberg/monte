@@ -14,8 +14,8 @@ const STACK: [string, string, string][] = [
   ["Next.js", "https://nextjs.org", "React framework. The whole site is a static export: plain files, no server."],
   ["Tailwind CSS", "https://tailwindcss.com", "Styling, driven by the color and type tokens in DESIGN.md."],
   ["shadcn/ui on Base UI", "https://ui.shadcn.com", "Accessible building blocks, restyled for this brand: the jump-to menu, dialogs, menus."],
-  ["Motion", "https://motion.dev", "Scroll and layout animation: the grains that drop, the mark that draws itself."],
-  ["Remotion", "https://www.remotion.dev", "Video written as React. The hero film is a Remotion composition played live in the page."],
+  ["Motion", "https://motion.dev", "Scroll and layout animation: the grains that drop, the mark that draws itself, the curve over the hero pile."],
+  ["Canvas", "https://developer.mozilla.org/docs/Web/API/Canvas_API", "The hero board's grains: one canvas, drawn only while a grain is moving, so you can pour as many as you like."],
   ["Lucide", "https://lucide.dev", "Icons."],
   ["Vercel", "https://vercel.com", "Hosting and cookie-free page analytics."],
 ];

@@ -48,7 +48,7 @@ Rule: **clay means the number, ink means the action.** Buttons are ink. Clay mar
 
 ## Graphic devices
 
-1. **The grains**: dots that stack into a distribution. Hero film, topic glyphs, loading states.
+1. **The grains**: dots that stack into a distribution. Hero board, topic glyphs, loading states.
 2. **The line**: one continuous curve drawn over the grains, plus the court baseline it sits on. Never decorative swooshes.
 
 Never: gradients, glows, glass, drop shadows that do not mean elevation.
@@ -67,15 +67,15 @@ The closing animation on the home page draws the three cups in turn, drops the g
 
 - 150 ms UI feedback, 240 ms enter, ease `cubic-bezier(.2,.8,.2,1)` ("settle")
 - Grains fall with gravity and settle; the line draws once
-- Remotion composition `GaltonPile` (hero, 8 s loop, 30 fps)
+- Hero board `HeroBoard` (SVG board plus one canvas for the grains): a 360-grain pour in under 5 s on load, then tap to drop, hold to pour, Drop 100 and Clear; the curve scales with the grains landed
 - Everything respects prefers-reduced-motion (the film shows its final frame still)
 
 ## Modes
 
 One site, two behaviors, chosen in the header (`lib/mode.ts`, stored per browser, Fun by default).
 
-- **Fun**: Play appears in the menus and on the landing page; right answers in drills get a grain burst and a line call ("Ace.", "Point."); a won match gets "Game, set, match."; the hero film plays.
-- **Focus**: Play is hidden from menus, no celebrations, the hero film rests on its last frame. The page is only the work.
+- **Fun**: Play appears in the menus and on the landing page; right answers in drills get a grain burst and a line call ("Ace.", "Point."); a won match gets "Game, set, match."; the hero board pours on load.
+- **Focus**: Play is hidden from menus, no celebrations, the hero board shows the finished pile. The page is only the work.
 - Never in either mode: a joke or flourish on a wrong answer. Reduced motion turns every flourish off.
 
 ## Play
