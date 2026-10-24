@@ -1,0 +1,36 @@
+{
+  "name": "Monte open data",
+  "about": "The lesson content behind monte.markets as static JSON: business statistics topics, a glossary, a formula sheet with worked examples, and recommended free sources. No key needed, read only.",
+  "version": 1,
+  "site": "https://monte.markets",
+  "license": "Free to use with a link to monte.markets.",
+  "updated": "2026-10-24",
+  "contentHash": "a32ebc40f7674964",
+  "endpoints": [
+    {
+      "path": "/api/v1/topics.json",
+      "url": "https://monte.markets/api/v1/topics.json",
+      "about": "Every topic: the idea in one paragraph, why it matters, its formulas, a memory hook, the common trap and its page.",
+      "count": 14
+    },
+    {
+      "path": "/api/v1/terms.json",
+      "url": "https://monte.markets/api/v1/terms.json",
+      "about": "The glossary: each term with its meaning, an example and its topic.",
+      "count": 78
+    },
+    {
+      "path": "/api/v1/formulas.json",
+      "url": "https://monte.markets/api/v1/formulas.json",
+      "about": "The formula sheet by topic, each row with a worked example.",
+      "count": 73
+    },
+    {
+      "path": "/api/v1/sources.json",
+      "url": "https://monte.markets/api/v1/sources.json",
+      "about": "Free courses, books, videos and references, with why each is worth it and the date it was checked.",
+      "count": 30
+    }
+  ],
+  "plainText": "https://monte.markets/llms.txt"
+}

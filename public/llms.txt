@@ -1,0 +1,67 @@
+# Monte
+
+> Monte (https://monte.markets) is a free site for learning business statistics, one idea at a time. Fourteen topics from data and sampling to multiple regression, each with a plain explanation, a worked example, an interactive lab and timed drills. Games teach the same ideas with real data, and every formula is on one sheet with a worked example.
+
+The lesson content is also published as static JSON (no key needed). Free to use with a link to monte.markets. Updated 2026-10-24.
+
+## Start here
+
+- [Home](https://monte.markets/): what the site is and where to begin
+- [Study](https://monte.markets/study/): learn, practice and solve, with progress kept in the browser
+- [All topics](https://monte.markets/study/learn/): the fourteen topics in teaching order
+- [Formula sheet](https://monte.markets/study/learn/formulas/): every formula with a worked example
+- [Glossary](https://monte.markets/study/learn/terms/): terms in plain words, each with an example
+- [Play](https://monte.markets/play/): games that each hide one statistics idea
+- [Why statistics](https://monte.markets/story/): the case for learning it
+- [How it's built](https://monte.markets/built/): the stack, the data sources and the math
+
+## Topics
+
+- [Data and sampling](https://monte.markets/study/learn/topics/data/): Statistics is using data to make a decision. You rarely get to check everyone, so you check a slice (a sample) and use it to say something about the whole group (the population).
+- [Where is the middle](https://monte.markets/study/learn/topics/center/): Mean is the average. Median is the middle once sorted. Mode is the most common.
+- [How spread out is it](https://monte.markets/study/learn/topics/spread/): Range is the biggest value minus the smallest. Standard deviation is how far a typical value sits from the average.
+- [Probability rules](https://monte.markets/study/learn/topics/prob/): List everything that can happen. Or means add and subtract the overlap.
+- [Random variables and expected value](https://monte.markets/study/learn/topics/rv/): A random variable is a number whose value depends on chance.
+- [Two variables: covariance, correlation, portfolios](https://monte.markets/study/learn/topics/two/): Covariance asks whether two things move together. Correlation is covariance scaled to run from −1 to +1.
+- [Counting and the binomial](https://monte.markets/study/learn/topics/count/): When you repeat a yes-or-no trial n times with the same chance p each time, the number of yeses is binomial.
+- [Poisson: counts per unit](https://monte.markets/study/learn/topics/poisson/): Poisson counts how many events land in a fixed window (a minute, an hour, a page) when they arrive at a steady average rate λ.
+- [The normal curve and z](https://monte.markets/study/learn/topics/normal/): The normal is the bell. Any normal becomes the standard one by measuring in SDs from the mean: z = (y − μ) / σ.
+- [Sampling distributions and the CLT](https://monte.markets/study/learn/topics/clt/): Take a sample and compute its mean. Take another and compute again.
+- [Confidence intervals and sample size](https://monte.markets/study/learn/topics/ci/): A point estimate is one number. A confidence interval is that number plus and minus a margin: estimate ± critical value × standard error.
+- [Hypothesis tests](https://monte.markets/study/learn/topics/test/): A hypothesis test asks one question: would this sample be surprising if nothing were going on?
+- [Simple regression](https://monte.markets/study/learn/topics/reg/): Regression fits the straight line that makes the squared vertical misses as small as possible.
+- [Multiple regression](https://monte.markets/study/learn/topics/mreg/): The same idea with several x's: fit a plane instead of a line.
+
+## Open data
+
+- [index.json](https://monte.markets/api/v1/index.json): the list of endpoints, the license and the date
+- [topics.json](https://monte.markets/api/v1/topics.json): every topic with its idea, why it matters, formulas, hook, trap and URL
+- [formulas.json](https://monte.markets/api/v1/formulas.json): the formula sheet by topic, with worked examples
+- [terms.json](https://monte.markets/api/v1/terms.json): the glossary
+- [sources.json](https://monte.markets/api/v1/sources.json): recommended free courses, books and videos
+
+## Cheat sheets
+
+Phone-sized images (1080 x 1920 PNG), one per topic plus every formula across a few pages.
+
+- [Data and sampling cheat sheet](https://monte.markets/cheatsheets/data.png)
+- [Where is the middle cheat sheet](https://monte.markets/cheatsheets/center.png)
+- [How spread out is it cheat sheet](https://monte.markets/cheatsheets/spread.png)
+- [Probability rules cheat sheet](https://monte.markets/cheatsheets/prob.png)
+- [Random variables and expected value cheat sheet](https://monte.markets/cheatsheets/rv.png)
+- [Two variables: covariance, correlation, portfolios cheat sheet](https://monte.markets/cheatsheets/two.png)
+- [Counting and the binomial cheat sheet](https://monte.markets/cheatsheets/count.png)
+- [Poisson: counts per unit cheat sheet](https://monte.markets/cheatsheets/poisson.png)
+- [The normal curve and z cheat sheet](https://monte.markets/cheatsheets/normal.png)
+- [Sampling distributions and the CLT cheat sheet](https://monte.markets/cheatsheets/clt.png)
+- [Confidence intervals and sample size cheat sheet](https://monte.markets/cheatsheets/ci.png)
+- [Hypothesis tests cheat sheet](https://monte.markets/cheatsheets/test.png)
+- [Simple regression cheat sheet](https://monte.markets/cheatsheets/reg.png)
+- [Multiple regression cheat sheet](https://monte.markets/cheatsheets/mreg.png)
+- [Every formula, page 1 of 7](https://monte.markets/cheatsheets/all-1.png)
+- [Every formula, page 2 of 7](https://monte.markets/cheatsheets/all-2.png)
+- [Every formula, page 3 of 7](https://monte.markets/cheatsheets/all-3.png)
+- [Every formula, page 4 of 7](https://monte.markets/cheatsheets/all-4.png)
+- [Every formula, page 5 of 7](https://monte.markets/cheatsheets/all-5.png)
+- [Every formula, page 6 of 7](https://monte.markets/cheatsheets/all-6.png)
+- [Every formula, page 7 of 7](https://monte.markets/cheatsheets/all-7.png)

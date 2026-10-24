@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/fetch-markets.mjs",
+    "prebuild": "node scripts/fetch-markets.mjs && (tsx scripts/make-cheatsheets.tsx || true) && (tsx scripts/make-api.ts || true)",
     "build": "next build",
     "markets": "node scripts/fetch-markets.mjs",
+    "cheatsheets": "tsx scripts/make-cheatsheets.tsx",
+    "api": "tsx scripts/make-api.ts",
     "start": "next start",
     "lint": "eslint",
     "smoke": "node scripts/smoke.mjs",
@@ -41,6 +43,7 @@
     "eslint-config-next": "^16.4.3",
     "shadcn": "^4.21.4",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

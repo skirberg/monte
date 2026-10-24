@@ -1,0 +1,486 @@
+{
+  "site": "https://monte.markets",
+  "license": "Free to use with a link to monte.markets.",
+  "updated": "2026-10-24",
+  "count": 73,
+  "topics": [
+    {
+      "topic": "data",
+      "n": 1,
+      "name": "Data and sampling",
+      "url": "https://monte.markets/study/learn/topics/data/",
+      "rows": [
+        {
+          "name": "What statistics is",
+          "formula": "Using data to make decisions",
+          "example": "Survey, chart, average, decide"
+        },
+        {
+          "name": "Describe vs infer",
+          "formula": "Describe what you have; infer the bigger group",
+          "example": "Team average age vs election poll"
+        },
+        {
+          "name": "Sampling",
+          "formula": "Random = fair, stratified = every group, risk-based = riskiest group",
+          "example": "Oversample the largest claims, then reweight"
+        },
+        {
+          "name": "Data types",
+          "formula": "Quantitative vs qualitative; discrete vs continuous; univariate vs multivariate",
+          "example": "Zip code is a label"
+        }
+      ]
+    },
+    {
+      "topic": "center",
+      "n": 2,
+      "name": "Where is the middle",
+      "url": "https://monte.markets/study/learn/topics/center/",
+      "rows": [
+        {
+          "name": "Mean",
+          "formula": "Add up, divide by how many",
+          "example": "15, 7, 22, 7, 29, 11, 5, 0 = 12"
+        },
+        {
+          "name": "Median",
+          "formula": "Middle once sorted; average the two middles if even",
+          "example": "Same data = 9"
+        },
+        {
+          "name": "Mode",
+          "formula": "Most frequent; none or bimodal possible",
+          "example": "40, 55, 45, 70, 55, 60, 40, 35 = 40 and 55"
+        },
+        {
+          "name": "Skew",
+          "formula": "Right skew: mode < median < mean",
+          "example": "Income"
+        }
+      ]
+    },
+    {
+      "topic": "spread",
+      "n": 3,
+      "name": "How spread out is it",
+      "url": "https://monte.markets/study/learn/topics/spread/",
+      "rows": [
+        {
+          "name": "Range",
+          "formula": "Max − min; one outlier sets it",
+          "example": "75 − 12 = 63"
+        },
+        {
+          "name": "Population variance",
+          "formula": "Σ(y − μ)² / N",
+          "example": "4, 7, 10: 18/3 = 6, σ = 2.45"
+        },
+        {
+          "name": "Sample variance",
+          "formula": "Σ(y − ȳ)² / (n − 1)",
+          "example": "18/2 = 9, s = 3"
+        },
+        {
+          "name": "Shortcut",
+          "formula": "[Σy² − (Σy)²/n] / (n − 1)",
+          "example": "165 − 147 = 18, then ÷ 2"
+        },
+        {
+          "name": "Empirical rule",
+          "formula": "68 / 95 / 99.7% within 1 / 2 / 3 SD",
+          "example": "400 ± 50: 350 to 450"
+        },
+        {
+          "name": "Coefficient of variation",
+          "formula": "s / x̄, risk per unit of return",
+          "example": "B: 8.4 / 10.8 = 78%"
+        }
+      ]
+    },
+    {
+      "topic": "prob",
+      "n": 4,
+      "name": "Probability rules",
+      "url": "https://monte.markets/study/learn/topics/prob/",
+      "rows": [
+        {
+          "name": "Complement",
+          "formula": "P(not A) = 1 − P(A)",
+          "example": "P(not a 1 or 2) = 4/6"
+        },
+        {
+          "name": "Or",
+          "formula": "P(A) + P(B) − P(both)",
+          "example": "Heart or face card = 22/52"
+        },
+        {
+          "name": "Given",
+          "formula": "P(A and B) / P(B)",
+          "example": "P(spa | gym) = 0.12 / 0.60"
+        },
+        {
+          "name": "And",
+          "formula": "P(A) × P(B | A)",
+          "example": "Two aces = 4/52 × 3/51"
+        },
+        {
+          "name": "Independent",
+          "formula": "P(A and B) = P(A)P(B)",
+          "example": "Two heads = 0.25"
+        },
+        {
+          "name": "Tree",
+          "formula": "Multiply along, add across",
+          "example": "0.85 × 0.95 = 0.8075"
+        }
+      ]
+    },
+    {
+      "topic": "rv",
+      "n": 5,
+      "name": "Random variables and expected value",
+      "url": "https://monte.markets/study/learn/topics/rv/",
+      "rows": [
+        {
+          "name": "Expected value",
+          "formula": "Σ y P(y)",
+          "example": "Four-sided die = 2.5"
+        },
+        {
+          "name": "Variance",
+          "formula": "Σ (y − μ)² P(y) = Σy²P(y) − μ²",
+          "example": "Y: 2,684"
+        },
+        {
+          "name": "CV",
+          "formula": "σ / μ",
+          "example": "Lower is better"
+        },
+        {
+          "name": "Constants",
+          "formula": "E(a + bY) = a + bE(Y); Var = b² Var(Y)",
+          "example": "Y + 10: mean shifts, SD stays"
+        }
+      ]
+    },
+    {
+      "topic": "two",
+      "n": 6,
+      "name": "Two variables: covariance, correlation, portfolios",
+      "url": "https://monte.markets/study/learn/topics/two/",
+      "rows": [
+        {
+          "name": "Covariance",
+          "formula": "ΣΣ xy P(x, y) − μx μy",
+          "example": "99 − 86.4 = 12.6"
+        },
+        {
+          "name": "Correlation",
+          "formula": "Cov / (σx σy)",
+          "example": "12.6 / (6 × 8.4) = 0.25"
+        },
+        {
+          "name": "Portfolio mean",
+          "formula": "bE(X) + cE(Y)",
+          "example": "0.5(8) + 0.5(10.8) = 9.4"
+        },
+        {
+          "name": "Portfolio variance",
+          "formula": "b²V(X) + c²V(Y) + 2bc Cov",
+          "example": "32.94, σ = 5.74"
+        },
+        {
+          "name": "Cov = 0",
+          "formula": "Not the same as independent",
+          "example": "Y = X²"
+        }
+      ]
+    },
+    {
+      "topic": "count",
+      "n": 7,
+      "name": "Counting and the binomial",
+      "url": "https://monte.markets/study/learn/topics/count/",
+      "rows": [
+        {
+          "name": "Factorial",
+          "formula": "n! = n(n − 1)…1; 0! = 1",
+          "example": "6! = 720"
+        },
+        {
+          "name": "Combinations",
+          "formula": "nCx = n! / [x!(n − x)!]",
+          "example": "C(5,2) = 10"
+        },
+        {
+          "name": "Binomial",
+          "formula": "nCy pʸ (1 − p)ⁿ⁻ʸ",
+          "example": "P(2 of 8 at 0.2) = 0.294"
+        },
+        {
+          "name": "Mean, variance",
+          "formula": "np, np(1 − p)",
+          "example": "8 × 0.2 = 1.6"
+        },
+        {
+          "name": "Hypergeometric",
+          "formula": "C(K, k) C(N − K, n − k) / C(N, n)",
+          "example": "10 phones, 3 bad, pick 4: P(1 bad) = 0.5"
+        }
+      ]
+    },
+    {
+      "topic": "poisson",
+      "n": 8,
+      "name": "Poisson: counts per unit",
+      "url": "https://monte.markets/study/learn/topics/poisson/",
+      "rows": [
+        {
+          "name": "Poisson",
+          "formula": "e⁻λ λʸ / y!",
+          "example": "λ = 3: P(3) = 0.224"
+        },
+        {
+          "name": "Rescale λ",
+          "formula": "rate × window",
+          "example": "30 an hour → 5 per 10 minutes"
+        },
+        {
+          "name": "Mean = variance",
+          "formula": "Both λ",
+          "example": "λ = 6: mean 6, variance 6"
+        }
+      ]
+    },
+    {
+      "topic": "normal",
+      "n": 9,
+      "name": "The normal curve and z",
+      "url": "https://monte.markets/study/learn/topics/normal/",
+      "rows": [
+        {
+          "name": "z score",
+          "formula": "(y − μ) / σ",
+          "example": "(525 − 400) / 50 = 2.5"
+        },
+        {
+          "name": "Less than",
+          "formula": "Φ(z)",
+          "example": "P(Y < 525) = 0.9938"
+        },
+        {
+          "name": "Greater than",
+          "formula": "1 − Φ(z)",
+          "example": "P(Y > 475) = 0.0668"
+        },
+        {
+          "name": "Between",
+          "formula": "Φ(z of b) − Φ(z of a)",
+          "example": "400 to 475: 0.4332"
+        },
+        {
+          "name": "Reverse",
+          "formula": "y = μ + zσ",
+          "example": "10% run out: 400 + 1.28(50) = 464"
+        },
+        {
+          "name": "Key z",
+          "formula": "1.28, 1.645, 1.96, 2.576",
+          "example": "90%, 95% one-sided, 95%, 99%"
+        },
+        {
+          "name": "Uniform",
+          "formula": "(d − c) / (b − a)",
+          "example": "0 to 20, P(over 15) = 0.25"
+        }
+      ]
+    },
+    {
+      "topic": "clt",
+      "n": 10,
+      "name": "Sampling distributions and the CLT",
+      "url": "https://monte.markets/study/learn/topics/clt/",
+      "rows": [
+        {
+          "name": "Standard error",
+          "formula": "σ / √n",
+          "example": "12 / √36 = 2"
+        },
+        {
+          "name": "z for x̄",
+          "formula": "(x̄ − μ) / (σ / √n)",
+          "example": "(51 − 50) / 2 = 0.5"
+        },
+        {
+          "name": "Sum of n",
+          "formula": "Mean nμ, SD σ√n",
+          "example": "64 bills: 40,960 and 3,840"
+        },
+        {
+          "name": "Proportion",
+          "formula": "SE = √[p(1 − p) / n]",
+          "example": "0.3, n = 400: 0.0229"
+        },
+        {
+          "name": "How big is n",
+          "formula": "Rule of thumb 30; depends on skew",
+          "example": "A normal population works at any n"
+        },
+        {
+          "name": "Unbiased",
+          "formula": "E(estimator) = parameter",
+          "example": "x̄, p̂, s² with n − 1"
+        }
+      ]
+    },
+    {
+      "topic": "ci",
+      "n": 11,
+      "name": "Confidence intervals and sample size",
+      "url": "https://monte.markets/study/learn/topics/ci/",
+      "rows": [
+        {
+          "name": "σ known",
+          "formula": "x̄ ± z σ / √n",
+          "example": "502.4 ± 1.96(5 / √25)"
+        },
+        {
+          "name": "σ unknown",
+          "formula": "x̄ ± t s / √n, df = n − 1",
+          "example": "72.5 ± 2.131(12 / √16)"
+        },
+        {
+          "name": "Proportion",
+          "formula": "p̂ ± z √[p̂(1 − p̂) / n]",
+          "example": "0.6 ± 1.645(0.0346)"
+        },
+        {
+          "name": "n for μ",
+          "formula": "(zσ / E)²",
+          "example": "(1.96 × 2,500 / 400)² → 151"
+        },
+        {
+          "name": "n for p",
+          "formula": "z² p(1 − p) / E², p = 0.5 worst case",
+          "example": "(1.96 / 0.03)² × 0.25 → 1,068"
+        },
+        {
+          "name": "Confidence level",
+          "formula": "1 − α; z: 1.645, 1.96, 2.576",
+          "example": "Round n up"
+        }
+      ]
+    },
+    {
+      "topic": "test",
+      "n": 12,
+      "name": "Hypothesis tests",
+      "url": "https://monte.markets/study/learn/topics/test/",
+      "rows": [
+        {
+          "name": "Test statistic",
+          "formula": "(estimate − H₀ value) / SE",
+          "example": "(247.5 − 250) / 1 = −2.5"
+        },
+        {
+          "name": "p-value, two-sided",
+          "formula": "2 × P(Z > |z|)",
+          "example": "z = 2.5: 0.0124"
+        },
+        {
+          "name": "Decide",
+          "formula": "Reject H₀ if p < α",
+          "example": "0.012 < 0.05: reject"
+        },
+        {
+          "name": "Proportion SE",
+          "formula": "√[p₀(1 − p₀) / n], with p₀",
+          "example": "p₀ = 0.5, n = 400: 0.025"
+        },
+        {
+          "name": "Errors",
+          "formula": "Type I = α, Type II = β",
+          "example": "Power = 1 − β"
+        }
+      ]
+    },
+    {
+      "topic": "reg",
+      "n": 13,
+      "name": "Simple regression",
+      "url": "https://monte.markets/study/learn/topics/reg/",
+      "rows": [
+        {
+          "name": "Slope",
+          "formula": "[nΣxy − ΣxΣy] / [nΣx² − (Σx)²]",
+          "example": "192 / 168 = 1.143"
+        },
+        {
+          "name": "Intercept",
+          "formula": "ȳ − b₁x̄",
+          "example": "6 − 1.143(4) = 1.429"
+        },
+        {
+          "name": "Sums of squares",
+          "formula": "SST = SSR + SSE; R² = SSR / SST",
+          "example": "36.57 / 42 = 87.1%"
+        },
+        {
+          "name": "Residual SD",
+          "formula": "s = √(SSE / (n − 2))",
+          "example": "√(5.43 / 4) = 1.16"
+        },
+        {
+          "name": "Slope test",
+          "formula": "t = b₁ / SE, df = n − 2",
+          "example": "5.19 vs 2.776, reject"
+        },
+        {
+          "name": "Intervals",
+          "formula": "CI for the mean y is narrower than the PI for one y",
+          "example": "Widest far from x̄"
+        }
+      ]
+    },
+    {
+      "topic": "mreg",
+      "n": 14,
+      "name": "Multiple regression",
+      "url": "https://monte.markets/study/learn/topics/mreg/",
+      "rows": [
+        {
+          "name": "ANOVA",
+          "formula": "F = MSR / MSE, df (k, n − k − 1)",
+          "example": "18.2 vs 3.89, reject"
+        },
+        {
+          "name": "Each t",
+          "formula": "bⱼ / SE(bⱼ)",
+          "example": "SqFt t = 3.40, p = 0.005"
+        },
+        {
+          "name": "Adjusted R²",
+          "formula": "Penalizes extra x's",
+          "example": "Never above R²"
+        },
+        {
+          "name": "VIF",
+          "formula": "1 / (1 − Rⱼ²); trouble above 10",
+          "example": "r = 0.95 gives 10.3"
+        },
+        {
+          "name": "Dummies",
+          "formula": "k categories → k − 1",
+          "example": "Corner lot = 1, else 0"
+        },
+        {
+          "name": "Sequential SS",
+          "formula": "Order changes the split, not the total",
+          "example": "52.0 + 8.0 = 38.5 + 21.5 = 60.0"
+        }
+      ]
+    }
+  ],
+  "page": "https://monte.markets/study/learn/formulas/"
+}

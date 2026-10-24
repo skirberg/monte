@@ -64,6 +64,60 @@ const SOURCES = [
   { id: "kalshi", name: "Kalshi", get: kalshi },
 ];
 
+// ---------- Polls: free and citable, no paid source needed.
+// 1. Wikipedia's table of generic-ballot averages (Decision Desk HQ, RealClearPolitics, Silver Bulletin and others),
+//    read through the open MediaWiki API. 2. VoteHub's free poll API, for the raw polls behind them.
+const WIKI = "https://en.wikipedia.org/w/api.php?action=parse&page=2026_United_States_House_of_Representatives_elections&prop=wikitext&format=json&formatversion=2";
+const UA = { "user-agent": "MonteBot/1.0 (https://monte.markets; learning site)" };
+
+async function getJsonUA(url) {
+  const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(TIMEOUT) });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+export function parseAverages(w) {
+  const a = w.search(/<section begin="GenericBallotAgg"\s*\/>/);
+  const b = w.search(/<section end="GenericBallotAgg"\s*\/>/);
+  if (a < 0 || b < 0) throw new Error("averages table not found");
+  const out = [];
+  for (const row of w.slice(a, b).split(/\n\|-\s*\n/).slice(1)) {
+    const cells = row.split("\n").filter((l) => l.startsWith("|") && !l.startsWith("|}")).map((l) => l.slice(1));
+    if (cells.length < 6 || /colspan|average/i.test(cells[0].replace(/<ref[\s\S]*/, ""))) continue;
+    const name = (cells[0].match(/\[\[(?:[^\]|]*\|)?([^\]]+)\]\]/) || [])[1]?.trim();
+    const pct = (s) => Number((s.replace(/\{\{[^}]*\}\}/g, "").match(/([\d.]+)%/) || [])[1]);
+    const rep = pct(cells[3]);
+    const dem = pct(cells[4]);
+    const updated = cells[2].replace(/<[^>]+>|\{\{[^}]*\}\}/g, "").trim();
+    const ok = name && dem > 20 && dem < 80 && rep > 20 && rep < 80 && !Number.isNaN(Date.parse(updated));
+    if (ok) out.push({ name, updated, dem, rep, lead: Math.round((dem - rep) * 10) / 10 });
+  }
+  if (out.length < 2) throw new Error("too few averages");
+  return out;
+}
+
+async function polls(now) {
+  const w = (await getJsonUA(WIKI))?.parse?.wikitext ?? "";
+  const averages = parseAverages(w);
+  const lead = Math.round((averages.reduce((s, x) => s + x.lead, 0) / averages.length) * 10) / 10;
+  let raw = null;
+  try {
+    // Recent raw polls from VoteHub: registered or likely voters, not internal, last 45 days of what exists.
+    const list = await getJsonUA("https://api.votehub.com/polls?poll_type=generic-ballot");
+    const ps = list
+      .filter((p) => p && !p.internal && p.end_date && Array.isArray(p.answers))
+      .map((p) => ({ end: p.end_date, pollster: p.pollster, n: p.sample_size, d: p.answers.find((x) => /^dem/i.test(x.choice))?.pct, r: p.answers.find((x) => /^rep/i.test(x.choice))?.pct }))
+      .filter((p) => typeof p.d === "number" && typeof p.r === "number")
+      .sort((x, y) => y.end.localeCompare(x.end));
+    const newest = ps[0]?.end;
+    const recent = newest ? ps.filter((p) => Date.parse(newest) - Date.parse(p.end) <= 45 * 864e5) : [];
+    if (recent.length) raw = { count: recent.length, newest, latest: recent.slice(0, 6) };
+  } catch (e) {
+    console.warn(`fetch-markets: VoteHub skipped (${e?.message ?? e})`);
+  }
+  return { asOf: now.toISOString(), asOfText: stamp(now), lead, leader: lead >= 0 ? "Democrats" : "Republicans", averages, raw, credit: "Averages as listed on Wikipedia (CC BY-SA); raw polls from VoteHub" };
+}
+
 function readOld() {
   try {
     return JSON.parse(readFileSync(OUT, "utf8"));
@@ -99,10 +153,21 @@ async function main() {
     }
   }
 
-  if (!fresh) {
+  let pollsFresh = false;
+  try {
+    out.polls = await polls(now);
+    pollsFresh = true;
+    console.log(`fetch-markets: polls ${out.polls.averages.length} averages, mean lead ${out.polls.lead}`);
+  } catch (e) {
+    console.warn(`fetch-markets: polls failed (${e?.message ?? e}), keeping the last snapshot`);
+    if (old?.polls) out.polls = old.polls;
+  }
+
+  if (!fresh && !pollsFresh) {
     console.warn("fetch-markets: nothing new, file left as it was");
     return;
   }
+  if (!fresh) out.sources = old?.sources ?? out.sources;
   const tmp = `${OUT}.tmp`;
   writeFileSync(tmp, JSON.stringify(out, null, 2) + "\n");
   renameSync(tmp, OUT);

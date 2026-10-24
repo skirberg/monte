@@ -1,0 +1,128 @@
+{
+  "hash": "d503053100c15905",
+  "size": {
+    "width": 1080,
+    "height": 1920
+  },
+  "sheets": [
+    {
+      "file": "data.png",
+      "kind": "topic",
+      "topic": "data",
+      "title": "Data and sampling"
+    },
+    {
+      "file": "center.png",
+      "kind": "topic",
+      "topic": "center",
+      "title": "Where is the middle"
+    },
+    {
+      "file": "spread.png",
+      "kind": "topic",
+      "topic": "spread",
+      "title": "How spread out is it"
+    },
+    {
+      "file": "prob.png",
+      "kind": "topic",
+      "topic": "prob",
+      "title": "Probability rules"
+    },
+    {
+      "file": "rv.png",
+      "kind": "topic",
+      "topic": "rv",
+      "title": "Random variables and expected value"
+    },
+    {
+      "file": "two.png",
+      "kind": "topic",
+      "topic": "two",
+      "title": "Two variables: covariance, correlation, portfolios"
+    },
+    {
+      "file": "count.png",
+      "kind": "topic",
+      "topic": "count",
+      "title": "Counting and the binomial"
+    },
+    {
+      "file": "poisson.png",
+      "kind": "topic",
+      "topic": "poisson",
+      "title": "Poisson: counts per unit"
+    },
+    {
+      "file": "normal.png",
+      "kind": "topic",
+      "topic": "normal",
+      "title": "The normal curve and z"
+    },
+    {
+      "file": "clt.png",
+      "kind": "topic",
+      "topic": "clt",
+      "title": "Sampling distributions and the CLT"
+    },
+    {
+      "file": "ci.png",
+      "kind": "topic",
+      "topic": "ci",
+      "title": "Confidence intervals and sample size"
+    },
+    {
+      "file": "test.png",
+      "kind": "topic",
+      "topic": "test",
+      "title": "Hypothesis tests"
+    },
+    {
+      "file": "reg.png",
+      "kind": "topic",
+      "topic": "reg",
+      "title": "Simple regression"
+    },
+    {
+      "file": "mreg.png",
+      "kind": "topic",
+      "topic": "mreg",
+      "title": "Multiple regression"
+    },
+    {
+      "file": "all-1.png",
+      "kind": "all",
+      "title": "Every formula, page 1 of 7"
+    },
+    {
+      "file": "all-2.png",
+      "kind": "all",
+      "title": "Every formula, page 2 of 7"
+    },
+    {
+      "file": "all-3.png",
+      "kind": "all",
+      "title": "Every formula, page 3 of 7"
+    },
+    {
+      "file": "all-4.png",
+      "kind": "all",
+      "title": "Every formula, page 4 of 7"
+    },
+    {
+      "file": "all-5.png",
+      "kind": "all",
+      "title": "Every formula, page 5 of 7"
+    },
+    {
+      "file": "all-6.png",
+      "kind": "all",
+      "title": "Every formula, page 6 of 7"
+    },
+    {
+      "file": "all-7.png",
+      "kind": "all",
+      "title": "Every formula, page 7 of 7"
+    }
+  ]
+}

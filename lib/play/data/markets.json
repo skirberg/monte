@@ -4,8 +4,8 @@
     {
       "id": "polymarket",
       "name": "Polymarket",
-      "asOf": "2026-10-24T03:55:28.672Z",
-      "asOfText": "Oct 23, 2026, 11:55 PM ET",
+      "asOf": "2026-10-24T05:00:44.612Z",
+      "asOfText": "Oct 24, 2026, 1:00 AM ET",
       "house": {
         "dem": 0.915,
         "rep": 0.085
@@ -18,16 +18,108 @@
     {
       "id": "kalshi",
       "name": "Kalshi",
-      "asOf": "2026-10-24T03:55:19.074Z",
-      "asOfText": "Oct 23, 2026, 11:55 PM ET",
+      "asOf": "2026-10-24T05:00:44.612Z",
+      "asOfText": "Oct 24, 2026, 1:00 AM ET",
       "house": {
         "dem": 0.911,
         "rep": 0.089
       },
       "senate": {
-        "dem": 0.665,
-        "rep": 0.335
+        "dem": 0.658,
+        "rep": 0.342
       }
     }
-  ]
+  ],
+  "polls": {
+    "asOf": "2026-10-24T05:00:44.612Z",
+    "asOfText": "Oct 24, 2026, 1:00 AM ET",
+    "lead": 8.6,
+    "leader": "Democrats",
+    "averages": [
+      {
+        "name": "Decision Desk HQ",
+        "updated": "October 22, 2026",
+        "dem": 50.4,
+        "rep": 42.5,
+        "lead": 7.9
+      },
+      {
+        "name": "FiftyPlusOne",
+        "updated": "October 22, 2026",
+        "dem": 52,
+        "rep": 42.9,
+        "lead": 9.1
+      },
+      {
+        "name": "NBC News",
+        "updated": "October 22, 2026",
+        "dem": 52,
+        "rep": 43,
+        "lead": 9
+      },
+      {
+        "name": "RealClearPolitics",
+        "updated": "October 22, 2026",
+        "dem": 50.5,
+        "rep": 42.4,
+        "lead": 8.1
+      },
+      {
+        "name": "Silver Bulletin",
+        "updated": "October 22, 2026",
+        "dem": 50.5,
+        "rep": 41.4,
+        "lead": 9.1
+      }
+    ],
+    "raw": {
+      "count": 10,
+      "newest": "2026-10-04",
+      "latest": [
+        {
+          "end": "2026-10-04",
+          "pollster": "Pew Research Center",
+          "n": 3917,
+          "d": 44,
+          "r": 36
+        },
+        {
+          "end": "2026-10-02",
+          "pollster": "YouGov - CBS News",
+          "n": 1572,
+          "d": 54,
+          "r": 45
+        },
+        {
+          "end": "2026-09-28",
+          "pollster": "HarrisX/Harris",
+          "n": null,
+          "d": 51,
+          "r": 49
+        },
+        {
+          "end": "2026-09-22",
+          "pollster": "The Argument/Verasight",
+          "n": null,
+          "d": 55,
+          "r": 45
+        },
+        {
+          "end": "2026-09-08",
+          "pollster": "YouGov",
+          "n": 1015,
+          "d": 49,
+          "r": 38
+        },
+        {
+          "end": "2026-09-06",
+          "pollster": "Morning Consult",
+          "n": 2203,
+          "d": 46,
+          "r": 42
+        }
+      ]
+    },
+    "credit": "Averages as listed on Wikipedia (CC BY-SA); raw polls from VoteHub"
+  }
 }

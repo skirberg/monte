@@ -19,15 +19,19 @@ type Source = { id: string; name: string; asOfText: string; live?: boolean } & R
 
 const ELECTION_DAY = "Tuesday, November 3, 2026";
 
-/** Entered by hand from the source page; update the date with the number. */
+type Polls = {
+  asOfText: string;
+  lead: number;
+  leader: string;
+  averages: { name: string; updated: string; dem: number; rep: number; lead: number }[];
+  raw: { count: number; newest: string } | null;
+};
+/** Refreshed every day by scripts/fetch-markets.mjs from free sources: Wikipedia's table of averages and VoteHub's polls. */
+const POLLS = (SNAPSHOT as { polls?: Polls }).polls ?? null;
 const POLL = {
-  source: "Silver Bulletin",
-  url: "https://www.natesilver.net/p/generic-ballot-average-2026-nate-silver-bulletin-congress-polls",
-  what: "generic congressional ballot average",
-  lead: 9.1,
-  leader: "Democrats",
-  leaderKey: "dem" as const,
-  asOf: "Oct 23, 2026",
+  lead: Math.abs(POLLS?.lead ?? 8.6),
+  leader: POLLS?.leader ?? "Democrats",
+  leaderKey: (POLLS && POLLS.lead < 0 ? "rep" : "dem") as "dem" | "rep",
 };
 
 const CHAMBERS: [Chamber, string][] = [
@@ -165,20 +169,33 @@ export function RealRace() {
 
         <div className="space-y-4 lg:col-span-5">
           <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the polls say</h3>
-          <div className="space-y-2 rounded-2xl bg-sand p-5">
+          <div className="space-y-3 rounded-2xl bg-sand p-5">
             <p className="font-display text-[clamp(1.9rem,1.2rem+2.4vw,2.6rem)] font-[650] leading-none tracking-[-0.02em] tabular-nums">
               {POLL.leader} +{POLL.lead}
             </p>
             <p className="text-ink-muted">
-              <a href={POLL.url} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-ink">
-                {POLL.source}
-              </a>{" "}
-              {POLL.what}, updated {POLL.asOf}.
+              The average of {POLLS?.averages.length ?? "several"} poll averages for the generic congressional ballot.
+            </p>
+            {POLLS && (
+              <ul className="divide-y divide-line text-sm">
+                {POLLS.averages.map((a) => (
+                  <li key={a.name} className="flex items-baseline justify-between gap-3 py-1.5">
+                    <span>{a.name}</span>
+                    <span className="tabular-nums text-ink-muted">
+                      {a.lead >= 0 ? "D" : "R"} +{Math.abs(a.lead)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="text-xs text-ink-muted">
+              {POLLS ? `Each average as listed on Wikipedia, checked ${POLLS.asOfText}.` : ""}
+              {POLLS?.raw ? ` Behind them: ${POLLS.raw.count} recent public polls in VoteHub's free data, the newest from ${POLLS.raw.newest}.` : ""}
             </p>
           </div>
           <p className="text-sm text-ink-muted">
             How to read it: the generic ballot asks which party you would vote for in your House district. It measures the national vote share, not seats. Other averages to
-            check: RealClearPolling and Decision Desk HQ.
+            compare: the list above. When averages built different ways agree, trust them more.
           </p>
           <p className="text-sm text-ink-muted">
             The Senate has no national poll to read. Only a third of the seats are up, and each one is its own state race, so read state polls one at a time.

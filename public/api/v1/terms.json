@@ -1,0 +1,632 @@
+{
+  "site": "https://monte.markets",
+  "license": "Free to use with a link to monte.markets.",
+  "updated": "2026-10-24",
+  "count": 78,
+  "terms": [
+    {
+      "term": "Population",
+      "meaning": "Every unit you care about.",
+      "example": "All customers of a bank, not just the ones you surveyed.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Sample",
+      "meaning": "The slice of the population you actually measure.",
+      "example": "500 customers picked at random.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Parameter",
+      "meaning": "A number that describes the population. Usually unknown.",
+      "example": "The true average balance μ of all customers.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Statistic",
+      "meaning": "A number computed from a sample. It changes from sample to sample.",
+      "example": "x̄, the average balance of the 500 you sampled.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Simple random sample",
+      "meaning": "Every possible sample of size n has the same chance of being picked.",
+      "example": "Drawing 50 names from a hat that holds every name.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Stratified sample",
+      "meaning": "Split the population into groups, then sample randomly inside each group.",
+      "example": "Sample 20 students from each year so every year shows up.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Qualitative variable",
+      "meaning": "Labels or categories, even if they come in an order.",
+      "example": "Shirt size S, M, L.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Quantitative variable",
+      "meaning": "Numbers you can do arithmetic on.",
+      "example": "Monthly sales in dollars.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Discrete vs continuous",
+      "meaning": "Discrete values are counted; continuous values are measured and can fall anywhere in between.",
+      "example": "Number of children vs height.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Levels of measurement",
+      "meaning": "Nominal (names), ordinal (order), interval (equal steps, no true zero), ratio (true zero).",
+      "example": "Temperature in °C is interval; income is ratio.",
+      "topic": "data",
+      "topicName": "Data and sampling",
+      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "term": "Mean",
+      "meaning": "The balance point: add everything up and divide by how many.",
+      "example": "2, 4, 9: mean 5.",
+      "topic": "center",
+      "topicName": "Where is the middle",
+      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "term": "Median",
+      "meaning": "The middle value once sorted. Outliers barely move it.",
+      "example": "2, 4, 90: median 4, mean 32.",
+      "topic": "center",
+      "topicName": "Where is the middle",
+      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "term": "Mode",
+      "meaning": "The most common value.",
+      "example": "Shoe sizes 8, 9, 9, 10: mode 9.",
+      "topic": "center",
+      "topicName": "Where is the middle",
+      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "term": "Skew",
+      "meaning": "A long tail on one side. The mean gets pulled toward the tail.",
+      "example": "Incomes skew right, so mean > median.",
+      "topic": "center",
+      "topicName": "Where is the middle",
+      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "term": "Outlier",
+      "meaning": "A value far from the rest.",
+      "example": "One $5M house on a street of $400k homes.",
+      "topic": "center",
+      "topicName": "Where is the middle",
+      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "term": "Range",
+      "meaning": "Largest minus smallest.",
+      "example": "3 to 11: range 8.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Variance",
+      "meaning": "The average squared distance from the mean (divide by n − 1 for a sample).",
+      "example": "Units are squared, which is why we take the root.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Standard deviation",
+      "meaning": "The typical distance from the mean, in the data's own units.",
+      "example": "Returns average 8% with SD 6%.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Coefficient of variation",
+      "meaning": "SD divided by the mean: risk per unit of reward.",
+      "example": "SD 6 on mean 8 is CV 75%.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "z score",
+      "meaning": "How many SDs a value sits from the mean.",
+      "example": "z = 2 means two SDs above average.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Empirical rule",
+      "meaning": "For bell-shaped data, about 68%, 95% and 99.7% fall within 1, 2 and 3 SDs.",
+      "example": "Mean 100, SD 15: 95% between 70 and 130.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Interquartile range",
+      "meaning": "Q3 minus Q1, the spread of the middle half.",
+      "example": "Ignores the extremes on both ends.",
+      "topic": "spread",
+      "topicName": "How spread out is it",
+      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "term": "Sample space",
+      "meaning": "Every possible outcome.",
+      "example": "A die: 1, 2, 3, 4, 5, 6.",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Event",
+      "meaning": "A set of outcomes you care about.",
+      "example": "Rolling an even number.",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Complement",
+      "meaning": "Everything that is not the event. P(not A) = 1 − P(A).",
+      "example": "P(at least one) = 1 − P(none).",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Mutually exclusive",
+      "meaning": "Two events that cannot happen together.",
+      "example": "Rolling a 2 and a 5 on one roll.",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Independent",
+      "meaning": "Knowing one happened does not change the chance of the other.",
+      "example": "Two separate coin flips.",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Conditional probability",
+      "meaning": "The chance of A once you know B happened: P(A and B) / P(B).",
+      "example": "P(bag arrives | flight on time).",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Bayes' rule",
+      "meaning": "Flip a conditional around: from P(B | A) to P(A | B).",
+      "example": "From test accuracy to the chance you actually have the condition.",
+      "topic": "prob",
+      "topicName": "Probability rules",
+      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "term": "Random variable",
+      "meaning": "A number whose value depends on chance.",
+      "example": "Profit next month.",
+      "topic": "rv",
+      "topicName": "Random variables and expected value",
+      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+    },
+    {
+      "term": "Expected value",
+      "meaning": "The probability-weighted average: the long-run average over many repeats.",
+      "example": "A die averages 3.5, though you never roll 3.5.",
+      "topic": "rv",
+      "topicName": "Random variables and expected value",
+      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+    },
+    {
+      "term": "Probability distribution",
+      "meaning": "A list or curve of every value and its probability.",
+      "example": "Visits 0, 1, 2 with chances 0.5, 0.3, 0.2.",
+      "topic": "rv",
+      "topicName": "Random variables and expected value",
+      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+    },
+    {
+      "term": "Covariance",
+      "meaning": "Whether two variables move together, in their combined units.",
+      "example": "Positive when both rise together.",
+      "topic": "two",
+      "topicName": "Two variables: covariance, correlation, portfolios",
+      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+    },
+    {
+      "term": "Correlation",
+      "meaning": "Covariance rescaled to sit between −1 and 1.",
+      "example": "r = 0.8: a strong upward pattern.",
+      "topic": "two",
+      "topicName": "Two variables: covariance, correlation, portfolios",
+      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+    },
+    {
+      "term": "Diversification",
+      "meaning": "Mixing assets that do not move together lowers total risk.",
+      "example": "Low correlation means a lower portfolio SD.",
+      "topic": "two",
+      "topicName": "Two variables: covariance, correlation, portfolios",
+      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+    },
+    {
+      "term": "Factorial",
+      "meaning": "n! = n × (n − 1) × … × 1, the number of ways to order n things.",
+      "example": "4! = 24.",
+      "topic": "count",
+      "topicName": "Counting and the binomial",
+      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "term": "Combination",
+      "meaning": "Ways to choose k from n when order does not matter.",
+      "example": "C(5, 2) = 10 pairs.",
+      "topic": "count",
+      "topicName": "Counting and the binomial",
+      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "term": "Permutation",
+      "meaning": "Ways to choose k from n when order matters.",
+      "example": "P(5, 2) = 20 ordered pairs.",
+      "topic": "count",
+      "topicName": "Counting and the binomial",
+      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "term": "Binomial distribution",
+      "meaning": "Count of successes in n independent tries with the same chance p.",
+      "example": "Heads in 10 flips.",
+      "topic": "count",
+      "topicName": "Counting and the binomial",
+      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "term": "Hypergeometric distribution",
+      "meaning": "Count of successes when you draw without replacement from a small group.",
+      "example": "Defective parts in 4 picked from a box of 10.",
+      "topic": "count",
+      "topicName": "Counting and the binomial",
+      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "term": "Poisson distribution",
+      "meaning": "Counts of events in a fixed window when they arrive at a steady rate λ.",
+      "example": "Calls per hour at a help desk.",
+      "topic": "poisson",
+      "topicName": "Poisson: counts per unit",
+      "topicUrl": "https://monte.markets/study/learn/topics/poisson/"
+    },
+    {
+      "term": "Rate λ",
+      "meaning": "The average count per window. Mean and variance both equal λ.",
+      "example": "3 per hour is λ = 6 over 2 hours.",
+      "topic": "poisson",
+      "topicName": "Poisson: counts per unit",
+      "topicUrl": "https://monte.markets/study/learn/topics/poisson/"
+    },
+    {
+      "term": "Normal distribution",
+      "meaning": "The bell curve, set by its mean and SD.",
+      "example": "Heights, measurement errors, many averages.",
+      "topic": "normal",
+      "topicName": "The normal curve and z",
+      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+    },
+    {
+      "term": "Standard normal",
+      "meaning": "The normal with mean 0 and SD 1. Every z table uses it.",
+      "example": "Z ~ N(0, 1).",
+      "topic": "normal",
+      "topicName": "The normal curve and z",
+      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+    },
+    {
+      "term": "Percentile",
+      "meaning": "The value with a given share of the data below it.",
+      "example": "The 90th percentile has 90% below it.",
+      "topic": "normal",
+      "topicName": "The normal curve and z",
+      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+    },
+    {
+      "term": "Uniform distribution",
+      "meaning": "Every value in a range is equally likely.",
+      "example": "A wait between 0 and 20 minutes.",
+      "topic": "normal",
+      "topicName": "The normal curve and z",
+      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+    },
+    {
+      "term": "Sampling distribution",
+      "meaning": "The distribution of a statistic over every possible sample.",
+      "example": "All the x̄'s you could get with n = 36.",
+      "topic": "clt",
+      "topicName": "Sampling distributions and the CLT",
+      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "term": "Standard error",
+      "meaning": "The SD of a statistic: how much it wobbles from sample to sample.",
+      "example": "σ / √n for a sample mean.",
+      "topic": "clt",
+      "topicName": "Sampling distributions and the CLT",
+      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "term": "Central Limit Theorem",
+      "meaning": "Averages of large samples are close to normal, whatever the population looks like.",
+      "example": "Skewed incomes, but averages of 50 form a bell.",
+      "topic": "clt",
+      "topicName": "Sampling distributions and the CLT",
+      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "term": "Unbiased estimator",
+      "meaning": "A statistic whose average over all samples equals the parameter.",
+      "example": "x̄ for μ, and s² with n − 1 for σ².",
+      "topic": "clt",
+      "topicName": "Sampling distributions and the CLT",
+      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "term": "Efficient estimator",
+      "meaning": "The unbiased estimator with the smallest spread.",
+      "example": "x̄ beats the median for estimating μ.",
+      "topic": "clt",
+      "topicName": "Sampling distributions and the CLT",
+      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "term": "Point estimate",
+      "meaning": "A single best guess for a parameter.",
+      "example": "x̄ = 42.5.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "Confidence interval",
+      "meaning": "Estimate plus or minus a margin. Built this way, 95% of intervals catch the truth.",
+      "example": "42.5 ± 2.6.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "Margin of error",
+      "meaning": "The plus-or-minus part of an interval.",
+      "example": "± 3 points in a poll.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "Confidence level",
+      "meaning": "How often the method catches the truth in the long run.",
+      "example": "95%: about 95 of 100 intervals.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "t distribution",
+      "meaning": "Like the normal but with fatter tails. Used when σ is unknown and you use s.",
+      "example": "t with 15 df for n = 16.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "Degrees of freedom",
+      "meaning": "How many values are free to vary. For one sample, n − 1.",
+      "example": "n = 20 gives 19 df.",
+      "topic": "ci",
+      "topicName": "Confidence intervals and sample size",
+      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "term": "Null hypothesis H₀",
+      "meaning": "The boring claim of no effect or no change. It holds the equals sign.",
+      "example": "μ = 250 ml.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Alternative hypothesis H₁",
+      "meaning": "What you want evidence for.",
+      "example": "μ ≠ 250, or μ < 250.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Test statistic",
+      "meaning": "How many standard errors the sample landed from H₀.",
+      "example": "z = −2.5.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "p-value",
+      "meaning": "The chance of data at least this extreme if H₀ were true.",
+      "example": "p = 0.012: rare under H₀.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Significance level α",
+      "meaning": "The cutoff for rejecting H₀, and the chance of a false alarm.",
+      "example": "α = 0.05.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Type I error",
+      "meaning": "Rejecting a true H₀: a false alarm.",
+      "example": "Calling a fair machine broken.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Type II error",
+      "meaning": "Keeping a false H₀: a missed signal.",
+      "example": "Missing that the machine pours short.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Power",
+      "meaning": "The chance of catching a real effect: 1 − β.",
+      "example": "Bigger samples have more power.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "One-sided vs two-sided",
+      "meaning": "One-sided looks in one direction; two-sided looks for any difference.",
+      "example": "H₁: μ < 500 vs H₁: μ ≠ 500.",
+      "topic": "test",
+      "topicName": "Hypothesis tests",
+      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "term": "Regression line",
+      "meaning": "The straight line that best predicts y from x by least squares.",
+      "example": "ŷ = 2 + 0.5x.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Slope",
+      "meaning": "How much predicted y changes when x rises by 1.",
+      "example": "0.5 more sales per ad dollar.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Intercept",
+      "meaning": "Predicted y when x is 0. Sometimes meaningless.",
+      "example": "Sales with zero advertising.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Residual",
+      "meaning": "Actual minus predicted: what the line missed.",
+      "example": "Actual 10, predicted 8: residual 2.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Least squares",
+      "meaning": "Pick the line that makes the sum of squared residuals as small as possible.",
+      "example": "SSE is minimized.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "R²",
+      "meaning": "The share of the variation in y that the model explains.",
+      "example": "R² = 0.81: 81% explained.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Extrapolation",
+      "meaning": "Predicting outside the range of x you observed. Risky.",
+      "example": "Using ad spend of 50 when the data stop at 12.",
+      "topic": "reg",
+      "topicName": "Simple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "term": "Multiple regression",
+      "meaning": "Predicting y from several x's at once.",
+      "example": "Price from size, age and location.",
+      "topic": "mreg",
+      "topicName": "Multiple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+    },
+    {
+      "term": "Adjusted R²",
+      "meaning": "R² with a penalty for adding predictors that do not help.",
+      "example": "Falls when you add a useless variable.",
+      "topic": "mreg",
+      "topicName": "Multiple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+    },
+    {
+      "term": "Dummy variable",
+      "meaning": "A 0/1 column for a category. Use k − 1 of them for k categories.",
+      "example": "North = 1, else 0.",
+      "topic": "mreg",
+      "topicName": "Multiple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+    },
+    {
+      "term": "Multicollinearity",
+      "meaning": "Predictors that move together, which makes slopes unstable.",
+      "example": "VIF above 5 or 10 is a warning.",
+      "topic": "mreg",
+      "topicName": "Multiple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+    },
+    {
+      "term": "F test",
+      "meaning": "Tests whether the model as a whole explains anything.",
+      "example": "F = MSR / MSE.",
+      "topic": "mreg",
+      "topicName": "Multiple regression",
+      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+    }
+  ]
+}

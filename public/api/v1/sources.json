@@ -1,0 +1,226 @@
+{
+  "site": "https://monte.markets",
+  "license": "Free to use with a link to monte.markets.",
+  "updated": "2026-10-24",
+  "count": 30,
+  "categories": [
+    "Concepts",
+    "Video",
+    "R",
+    "Python",
+    "Excel",
+    "Power Query"
+  ],
+  "sources": [
+    {
+      "category": "Concepts",
+      "title": "Seeing Theory, created at Brown University",
+      "why": "Interactive visual introduction to probability and statistics, six chapters from basic probability to regression",
+      "url": "https://seeing-theory.brown.edu/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "OpenIntro Statistics, 4th edition",
+      "why": "Full textbook, free as a PDF, used from community colleges to Ivy League schools",
+      "url": "https://www.openintro.org/book/os/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "Introductory Statistics 2e, OpenStax",
+      "why": "Free open textbook with practice problems",
+      "url": "https://openstax.org/details/books/introductory-statistics-2e",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "STAT 200 Elementary Statistics, Penn State",
+      "why": "Free course notes that cover the first half of an intro course",
+      "url": "https://online.stat.psu.edu/stat200/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "STAT 501 Regression Methods, Penn State",
+      "why": "Free regression notes with worked examples, the best match for the regression half",
+      "url": "https://online.stat.psu.edu/stat501/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "18.05 Introduction to Probability and Statistics, MIT OpenCourseWare, Spring 2022",
+      "why": "Lecture notes, problem sets with solutions, and R tutorials",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "NIST/SEMATECH e-Handbook of Statistical Methods",
+      "why": "Government reference for checking how a method works and when to use it",
+      "url": "https://www.itl.nist.gov/div898/handbook/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "Statistics and Probability, Khan Academy",
+      "why": "Short videos and practice sets for any topic that does not click",
+      "url": "https://www.khanacademy.org/math/statistics-probability",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "R",
+      "title": "The R Project",
+      "why": "Where to download R; the current release is 4.6.1, from June 24, 2026",
+      "url": "https://www.r-project.org/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "R",
+      "title": "An Introduction to R, official manual",
+      "why": "The official starting guide to the language",
+      "url": "https://cran.r-project.org/doc/manuals/r-release/R-intro.html",
+      "checked": "Sep 16, 2026, see note"
+    },
+    {
+      "category": "R",
+      "title": "RStudio Desktop, Posit",
+      "why": "Free, open source editor most R users work in",
+      "url": "https://posit.co/downloads",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "R",
+      "title": "R for Data Science, 2nd edition",
+      "why": "Free online book on importing, cleaning, and plotting data in R",
+      "url": "https://r4ds.hadley.nz/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "R",
+      "title": "Posit cheatsheets",
+      "why": "One-page references for dplyr, ggplot2, tidyr, and more",
+      "url": "https://opensource.posit.co/resources/cheatsheets/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Python",
+      "title": "statistics module, Python documentation",
+      "why": "Mean, median, standard deviation, correlation, and simple regression with no extra installs",
+      "url": "https://docs.python.org/3/library/statistics.html",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Python",
+      "title": "pandas, Getting Started (version 3.0.5)",
+      "why": "Loading, filtering, and summarizing tables of data",
+      "url": "https://pandas.pydata.org/docs/getting_started/index.html",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Python",
+      "title": "statsmodels (version 0.15.0)",
+      "why": "Regression output that looks like the tables in a statistics course",
+      "url": "https://www.statsmodels.org/stable/index.html",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Python",
+      "title": "scipy.stats (SciPy 1.18.0)",
+      "why": "Probability distributions and hypothesis tests",
+      "url": "https://docs.scipy.org/doc/scipy/reference/stats.html",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Excel",
+      "title": "Statistical functions reference, Microsoft Support",
+      "why": "Every Excel statistics function with a one-line description, including NORM.DIST and BINOM.DIST",
+      "url": "https://support.microsoft.com/en-us/excel/statistical-functions-reference",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Excel",
+      "title": "Use the Analysis ToolPak, Microsoft Support",
+      "why": "Regression, t-tests, and histograms without writing formulas",
+      "url": "https://support.microsoft.com/en-us/office/use-the-analysis-toolpak-to-perform-complex-data-analysis-6c67ccf0-f4a9-487c-8dec-bdb5a2cefab6",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Power Query",
+      "title": "What is Power Query, Microsoft Learn",
+      "why": "Plain overview of cleaning and reshaping data in Excel before analysis",
+      "url": "https://learn.microsoft.com/en-us/power-query/power-query-what-is-power-query",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Power Query",
+      "title": "Power Query M formula language reference, Microsoft Learn",
+      "why": "The language behind every Power Query step, with a learning path",
+      "url": "https://learn.microsoft.com/en-us/powerquery-m/",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Power Query",
+      "title": "Quick tour of the M language, Microsoft Learn",
+      "why": "The fastest way into M",
+      "url": "https://learn.microsoft.com/en-us/powerquery-m/quick-tour-of-the-power-query-m-formula-language",
+      "checked": "Sep 16, 2026"
+    },
+    {
+      "category": "Video",
+      "title": "StatQuest with Josh Starmer, Statistics Fundamentals playlist",
+      "why": "Short, friendly videos that explain one idea each, from the mean and variance to p-values, correlation and regression",
+      "url": "https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Video",
+      "title": "Crash Course Statistics",
+      "why": "44 lively episodes covering the whole intro course, from sampling and spread to p-values and regression",
+      "url": "https://www.youtube.com/playlist?list=PL8dPuuaLjXtNM_Y-bUAhblSAdWRnmBUcr",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Video",
+      "title": "jbstatistics",
+      "why": "Clear chalkboard style videos on distributions, confidence intervals, hypothesis tests and simple regression, organized into topic playlists",
+      "url": "https://www.youtube.com/@jbstatistics/playlists",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Video",
+      "title": "3Blue1Brown, Central limit theorem series",
+      "why": "Beautiful animated explanations of why the bell curve appears and where it comes from",
+      "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDOMxJDswBaLu8xBMKxSTvg8",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Video",
+      "title": "OpenIntro videos",
+      "why": "Short videos made to go with the free OpenIntro textbooks, chapter by chapter",
+      "url": "https://www.youtube.com/@OpenIntroOrg/playlists",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "Introduction to Modern Statistics, 2nd edition, OpenIntro",
+      "why": "Free online textbook from the OpenIntro team, with a modern approach built on simulation and real data",
+      "url": "https://www.openintro.org/book/ims/",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "Art of Stat web apps",
+      "why": "Free browser apps to explore data and check answers for the normal, binomial and Poisson distributions, intervals, tests and regression",
+      "url": "https://artofstat.com/web-apps",
+      "checked": "Oct 23, 2026"
+    },
+    {
+      "category": "Concepts",
+      "title": "R Psychologist interactive visualizations",
+      "why": "Interactive pictures of correlation, confidence intervals, p-values and power that you can drag and play with",
+      "url": "https://rpsychologist.com/viz/",
+      "checked": "Oct 23, 2026"
+    }
+  ]
+}

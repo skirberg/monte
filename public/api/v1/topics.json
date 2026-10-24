@@ -1,0 +1,754 @@
+{
+  "site": "https://monte.markets",
+  "license": "Free to use with a link to monte.markets.",
+  "updated": "2026-10-24",
+  "count": 14,
+  "topics": [
+    {
+      "id": "data",
+      "n": 1,
+      "name": "Data and sampling",
+      "short": "Data and sampling",
+      "line": "Statistics is using data to make a decision. You rarely get to check everyone, so you check a slice (a sample) and use it to say something about the whole group (the population).",
+      "why": {
+        "click": "You can't taste the whole pot of soup, so you stir it and taste a spoonful. Statistics is learning to stir well.",
+        "care": "Every dashboard, survey and experiment is a spoonful. Whether it speaks for the whole pot depends on how the spoonful was taken.",
+        "uses": [
+          {
+            "field": "Product",
+            "use": "A survey of only your happiest users will always say the product is great."
+          },
+          {
+            "field": "Marketing",
+            "use": "Is customer segment a label or a number? It decides which chart and which math you can use."
+          },
+          {
+            "field": "Data work",
+            "use": "Before any model, check what each column really is and how it was collected."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Quantitative or qualitative",
+          "formula": "Quantitative: numbers you can average. Qualitative: labels."
+        },
+        {
+          "name": "Discrete or continuous",
+          "formula": "Discrete: counted. Continuous: measured."
+        },
+        {
+          "name": "Univariate or multivariate",
+          "formula": "Univariate: one column. Multivariate: several."
+        },
+        {
+          "name": "Population and sample",
+          "formula": "Population: N, μ, σ, p. Sample: n, x̄, s, p̂."
+        }
+      ],
+      "hook": "A name is a label, a price is a number. Everyone on tour is the population; the 200 matches you charted are the sample.",
+      "trap": "A bigger sample fixes randomness but not bias. 10,000 app users who answered a survey still tell you nothing about the users who ignore surveys. That is a convenience sample.",
+      "keywords": "population sample survey sampling bias random sample stratified cluster data types qualitative quantitative categorical numerical nominal ordinal interval ratio discrete continuous variable observational experiment",
+      "url": "https://monte.markets/study/learn/topics/data/"
+    },
+    {
+      "id": "center",
+      "n": 2,
+      "name": "Where is the middle",
+      "short": "Where is the middle",
+      "line": "Mean is the average. Median is the middle once sorted. Mode is the most common. The big idea: one extreme number drags the mean, and the median barely moves.",
+      "why": {
+        "click": "The mean is where a seesaw balances. The median is the person standing in the middle of the line.",
+        "care": "Pick the wrong one and you tell the wrong story: average pay with the CEO in the room describes nobody.",
+        "uses": [
+          {
+            "field": "Prices",
+            "use": "Home prices are quoted as medians because a few mansions drag the mean up."
+          },
+          {
+            "field": "Operations",
+            "use": "Use the mean delivery time to plan totals, the median to describe the typical order."
+          },
+          {
+            "field": "Revenue",
+            "use": "Average revenue per user is pulled up by a few big spenders. Check the median too."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Mean",
+          "formula": "x̄ = Σx / n for a sample, μ = Σx / N for a population"
+        },
+        {
+          "name": "Median",
+          "formula": "Sort, take the middle; average the two middles if n is even"
+        },
+        {
+          "name": "Mode",
+          "formula": "Most frequent value; none if all differ, bimodal if two tie"
+        },
+        {
+          "name": "Skew",
+          "formula": "Right skew: mode < median < mean. Left skew: mean < median < mode."
+        }
+      ],
+      "hook": "Mean is the average salary with the boss in the room. Median is what the typical person makes. The mean chases the tail.",
+      "trap": "Duplicates count. In 15, 7, 22, 7, 29, 11, 5, 0 the 7 appears twice, and both copies stay in the sorted list.",
+      "keywords": "average avg mean median mode typical middle central tendency skew outlier weighted average",
+      "url": "https://monte.markets/study/learn/topics/center/"
+    },
+    {
+      "id": "spread",
+      "n": 3,
+      "name": "How spread out is it",
+      "short": "How spread out is it",
+      "line": "Range is the biggest value minus the smallest. Standard deviation is how far a typical value sits from the average. In finance SD is risk. The empirical rule: 68% within 1 SD, 95% within 2, almost all within 3, when the data is hill shaped.",
+      "why": {
+        "click": "Two routes both average 30 minutes. One is always 30; the other swings from 15 to 60. The SD is that swing, and it is why you are late.",
+        "care": "Risk is spread. Two things with the same average can be completely different bets.",
+        "uses": [
+          {
+            "field": "Finance",
+            "use": "Volatility is the SD of returns."
+          },
+          {
+            "field": "Quality",
+            "use": "A machine that is right on average but swings a lot still makes bad parts."
+          },
+          {
+            "field": "Comparing",
+            "use": "A z score puts a test score and a sales number on the same scale: how unusual is each?"
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Range",
+          "formula": "max − min"
+        },
+        {
+          "name": "Population variance",
+          "formula": "σ² = Σ(y − μ)² / N"
+        },
+        {
+          "name": "Sample variance",
+          "formula": "s² = Σ(y − ȳ)² / (n − 1)"
+        },
+        {
+          "name": "Shortcut",
+          "formula": "s² = [Σy² − (Σy)² / n] / (n − 1)"
+        },
+        {
+          "name": "Standard deviation",
+          "formula": "s = √s²"
+        },
+        {
+          "name": "Coefficient of variation",
+          "formula": "CV = s / x̄"
+        },
+        {
+          "name": "Empirical rule",
+          "formula": "x̄ ± 1s holds 68%, x̄ ± 2s holds 95%, x̄ ± 3s holds 99.7%"
+        }
+      ],
+      "hook": "Most Days Start Slow, Dude, Relax: mean, distance, square, sum, divide, root. SD is how bumpy the ride is. 1 SD happens most days, 2 SD about once a month, 3 SD about once a year.",
+      "trap": "Same range, different spread. 10, 50, 50, 50, 90 and 10, 10, 50, 90, 90 both have a range of 80, yet their standard deviations are about 28 and 40. Range only sees the two ends; standard deviation sees every value.",
+      "keywords": "standard deviation sd std stdev st dev variance volatility risk range iqr interquartile quartile z score zscore z-score empirical rule 68 95 99.7 coefficient of variation cv dispersion",
+      "url": "https://monte.markets/study/learn/topics/spread/"
+    },
+    {
+      "id": "prob",
+      "n": 4,
+      "name": "Probability rules",
+      "short": "Probability rules",
+      "line": "List everything that can happen. Or means add and subtract the overlap. And means multiply. Given means shrink the list to what you were told and count inside it. Mutually exclusive means both can't happen; independent means one tells you nothing about the other.",
+      "why": {
+        "click": "Probability is honest bookkeeping: list what can happen, then ask what share of it is the thing you care about.",
+        "care": "Many costly mistakes come from mixing up P(A given B) with P(B given A).",
+        "uses": [
+          {
+            "field": "Medicine",
+            "use": "A 99% accurate test for a rare condition is often wrong when it says yes."
+          },
+          {
+            "field": "Fraud",
+            "use": "If fraud is rare, most flagged transactions are honest."
+          },
+          {
+            "field": "Everyday",
+            "use": "Five separate 20% risks: the chance at least one happens is 67%, not 100%."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Basics",
+          "formula": "0 ≤ P(A) ≤ 1, all outcomes add to 1, P(not A) = 1 − P(A)"
+        },
+        {
+          "name": "Or",
+          "formula": "P(A or B) = P(A) + P(B) − P(A and B)"
+        },
+        {
+          "name": "Given",
+          "formula": "P(A | B) = P(A and B) / P(B)"
+        },
+        {
+          "name": "And",
+          "formula": "P(A and B) = P(A) × P(B | A); if independent, P(A) × P(B)"
+        },
+        {
+          "name": "Tree",
+          "formula": "Multiply along a branch, add branches with the same ending"
+        }
+      ],
+      "hook": "Or is two guest lists (count people on both once). And is a combo lock (every dial has to hit, so multiply). Given is a filter (narrow the list, then count). Mutually exclusive is a coin landing heads and tails at once.",
+      "trap": "Mutually exclusive events are not independent. If A happens B cannot, so knowing A changes B completely.",
+      "keywords": "probability chance odds bayes bayes rule bayes theorem conditional given independent independence mutually exclusive disjoint complement and or union intersection tree two-way table contingency",
+      "url": "https://monte.markets/study/learn/topics/prob/"
+    },
+    {
+      "id": "rv",
+      "n": 5,
+      "name": "Random variables and expected value",
+      "short": "Random variables",
+      "line": "A random variable is a number whose value depends on chance. Its expected value is the probability-weighted average: what you'd get on average over many repeats. Its SD is the risk around that average.",
+      "why": {
+        "click": "Expected value is what a bet is worth if you could make it a thousand times.",
+        "care": "Businesses live on repeated bets: insurance, pricing, inventory. Expected value says which ones pay over time; the SD says whether you survive the bad runs.",
+        "uses": [
+          {
+            "field": "Insurance",
+            "use": "Premiums start from expected claims, plus a cushion for the swings."
+          },
+          {
+            "field": "Startups",
+            "use": "A 10% shot at $10 million is worth $1 million in expectation, before you count the risk."
+          },
+          {
+            "field": "Inventory",
+            "use": "Expected demand sets the order; the SD sets the safety stock."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Expected value",
+          "formula": "E(Y) = μ = Σ y · P(y)"
+        },
+        {
+          "name": "Variance",
+          "formula": "σ² = Σ (y − μ)² · P(y) = Σ y²P(y) − μ²"
+        },
+        {
+          "name": "SD and CV",
+          "formula": "σ = √σ², CV = σ / μ"
+        },
+        {
+          "name": "Constants",
+          "formula": "E(a + bY) = a + b · E(Y), Var(a + bY) = b² · Var(Y)"
+        },
+        {
+          "name": "Discrete uniform",
+          "formula": "k equally likely values, each with probability 1/k. The mean is the plain average of the values"
+        }
+      ],
+      "hook": "Expected value is what a bet is worth on average if you took it a thousand times. SD is how far a single try can land from that. CV is risk per unit of reward: lower is better.",
+      "trap": "The expected value is not the most likely outcome and may be impossible to observe (2.5 on a four-sided die). It is the long-run average.",
+      "keywords": "random variable expected value ev expectation mean of a distribution probability distribution payoff bet variance of a random variable",
+      "url": "https://monte.markets/study/learn/topics/rv/"
+    },
+    {
+      "id": "two",
+      "n": 6,
+      "name": "Two variables: covariance, correlation, portfolios",
+      "short": "Two variables and portfolios",
+      "line": "Covariance asks whether two things move together. Correlation is covariance scaled to run from −1 to +1. Put two assets together and any correlation below +1 lowers the risk of the mix. That is diversification.",
+      "why": {
+        "click": "Correlation asks one thing: when this goes up, does that tend to go up too?",
+        "care": "It is how you diversify, and how you get fooled. Ice cream sales and drownings rise together because of summer, not because of each other.",
+        "uses": [
+          {
+            "field": "Investing",
+            "use": "Mixing assets that don't move together lowers risk without lowering the average return."
+          },
+          {
+            "field": "Marketing",
+            "use": "Ad spend and sales move together, but that alone doesn't prove the ads worked."
+          },
+          {
+            "field": "Data work",
+            "use": "Two columns with a correlation near 1 are telling you the same thing twice."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Covariance",
+          "formula": "Cov(X, Y) = ΣΣ (x − μx)(y − μy) P(x, y) = ΣΣ xy P(x, y) − μx μy"
+        },
+        {
+          "name": "Correlation",
+          "formula": "ρ = Cov(X, Y) / (σx σy), between −1 and 1"
+        },
+        {
+          "name": "Portfolio mean",
+          "formula": "E(bX + cY) = b · E(X) + c · E(Y)"
+        },
+        {
+          "name": "Portfolio variance",
+          "formula": "V(bX + cY) = b²V(X) + c²V(Y) + 2bc · Cov(X, Y)"
+        },
+        {
+          "name": "If independent",
+          "formula": "V(bX + cY) = b²V(X) + c²V(Y)"
+        }
+      ],
+      "hook": "Correlation is why you don't put all your eggs in one basket. The last term in the variance formula is the only place the two assets talk to each other.",
+      "trap": "Independent implies Cov = 0, but Cov = 0 does not imply independent. Y = X² is the classic example built to catch this.",
+      "keywords": "covariance correlation correlation coefficient r relationship move together portfolio diversification diversify risk return weights",
+      "url": "https://monte.markets/study/learn/topics/two/"
+    },
+    {
+      "id": "count",
+      "n": 7,
+      "name": "Counting and the binomial",
+      "short": "Counting and the binomial",
+      "line": "When you repeat a yes-or-no trial n times with the same chance p each time, the number of yeses is binomial. The mean is np and the variance is np(1 − p). Counting rules (factorials, combinations) tell you how many ways the yeses can be arranged.",
+      "why": {
+        "click": "The binomial is just this: n tries, the same chance each time, how many hits?",
+        "care": "Any yes or no event that repeats (a click, a defect, a sale, a free throw) follows this pattern, so you can say how surprising a result really is.",
+        "uses": [
+          {
+            "field": "Sales",
+            "use": "A 20% close rate over 10 calls gives 4 or more deals about 12% of the time."
+          },
+          {
+            "field": "Quality",
+            "use": "How many defects in a batch of 50 should make you worry?"
+          },
+          {
+            "field": "Sports",
+            "use": "A 75% free throw shooter makes exactly 6 of 10 about 15% of the time, so one bad night says little."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Factorial",
+          "formula": "n! = n(n − 1)(n − 2)…1, and 0! = 1"
+        },
+        {
+          "name": "Combinations",
+          "formula": "nCx = n! / [x!(n − x)!]"
+        },
+        {
+          "name": "Binomial",
+          "formula": "P(Y = y) = nCy · pʸ · (1 − p)ⁿ⁻ʸ"
+        },
+        {
+          "name": "Mean and variance",
+          "formula": "E(Y) = np, V(Y) = np(1 − p)"
+        },
+        {
+          "name": "Hypergeometric",
+          "formula": "n draws without replacement from N items, K of them successes: P(k) = C(K, k) C(N − K, n − k) / C(N, n). Mean nK/N. Excel: HYPGEOM.DIST(k, n, K, N, FALSE)"
+        },
+        {
+          "name": "Excel",
+          "formula": "BINOM.DIST(y, n, p, FALSE) for exactly y; TRUE for at most y"
+        }
+      ],
+      "hook": "Binomial is counting wins in a fixed number of matches when every match is the same weighted coin.",
+      "trap": "At least one is 1 − P(none). Adding P(1) + P(2) + … by hand wastes time and invites arithmetic errors.",
+      "keywords": "counting combinations combination choose ncr permutations factorial binomial successes trials yes no bernoulli hypergeometric without replacement",
+      "url": "https://monte.markets/study/learn/topics/count/"
+    },
+    {
+      "id": "poisson",
+      "n": 8,
+      "name": "Poisson: counts per unit",
+      "short": "Poisson",
+      "line": "Poisson counts how many events land in a fixed window (a minute, an hour, a page) when they arrive at a steady average rate λ. The mean and the variance are both λ. Scale λ to the window first.",
+      "why": {
+        "click": "Poisson counts things that arrive at random but at a steady average rate: calls, emails, goals, typos.",
+        "care": "It tells you how many staff, servers or spare parts you need so you are rarely caught short.",
+        "uses": [
+          {
+            "field": "Staffing",
+            "use": "A help desk that averages 4 calls an hour gets 8 or more in an hour about 5% of the time."
+          },
+          {
+            "field": "Tech",
+            "use": "Servers sized for the average fall over on perfectly normal busy minutes."
+          },
+          {
+            "field": "Sports",
+            "use": "Goals per soccer match are close to Poisson."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Poisson",
+          "formula": "P(Y = y) = e⁻λ λʸ / y!"
+        },
+        {
+          "name": "Mean and variance",
+          "formula": "E(Y) = V(Y) = λ"
+        },
+        {
+          "name": "Given at least one",
+          "formula": "P(Y = k | Y ≥ 1) = P(Y = k) / (1 − P(0)), for k ≥ 1"
+        },
+        {
+          "name": "Rescale",
+          "formula": "λ for a window = rate × window length"
+        },
+        {
+          "name": "Excel",
+          "formula": "POISSON.DIST(y, λ, FALSE) for exactly y; TRUE for at most y"
+        }
+      ],
+      "hook": "Poisson is for counting arrivals: calls to a help desk, emails in an hour, errors per set. Pick the time window first, then count.",
+      "trap": "Forgetting to rescale λ. 3 calls per hour over 2 hours is λ = 6, not 3.",
+      "keywords": "poisson arrivals rate per hour per minute counts events lambda λ queue calls",
+      "url": "https://monte.markets/study/learn/topics/poisson/"
+    },
+    {
+      "id": "normal",
+      "n": 9,
+      "name": "The normal curve and z",
+      "short": "The normal curve",
+      "line": "The normal is the bell. Any normal becomes the standard one by measuring in SDs from the mean: z = (y − μ) / σ. Then a z table (or NORM.S.DIST) gives the area, and area is probability.",
+      "why": {
+        "click": "Measure anything that is the sum of many small effects and you get the bell.",
+        "care": "Once you know the mean and SD, the bell tells you how rare any value is. Every cutoff, grade curve and quality limit uses it.",
+        "uses": [
+          {
+            "field": "Inventory",
+            "use": "Stock enough for 95% of days: the mean plus 1.645 SDs."
+          },
+          {
+            "field": "Quality",
+            "use": "Parts more than 3 SDs from target get flagged."
+          },
+          {
+            "field": "Testing",
+            "use": "Percentile scores on standardized tests come from the bell."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "z score",
+          "formula": "z = (y − μ) / σ, and back again y = μ + zσ"
+        },
+        {
+          "name": "Areas",
+          "formula": "P(Y < y) = Φ(z), P(Y > y) = 1 − Φ(z), P(a < Y < b) = Φ(z of b) − Φ(z of a)"
+        },
+        {
+          "name": "Excel",
+          "formula": "NORM.DIST(y, μ, σ, TRUE), NORM.S.DIST(z, TRUE), NORM.INV(p, μ, σ)"
+        },
+        {
+          "name": "Key z values",
+          "formula": "1.28 (90%), 1.645 (95% one-sided), 1.96 (95% two-sided), 2.576 (99%)"
+        },
+        {
+          "name": "Continuous uniform",
+          "formula": "Flat from a to b: P(c < Y < d) = (d − c) / (b − a). Mean (a + b) / 2, SD (b − a) / √12"
+        }
+      ],
+      "hook": "z is how many SDs away from average. 1.28, 1.645, 1.96, 2.576: memorize those four and every bell-curve question becomes arithmetic.",
+      "trap": "Some z tables give the area from 0 to z, not from the far left. Add 0.5 for less than a positive z. Excel's NORM.S.DIST gives the cumulative area from the left.",
+      "keywords": "normal distribution bell curve bell gaussian z table standard normal percentile cutoff norm.dist norm.inv uniform distribution",
+      "url": "https://monte.markets/study/learn/topics/normal/"
+    },
+    {
+      "id": "clt",
+      "n": 10,
+      "name": "Sampling distributions and the CLT",
+      "short": "Sampling and the CLT",
+      "line": "Take a sample and compute its mean. Take another and compute again. Those sample means have their own distribution, and the Central Limit Theorem says it is close to normal once n is big enough, centered on μ with spread σ / √n (the standard error). The same works for proportions. A good estimator is unbiased (right on average) and efficient (the least spread of the unbiased ones).",
+      "why": {
+        "click": "One die roll is flat. The average of 30 rolls is a bell. Averaging cancels noise.",
+        "care": "This is why a sample of 1,000 can speak for millions, and why you should never trust a single day of data.",
+        "uses": [
+          {
+            "field": "Analytics",
+            "use": "Weekly averages are steadier than daily numbers, and √n says by how much."
+          },
+          {
+            "field": "Polling",
+            "use": "A poll of 1,000 people has noise of about 1.6 points on each candidate's share."
+          },
+          {
+            "field": "Finance",
+            "use": "The average of many small bets is far more predictable than one big bet."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Sample mean",
+          "formula": "Centered on μ with standard error σ / √n"
+        },
+        {
+          "name": "z for a sample mean",
+          "formula": "z = (x̄ − μ) / (σ / √n)"
+        },
+        {
+          "name": "Sum of n values",
+          "formula": "Mean nμ, SD σ√n"
+        },
+        {
+          "name": "Sample proportion",
+          "formula": "Mean p, SE = √[p(1 − p) / n], normal if np ≥ 10 and n(1 − p) ≥ 10"
+        },
+        {
+          "name": "Central Limit Theorem",
+          "formula": "Close to normal for large n (rule of thumb 30), whatever the population looks like"
+        },
+        {
+          "name": "Good estimators",
+          "formula": "Unbiased: E(estimator) = parameter. Efficient: the smallest variance among the unbiased ones. x̄, p̂ and s² (÷ n − 1) are unbiased."
+        }
+      ],
+      "hook": "Averaging is noise cancelling. The √n is the price: four times the data only buys half the noise.",
+      "trap": "Dividing σ by n instead of √n. The standard error shrinks with the square root, so quadrupling the sample only halves the noise.",
+      "keywords": "central limit theorem clt sampling distribution standard error se law of large numbers sample mean distribution of the mean unbiased estimator efficient bias point estimate",
+      "url": "https://monte.markets/study/learn/topics/clt/"
+    },
+    {
+      "id": "ci",
+      "n": 11,
+      "name": "Confidence intervals and sample size",
+      "short": "Confidence intervals",
+      "line": "A point estimate is one number. A confidence interval is that number plus and minus a margin: estimate ± critical value × standard error. Use z when σ is known and t when you only have s. Flip the formula around and it tells you how big a sample you need.",
+      "why": {
+        "click": "A confidence interval is your estimate with honest error bars.",
+        "care": "A number without a margin is a guess dressed up as a fact. The interval tells you whether a difference is real or just noise.",
+        "uses": [
+          {
+            "field": "Polls",
+            "use": "48% plus or minus 3 means the race is open."
+          },
+          {
+            "field": "Product",
+            "use": "A 4.1% conversion rate after 5,000 visits is really 3.6% to 4.7%. Plan with the range."
+          },
+          {
+            "field": "Surveys",
+            "use": "Sample size math says how many people to ask before you trust the answer."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "σ known",
+          "formula": "x̄ ± z(α/2) · σ / √n"
+        },
+        {
+          "name": "σ unknown",
+          "formula": "x̄ ± t(α/2, n − 1) · s / √n"
+        },
+        {
+          "name": "Proportion",
+          "formula": "p̂ ± z(α/2) · √[p̂(1 − p̂) / n]"
+        },
+        {
+          "name": "Sample size for μ",
+          "formula": "n = (zσ / E)²"
+        },
+        {
+          "name": "Sample size for p",
+          "formula": "n = z² p(1 − p) / E², using p = 0.5 with no prior estimate"
+        },
+        {
+          "name": "z values",
+          "formula": "1.645 (90%), 1.96 (95%), 2.576 (99%). Always round n up."
+        }
+      ],
+      "hook": "A confidence interval is a margin of error around your guess. More confidence widens it, more data tightens it, and σ is the part you can't control.",
+      "trap": "A 95% CI is not a 95% chance that μ is in here. μ is fixed; the interval is what moves. Also, for sample size the width is 2E, so a width of 0.06 means E = 0.03.",
+      "keywords": "confidence interval ci margin of error moe error bars interval estimate t distribution student t degrees of freedom df sample size how many to survey",
+      "url": "https://monte.markets/study/learn/topics/ci/"
+    },
+    {
+      "id": "test",
+      "n": 12,
+      "name": "Hypothesis tests",
+      "short": "Hypothesis tests",
+      "line": "A hypothesis test asks one question: would this sample be surprising if nothing were going on? Assume the boring claim (H₀), measure how many standard errors the sample landed from it, and turn that distance into a p-value. A small p-value means the data would be rare under H₀, so you reject it.",
+      "why": {
+        "click": "A test asks: if nothing were going on, how weird would this data be?",
+        "care": "It is the guardrail against seeing patterns in noise, which is the most expensive mistake in data work.",
+        "uses": [
+          {
+            "field": "A/B tests",
+            "use": "Did the new checkout really lift sales, or was it a lucky week?"
+          },
+          {
+            "field": "Operations",
+            "use": "Is the machine off target, or is that its normal wobble?"
+          },
+          {
+            "field": "Medicine",
+            "use": "Drug trials rest on tests like this one."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Five steps",
+          "formula": "State H₀ and H₁, pick α, compute the test statistic, find the p-value, then decide and say it in words"
+        },
+        {
+          "name": "Mean, σ known",
+          "formula": "z = (x̄ − μ₀) / (σ / √n)"
+        },
+        {
+          "name": "Mean, σ unknown",
+          "formula": "t = (x̄ − μ₀) / (s / √n), with n − 1 df"
+        },
+        {
+          "name": "Proportion",
+          "formula": "z = (p̂ − p₀) / √[p₀(1 − p₀) / n]"
+        },
+        {
+          "name": "Decision",
+          "formula": "Reject H₀ when p-value < α, or when the statistic is past the critical value"
+        },
+        {
+          "name": "Errors",
+          "formula": "Type I: reject a true H₀ (chance α). Type II: keep a false H₀ (chance β). Power = 1 − β"
+        },
+        {
+          "name": "Excel",
+          "formula": "Two-sided p for z: 2*(1 − NORM.S.DIST(ABS(z), TRUE)). For t: T.DIST.2T(ABS(t), df)"
+        }
+      ],
+      "hook": "Innocent until proven guilty. H₀ is the defendant, the p-value is how unlikely the evidence would be if they were innocent, and α is how much doubt the jury will accept.",
+      "trap": "A p-value is not the chance that H₀ is true. It is the chance of data at least this extreme if H₀ were true. Also, for a proportion the standard error uses p₀ from H₀, not p̂.",
+      "keywords": "hypothesis test hypothesis testing significance significant statistically significant p value p-value pvalue alpha null alternative h0 h1 t test ttest z test type i type ii error false positive false negative power a/b test ab test a b test experiment",
+      "url": "https://monte.markets/study/learn/topics/test/"
+    },
+    {
+      "id": "reg",
+      "n": 13,
+      "name": "Simple regression",
+      "short": "Simple regression",
+      "line": "Regression fits the straight line that makes the squared vertical misses as small as possible. The slope says how much y moves per unit of x. R² says what share of y's variation the line explains. The t-test on the slope asks whether x helps at all.",
+      "why": {
+        "click": "Regression draws the best straight line through a cloud of points, so you can predict y from x.",
+        "care": "It turns “these move together” into a number: each extra unit of x is worth this much y.",
+        "uses": [
+          {
+            "field": "Pricing",
+            "use": "How much demand drops for every $1 of price."
+          },
+          {
+            "field": "Marketing",
+            "use": "Sales per $1,000 of ad spend, with care about cause and effect."
+          },
+          {
+            "field": "Real estate",
+            "use": "Price per extra square foot."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Line",
+          "formula": "ŷ = b₀ + b₁x"
+        },
+        {
+          "name": "Slope",
+          "formula": "b₁ = [nΣxy − ΣxΣy] / [nΣx² − (Σx)²]"
+        },
+        {
+          "name": "Intercept",
+          "formula": "b₀ = ȳ − b₁x̄"
+        },
+        {
+          "name": "Fit",
+          "formula": "SST = SSR + SSE, R² = SSR / SST = 1 − SSE / SST"
+        },
+        {
+          "name": "Residual SD",
+          "formula": "s = √(SSE / (n − 2))"
+        },
+        {
+          "name": "Slope test",
+          "formula": "t = b₁ / SE(b₁), df = n − 2"
+        },
+        {
+          "name": "Correlation",
+          "formula": "r = ±√R², with the sign of the slope"
+        }
+      ],
+      "hook": "Slope is rise over run. R² is how much of the scatter the line explains. The t-test asks whether the slope is really different from zero or just noise.",
+      "trap": "Correlation is symmetric; regression is not. Swapping x and y gives a different line. And never predict outside the range of x you have.",
+      "keywords": "regression linear regression simple regression line of best fit best fit trend line trendline least squares slope intercept r squared r2 r² residual prediction forecast",
+      "url": "https://monte.markets/study/learn/topics/reg/"
+    },
+    {
+      "id": "mreg",
+      "n": 14,
+      "name": "Multiple regression",
+      "short": "Multiple regression",
+      "line": "The same idea with several x's: fit a plane instead of a line. Each coefficient is the effect of its x holding the others fixed. The F-test asks if the model as a whole helps; each t-test asks if one x adds anything given the rest. Multicollinearity is when two x's say the same thing.",
+      "why": {
+        "click": "Multiple regression asks the fair question: what is x worth once everything else is held fixed?",
+        "care": "It separates effects that arrive tangled together, like experience and education in pay.",
+        "uses": [
+          {
+            "field": "Pay",
+            "use": "The gap that remains after accounting for role, level and tenure."
+          },
+          {
+            "field": "Real estate",
+            "use": "Price from size, age and location at once."
+          },
+          {
+            "field": "Forecasting",
+            "use": "Sales from price, season and promotions together."
+          }
+        ]
+      },
+      "formulas": [
+        {
+          "name": "Model",
+          "formula": "ŷ = b₀ + b₁x₁ + … + bₖxₖ"
+        },
+        {
+          "name": "F test",
+          "formula": "F = MSR / MSE, df (k, n − k − 1)"
+        },
+        {
+          "name": "t test",
+          "formula": "t = bⱼ / SE(bⱼ), df = n − k − 1"
+        },
+        {
+          "name": "Adjusted R²",
+          "formula": "1 − [SSE / (n − k − 1)] / [SST / (n − 1)]"
+        },
+        {
+          "name": "VIF",
+          "formula": "VIFⱼ = 1 / (1 − Rⱼ²); trouble above 10"
+        },
+        {
+          "name": "Dummies",
+          "formula": "k categories need k − 1 indicator columns"
+        }
+      ],
+      "hook": "Multiple regression is a recipe with several ingredients. F asks if the recipe works at all. Each t asks if one ingredient earns its place. VIF is the alarm for two ingredients that are the same thing.",
+      "trap": "Holding other variables fixed is a statement about the math, not the world. If square footage and rooms move together in reality, you can't hold one fixed.",
+      "keywords": "multiple regression several predictors controlling for holding constant dummy variable categorical multicollinearity vif adjusted r squared f test anova interaction",
+      "url": "https://monte.markets/study/learn/topics/mreg/"
+    }
+  ]
+}
