@@ -8,6 +8,7 @@ import { burstFrom, callout } from "@/lib/fun";
 import { useStoredString } from "@/lib/hooks";
 import { START_CHIPS, addChips, addXp, refillChips, unlockBadge, useProgress } from "@/lib/progress";
 import { binom, chunked, pct } from "@/lib/play/sim";
+import { chipsFor } from "@/lib/play/scoring";
 
 const SIZES = [400, 1000, 2500] as const;
 const MAX_POLLS = 8;
@@ -171,8 +172,6 @@ type Race = { p: number; o: 0 | 1 };
 
 /** Brier score: the squared gap between what you said and what happened. 0 is perfect, 0.25 is always saying 50%. */
 const brier = (r: Race) => (r.o - r.p) ** 2;
-/** Chips for one race: 0 at 50%, +24 for a right call at 90%, −56 for a wrong one. Saying what you believe earns the most on average. */
-const chipsFor = (p: number, o: number) => Math.round(100 * (1 - (o - p) ** 2) - 75);
 const signed = (v: number) => (v > 0 ? `+${v}` : v < 0 ? `−${Math.abs(v)}` : "0");
 /** How sure you were of the side you leaned to, so a 30% call on A counts as a 70% call on B. */
 const lean = (p: number) => Math.max(p, 1 - p);
