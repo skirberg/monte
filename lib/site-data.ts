@@ -1,4 +1,4 @@
-import DATA from "@/lib/study/data.json";
+import { DATA } from "@/lib/study/data";
 import { pathForHash } from "@/lib/study/routes";
 
 // Everything the landing page and the ⌘K menu show comes from the study app's own data,
