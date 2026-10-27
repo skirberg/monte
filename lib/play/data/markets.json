@@ -4,72 +4,72 @@
     {
       "id": "polymarket",
       "name": "Polymarket",
-      "asOf": "2026-10-26T18:39:54.897Z",
-      "asOfText": "Oct 26, 2026, 2:39 PM ET",
+      "asOf": "2026-10-27T17:56:23.088Z",
+      "asOfText": "Oct 27, 2026, 1:56 PM ET",
       "house": {
-        "dem": 0.925,
-        "rep": 0.075
+        "dem": 0.915,
+        "rep": 0.085
       },
       "senate": {
-        "dem": 0.645,
-        "rep": 0.355
+        "dem": 0.655,
+        "rep": 0.345
       }
     },
     {
       "id": "kalshi",
       "name": "Kalshi",
-      "asOf": "2026-10-26T18:39:54.897Z",
-      "asOfText": "Oct 26, 2026, 2:39 PM ET",
+      "asOf": "2026-10-27T17:56:23.088Z",
+      "asOfText": "Oct 27, 2026, 1:56 PM ET",
       "house": {
-        "dem": 0.905,
-        "rep": 0.095
+        "dem": 0.906,
+        "rep": 0.094
       },
       "senate": {
-        "dem": 0.635,
-        "rep": 0.365
+        "dem": 0.645,
+        "rep": 0.355
       }
     }
   ],
   "polls": {
-    "asOf": "2026-10-26T18:39:54.897Z",
-    "asOfText": "Oct 26, 2026, 2:39 PM ET",
-    "lead": 8.7,
+    "asOf": "2026-10-27T17:56:23.088Z",
+    "asOfText": "Oct 27, 2026, 1:56 PM ET",
+    "lead": 8.5,
     "leader": "Democrats",
     "averages": [
       {
         "name": "Decision Desk HQ",
-        "updated": "October 25, 2026",
-        "dem": 51.1,
-        "rep": 43.1,
-        "lead": 8
+        "updated": "October 27, 2026",
+        "dem": 50.8,
+        "rep": 43,
+        "lead": 7.8
       },
       {
         "name": "FiftyPlusOne",
-        "updated": "October 25, 2026",
+        "updated": "October 27, 2026",
         "dem": 52.2,
-        "rep": 43,
-        "lead": 9.2
+        "rep": 43.4,
+        "lead": 8.8
       },
       {
         "name": "NBC News",
-        "updated": "October 25, 2026",
+        "updated": "October 27, 2026",
         "dem": 52,
         "rep": 43,
         "lead": 9
       },
       {
         "name": "RealClearPolitics",
-        "updated": "October 25, 2026",
-        "dem": 51.1,
-        "rep": 42.8,
+        "updated": "October 27, 2026",
+        "dem": 51.6,
+        "rep": 43.3,
         "lead": 8.3
       },
       {
         "name": "Silver Bulletin",
-        "updated": "October 25, 2026",
-        "dem": 50.6,
-        "rep": 41.6,
-        "lead": 9
+        "updated": "October 27, 2026",
+        "dem": 51,
+        "rep": 42.2,
+        "lead": 8.8
       }
     ],
     "raw": {
