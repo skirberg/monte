@@ -15,6 +15,8 @@ export type Field = {
   wide?: boolean;
   /** A select: [value, label]. */
   opts?: [value: string, label: string][];
+  /** Shown only while another field holds one of these values, like the mean inputs for a mean. */
+  when?: [key: string, values: string[]];
 };
 export type Row = { q: string; a: string; w: string; hl: boolean; strong?: boolean };
 /** The first cell of each body row is its row header. */
@@ -545,9 +547,9 @@ const ci: Solver = {
     { k: "kind", l: "Type", v: "t", opts: [["t", "Mean, s from the sample (t)"], ["z", "Mean, σ known (z)"], ["p", "Proportion"]] },
     { k: "cl", l: "Confidence", v: "0.95", opts: [["0.90", "90%"], ["0.95", "95%"], ["0.99", "99%"]] },
     { k: "n", l: "Sample size n", v: "25" },
-    { k: "xbar", l: "Mean x̄ (mean types)", v: "42.5" },
-    { k: "s", l: "SD s or σ (mean types)", v: "6.2" },
-    { k: "x", l: "Count with the trait (proportion)", v: "" },
+    { k: "xbar", l: "Mean x̄", v: "42.5", when: ["kind", ["t", "z"]] },
+    { k: "s", l: "SD s or σ", v: "6.2", when: ["kind", ["t", "z"]] },
+    { k: "x", l: "Count with the trait", v: "", when: ["kind", ["p"]] },
     { k: "e", l: "Target E (for sample size)", v: "2" },
     { k: "em", l: "E is", v: "m", opts: [["m", "The margin (±)"], ["l", "The full length"]] },
   ],
@@ -631,9 +633,9 @@ const test: Solver = {
     { k: "side", l: "H₁", v: "two", opts: [["two", "Not equal (two-sided)"], ["less", "Less than (left tail)"], ["greater", "Greater than (right tail)"]] },
     { k: "h0", l: "H₀ value, μ₀ or p₀", v: "250" },
     { k: "n", l: "Sample size n", v: "36" },
-    { k: "xbar", l: "Sample mean x̄ (mean tests)", v: "247.5" },
-    { k: "s", l: "σ or s (mean tests)", v: "6" },
-    { k: "x", l: "Count with the trait (proportion)", v: "" },
+    { k: "xbar", l: "Sample mean x̄", v: "247.5", when: ["kind", ["z", "t"]] },
+    { k: "s", l: "σ or s", v: "6", when: ["kind", ["z", "t"]] },
+    { k: "x", l: "Count with the trait", v: "", when: ["kind", ["p"]] },
     { k: "a", l: "α", v: "0.05", opts: [["0.10", "0.10"], ["0.05", "0.05"], ["0.01", "0.01"]] },
   ],
   presets: [

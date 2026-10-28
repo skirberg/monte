@@ -149,7 +149,8 @@ export function MontyHall() {
         <div className="flex flex-wrap gap-3">
           {phase === "decide" && (
             <>
-              <button type="button" onClick={() => decide(false)} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+              {/* The picked door disables itself, so focus moves here instead of dropping to the page. */}
+              <button type="button" onClick={() => decide(false)} autoFocus className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
                 Stay with door {pick! + 1}
               </button>
               {/* Same weight as Stay, so the page does not hint at the answer. */}

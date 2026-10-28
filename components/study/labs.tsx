@@ -8,6 +8,7 @@ import { BarRow, Chart, Select, Slider, area, curve } from "@/components/study/c
 import { btn } from "@/components/study/ui";
 import { useHydrated } from "@/lib/hooks";
 import { sym } from "@/lib/study/symbols";
+import { SafePart } from "@/components/safe-part";
 
 // Labs: drag a control until the number makes sense. Each one is a small component on the shared
 // <Chart> primitive. Labs that start from random draws only show them after hydration, so the
@@ -688,5 +689,9 @@ const LABS: Record<LabId, () => React.ReactNode> = {
 
 export function TopicLab({ id }: { id: LabId }) {
   const C = LABS[id];
-  return <C />;
+  return (
+    <SafePart name="lab">
+      <C />
+    </SafePart>
+  );
 }

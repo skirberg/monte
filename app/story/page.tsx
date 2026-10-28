@@ -5,16 +5,12 @@ import { SiteFooter } from "@/components/site-footer";
 import { Motion, Reveal } from "@/components/landing/motion-bits";
 import { JsonLd } from "@/components/json-ld";
 import { TOPICS, studyHref } from "@/lib/site-data";
-import { SITE_NAME, abs } from "@/lib/seo";
+import { SITE_NAME, abs, pageMeta } from "@/lib/seo";
 
 const DESCRIPTION =
   "Fourteen true stories, from a London haberdasher counting the dead in 1662 to Google testing 41 shades of blue, each ending with the one statistics idea it teaches.";
 
-export const metadata: Metadata = {
-  title: "Why statistics",
-  description: DESCRIPTION,
-  alternates: { canonical: "/story/" },
-};
+export const metadata: Metadata = pageMeta("/story/", "Why statistics", DESCRIPTION);
 
 type TopicId = (typeof TOPICS)[number]["id"];
 type Figure = { value: string; caption: string } | { art: "bell" | "pile"; caption: string };

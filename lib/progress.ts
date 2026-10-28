@@ -192,6 +192,16 @@ export function useProgress() {
   return p;
 }
 
+/**
+ * Asks the browser to keep Monte's saved progress instead of clearing it under storage pressure (Safari clears
+ * script-written storage after weeks without a visit). Asked once something is worth keeping: the first badge.
+ */
+export function keepStorage() {
+  try {
+    void navigator.storage?.persisted().then((kept) => kept || navigator.storage.persist());
+  } catch {}
+}
+
 // ---------- Backup and move: progress lives in this browser, so let people carry it.
 /** Every key Monte writes: progress, study progress and preferences, the games' bests and history. */
 const KEYS = [KEY, "sigma", "sigmaTopic", "sigmaQuiz", "sigmaUntimed", "sigmaMode", "sigmaGuessR", "monteElectionCalls", "monteElectionStreak"];
@@ -224,8 +234,72 @@ export function exportProgress() {
   return btoa(unescape(encodeURIComponent(json)));
 }
 
+// ---------- Restoring onto a browser that already has progress: keep the best of both, never lose either side.
+type Json = Record<string, unknown>;
+const num = (x: unknown) => (typeof x === "number" && Number.isFinite(x) ? x : 0);
+const asObj = (x: unknown): Json => (x && typeof x === "object" && !Array.isArray(x) ? (x as Json) : {});
+/** Per key, the larger number. */
+const maxEach = (a: unknown, b: unknown) => {
+  const out: Record<string, number> = {};
+  for (const [k, v] of [...Object.entries(asObj(a)), ...Object.entries(asObj(b))]) out[k] = Math.max(out[k] ?? 0, num(v));
+  return out;
+};
+
+/** XP and chips are totals, not events, so the larger side wins; badges and days combine. */
+export function mergeProgress(a: Json, b: Json): Json {
+  const later = String(b.lastDay ?? "") > String(a.lastDay ?? "") ? b : a;
+  return {
+    ...a,
+    ...b,
+    xp: Math.max(num(a.xp), num(b.xp)),
+    days: maxEach(a.days, b.days),
+    streak: num(later.streak),
+    lastDay: later.lastDay ?? null,
+    freezes: Math.max(num(a.freezes), num(b.freezes)),
+    chips: Math.max(num(a.chips), num(b.chips)),
+    badges: [...new Set([...(Array.isArray(a.badges) ? a.badges : []), ...(Array.isArray(b.badges) ? b.badges : [])])],
+    counts: maxEach(a.counts, b.counts),
+  };
+}
+
+/** Study progress (the `sigma` key): per topic the side with more answered, best scores and boxes kept. */
+export function mergeStudy(a: Json, b: Json): Json {
+  const drill: Json = {};
+  for (const id of new Set([...Object.keys(asObj(a.drill)), ...Object.keys(asObj(b.drill))])) {
+    const x = asObj(asObj(a.drill)[id]), y = asObj(asObj(b.drill)[id]);
+    drill[id] = { ...(num(y.asked) > num(x.asked) ? y : x), best: Math.max(num(x.best), num(y.best)) };
+  }
+  const due = (x: unknown) => (Array.isArray(x) ? x : []);
+  const cardXp: Record<string, string> = { ...(asObj(a.cardXp) as Record<string, string>) };
+  for (const [k, v] of Object.entries(asObj(b.cardXp))) if (String(v) > String(cardXp[k] ?? "")) cardXp[k] = String(v);
+  return {
+    ...a,
+    ...b,
+    drill,
+    due: due(b.due).length > due(a.due).length ? due(b.due) : due(a.due),
+    mock: Math.max(num(a.mock), num(b.mock)),
+    math: maxEach(a.math, b.math),
+    cards: maxEach(a.cards, b.cards),
+    cardXp,
+    read: { ...asObj(a.read), ...asObj(b.read) },
+    // The first try on a day is the one that counts, so a day already played here keeps its score.
+    daily: { ...asObj(b.daily), ...asObj(a.daily) },
+    hw: { ...asObj(a.hw), ...asObj(b.hw) },
+  };
+}
+
+const MERGE: Partial<Record<string, (a: Json, b: Json) => Json>> = { [KEY]: mergeProgress, sigma: mergeStudy };
+function mergeJson(local: string, incoming: string, merge: (a: Json, b: Json) => Json) {
+  try {
+    const a = JSON.parse(local), b = JSON.parse(incoming);
+    return a && b && typeof a === "object" && typeof b === "object" ? JSON.stringify(merge(a, b)) : incoming;
+  } catch {
+    return incoming;
+  }
+}
+
 /** Restore from a code or a backup file's text. Returns false if it isn't a Monte backup.
- *  Only Monte's own keys are written. Version 1 codes held parsed JSON, so their values are re-encoded. */
+ *  Only Monte's own keys are written. Progress already in this browser is merged with the code's, not replaced. Version 1 codes held parsed JSON, so their values are re-encoded. */
 export function importProgress(text: string) {
   let obj: { app?: string; v?: number; data?: Record<string, unknown> } | null = null;
   const raw = text.trim();
@@ -239,7 +313,9 @@ export function importProgress(text: string) {
   for (const [k, v] of Object.entries(obj.data)) {
     if (!isMonteKey(k) || v === undefined) continue;
     try {
-      localStorage.setItem(k, asIs && typeof v === "string" ? v : JSON.stringify(v));
+      const incoming = asIs && typeof v === "string" ? v : JSON.stringify(v);
+      const merge = MERGE[k], local = localStorage.getItem(k);
+      localStorage.setItem(k, merge && local ? mergeJson(local, incoming, merge) : incoming);
     } catch {}
   }
   window.dispatchEvent(new CustomEvent("monte:progress", { detail: {} }));

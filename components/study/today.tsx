@@ -1,26 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, TOOLS } from "@/lib/study/data";
 import { study } from "@/lib/study/routes";
-import { hasAnyProgress, isWon, statsFor, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { hasAnyProgress, isWon, statsFor, useStudyProgress, wonCount, type StudyProgress } from "@/lib/study/progress";
 import { Fold, btn, linkBtn } from "@/components/study/ui";
 
 const FIRST = TOPICS[0];
 // Topic 1 has no lab of its own, so the lab step goes to the first topic that has one.
 const LAB_TOPIC = FIRST.labs.length ? FIRST : (TOPICS.find((t) => t.labs.length) ?? FIRST);
 
-/** A brand-new visitor's start: three small steps instead of fourteen empty meters. */
-function FirstTen() {
+/** Done once a first full set is answered: five questions anywhere, a mock test or a Daily. */
+const finishedFirstSet = (p: StudyProgress) =>
+  Object.values(p.drill).reduce((n, d) => n + (d?.asked ?? 0), 0) >= 5 || (p.mock || 0) > 0 || Object.keys(p.daily ?? {}).length > 0;
+
+/** A new visitor's start: three small steps instead of fourteen empty meters. Stays until the steps are done. */
+function FirstTen({ p }: { p: StudyProgress }) {
   const steps = [
-    { href: study.topic(FIRST.id), title: `Read topic 1: ${FIRST.name}`, sub: "One plain idea and a real example. About 4 minutes." },
+    { href: study.topic(FIRST.id), title: `Read topic 1: ${FIRST.name}`, sub: "One plain idea and a real example. About 4 minutes.", done: !!p.read?.[FIRST.id] },
     {
       href: `${study.topic(LAB_TOPIC.id)}#lab`,
       title: LAB_TOPIC === FIRST ? "Try its lab" : `Try a lab: ${LAB_TOPIC.short}`,
       sub: "Drag the sliders and watch the numbers move. About 3 minutes.",
+      done: false,
     },
-    { href: study.drillTopic(FIRST.id, 5, true), title: "Answer 5 questions", sub: `On ${FIRST.short.toLowerCase()}, with no timer. About 3 minutes.` },
+    { href: study.drillTopic(FIRST.id, 5, true), title: "Answer 5 questions", sub: `On ${FIRST.short.toLowerCase()}, with no timer. About 3 minutes.`, done: false },
   ];
   return (
     <section aria-labelledby="ft-t" className="grid content-start gap-4 rounded-[18px] bg-sand p-6">
@@ -34,11 +40,17 @@ function FirstTen() {
         {steps.map((s, i) => (
           <li key={s.title}>
             <Link href={s.href} className="grid grid-cols-[2rem_minmax(0,1fr)] items-start gap-3 rounded-[14px] bg-paper p-3 transition-colors hover:bg-sand-2">
-              <span aria-hidden className="grid size-8 place-items-center rounded-full border-[1.5px] border-ink font-mono text-sm font-medium">
-                {i + 1}
+              <span
+                aria-hidden
+                className={cn("grid size-8 place-items-center rounded-full border-[1.5px] border-ink font-mono text-sm font-medium", s.done && "bg-ink text-paper")}
+              >
+                {s.done ? <Check className="size-4" strokeWidth={3} /> : i + 1}
               </span>
               <span className="grid gap-0.5">
-                <b className="font-semibold">{s.title}</b>
+                <b className="font-semibold">
+                  {s.title}
+                  {s.done && <span className="sr-only"> (done)</span>}
+                </b>
                 <span className="text-sm text-ink-muted">{s.sub}</span>
               </span>
             </Link>
@@ -55,12 +67,13 @@ export function Today() {
   // The static page (and the first paint) has no progress to read, so it shows the new-visitor path;
   // a returning visitor's browser swaps in their numbers as soon as it hydrates.
   const fresh = !hasAnyProgress(p);
+  const newcomer = !finishedFirstSet(p);
   const due = p.due.length, won = wonCount(p);
   return (
     <div className="grid gap-8 pb-8 pt-8 md:pt-12">
       <div className="max-w-[640px]">
-        {fresh ? (
-          <FirstTen />
+        {newcomer ? (
+          <FirstTen p={p} />
         ) : (
           <section aria-labelledby="hp-t" className="grid content-start gap-4 rounded-[18px] bg-sand p-6">
             <h2 id="hp-t" className="font-display text-xl font-[650] tracking-[-0.02em]">
@@ -72,9 +85,15 @@ export function Today() {
               <p className="text-sm text-ink-muted">{due ? "Questions you missed, back for another try." : "Nothing due. Misses from any drill show up here."}</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-              <Link href={study.drillStart("start")} className={btn.primary}>
-                Start 10 questions
+              {/* The main button is whatever is waiting: misses first, then a fresh set. */}
+              <Link href={study.drillStart(due ? "due" : "start")} className={btn.primary}>
+                {due ? `Review ${due} missed` : "Start 10 questions"}
               </Link>
+              {due > 0 && (
+                <Link href={study.drillStart("start")} className={cn(linkBtn, "min-h-11 font-medium")}>
+                  New set
+                </Link>
+              )}
               <Link href={study.drillStart("mock")} className={cn(linkBtn, "min-h-11 font-medium")}>
                 Mock test
               </Link>

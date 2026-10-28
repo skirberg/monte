@@ -16,13 +16,8 @@ import {
 } from "@/components/ui/command";
 import { DECIDE_TOOLS, GAMES, SITE_NAV, SOLVERS, TOOLS, TOPICS, decideHref, playHref, studyHref } from "@/lib/site-data";
 import { setMode, useMode } from "@/lib/mode";
+import { match } from "@/lib/command-match";
 
-
-/** Every word typed must appear somewhere in the item. Fuzzy letter matching found "bayes" in every topic. */
-function match(value: string, search: string) {
-  const v = value.toLowerCase();
-  return search.toLowerCase().split(/\s+/).filter(Boolean).every((w) => v.includes(w)) ? 1 : 0;
-}
 
 export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const { resolvedTheme, setTheme } = useTheme();
