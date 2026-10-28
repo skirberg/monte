@@ -96,6 +96,12 @@ export const isWon = (p: StudyProgress, id: TopicId) => {
 export const wonCount = (p: StudyProgress) => TOPICS.filter((t) => isWon(p, t.id)).length;
 
 /** The "Topic mastered" badge: a single-topic drill of 8 or more questions at 80% or better. */
+/**
+ * A finished set's score. Practice sets ended early count only the questions answered, so stopping at 3 of 10
+ * never reads as 30%. Mock tests count every question, the way a real test would.
+ */
+export const setScore = (correct: number, answered: number, n: number, mock: boolean) => (mock ? (n ? correct / n : 0) : answered ? correct / answered : 0);
+
 export const mastersTopic = (mode: string, n: number, pct: number) => mode === "topic" && n >= 8 && pct >= 0.8;
 
 /** True once anything at all has been studied: a drill, a miss, a card, a topic read, a sprint, a Daily. */

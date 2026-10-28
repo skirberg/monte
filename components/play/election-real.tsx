@@ -19,6 +19,19 @@ type Pair = { dem: number; rep: number };
 type Source = { id: string; name: string; asOfText: string; live?: boolean } & Record<Chamber, Pair>;
 
 const ELECTION_DAY = "Tuesday, November 3, 2026";
+/** Midnight Eastern after the vote. From here the page shows the last forecasts and grades them. */
+const AFTER_VOTE = Date.parse("2026-11-04T05:00:00Z");
+
+type Party = "dem" | "rep";
+/** Settled winners, written by scripts/fetch-markets.mjs once Polymarket pays out. Empty until then. */
+const RESULTS = ((SNAPSHOT as { results?: Partial<Record<Chamber, Party>> }).results ?? {}) as Partial<Record<Chamber, Party>>;
+const PARTY_NAME: Record<Party, string> = { dem: "Democrats", rep: "Republicans" };
+
+/** True once the vote is over. Read after hydration, because the static page is built before election day. */
+const noSubscribe = () => () => {};
+function useVoteOver() {
+  return React.useSyncExternalStore(noSubscribe, () => Date.now() >= AFTER_VOTE, () => false);
+}
 
 type Polls = {
   asOfText: string;
@@ -73,9 +86,11 @@ async function livePolymarket(signal: AbortSignal): Promise<Record<Chamber, Pair
   return out;
 }
 
-function useMarkets() {
+function useMarkets(over: boolean) {
   const [sources, setSources] = React.useState<Source[]>(SNAPSHOT.sources as Source[]);
   React.useEffect(() => {
+    // After the vote the snapshot is the record: a settled market's price is the result, not a forecast.
+    if (over) return;
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 6000);
     livePolymarket(ctl.signal)
@@ -90,7 +105,7 @@ function useMarkets() {
       clearTimeout(timer);
       ctl.abort();
     };
-  }, []);
+  }, [over]);
   return sources;
 }
 
@@ -133,16 +148,23 @@ function MarketCard({ chamber, label, sources }: { chamber: Chamber; label: stri
 }
 
 export function RealRace() {
-  const sources = useMarkets();
+  const over = useVoteOver();
+  const sources = useMarkets(over);
   // The markets for the same party the poll average has ahead.
   const house = sources.map((s) => ({ name: s.name, p: s.house[POLL.leaderKey] }));
+  const say = over ? "said" : "say";
 
   return (
-    <Fold title="The real one" teaser={`US midterms, ${ELECTION_DAY}: what the markets and the polls say.`} bodyClassName="space-y-8">
+    <Fold
+      title="The real one"
+      teaser={over ? `US midterms, ${ELECTION_DAY}: the last forecasts, and how they did.` : `US midterms, ${ELECTION_DAY}: what the markets and the polls say.`}
+      bodyClassName="space-y-8"
+    >
+      {over && <Results sources={sources} />}
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="space-y-4 lg:col-span-7">
-          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the markets say</h3>
+          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the markets {say}</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {CHAMBERS.map(([c, l]) => (
               <MarketCard key={c} chamber={c} label={l} sources={sources} />
@@ -160,7 +182,7 @@ export function RealRace() {
         </div>
 
         <div className="space-y-4 lg:col-span-5">
-          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the polls say</h3>
+          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the polls {say}</h3>
           <div className="space-y-3 rounded-2xl bg-sand p-5">
             <p className="font-display text-[clamp(1.9rem,1.2rem+2.4vw,2.6rem)] font-[650] leading-none tracking-[-0.02em] tabular-nums">
               {POLL.leader} +{POLL.lead}
@@ -197,6 +219,50 @@ export function RealRace() {
 
       <PollToProbability markets={house} />
     </Fold>
+  );
+}
+
+/** (forecast − outcome)², averaged. 0 is perfect; always saying 50% scores 0.25. */
+const brier = (p: number, won: boolean) => (p - (won ? 1 : 0)) ** 2;
+
+/** After the vote: the result once it is settled, and how to grade a forecast against one result. */
+function Results({ sources }: { sources: Source[] }) {
+  const settled = CHAMBERS.filter(([c]) => RESULTS[c]);
+  return (
+    <div className="space-y-4 rounded-2xl bg-sand p-5 md:p-6">
+      <h3 className="font-display text-2xl font-[650]">{settled.length ? "The results" : "The vote is in. The count isn't, yet."}</h3>
+      {settled.length > 0 ? (
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {settled.map(([c, label]) => {
+            const w = RESULTS[c]!;
+            return (
+              <li key={c} className="space-y-2 rounded-2xl bg-paper p-5">
+                <p className="font-display text-xl font-[650]">
+                  {PARTY_NAME[w]} won the {label}
+                </p>
+                <ul className="space-y-1 font-mono text-sm tabular">
+                  {sources.map((s) => (
+                    <li key={s.id} className="flex flex-wrap justify-between gap-x-3">
+                      <span>
+                        {s.name} gave it {whole(s[c][w])}
+                      </span>
+                      <span className="text-ink-muted">Brier {brier(s[c][w], true).toFixed(3)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-ink-muted">The numbers below are the last ones before polls closed. The result shows here once the markets settle.</p>
+      )}
+      <p className="max-w-[62ch]">
+        <b className="font-semibold">How to grade a forecast.</b> One result can&rsquo;t prove a 70% call right or wrong: a good forecaster&rsquo;s 70% calls should come true about
+        7 times in 10, and miss the other 3. To score a single call, use the Brier score, (forecast − outcome)², where the outcome is 1 if it happened and 0 if not. Lower is
+        better. Saying 50% every time scores 0.25.
+      </p>
+    </div>
   );
 }
 

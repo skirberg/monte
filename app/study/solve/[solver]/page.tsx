@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { SOLVER_IDS, isSolverId, study } from "@/lib/study/routes";
 import { solverById } from "@/lib/study/solvers";
@@ -7,6 +8,7 @@ import { StudyShell } from "@/components/study/study-shell";
 import { SolverPanel } from "@/components/study/solver";
 import { SolveNav } from "@/components/study/solve-nav";
 import { PageHead, lead } from "@/components/study/ui";
+import { SafePart } from "@/components/safe-part";
 
 export const dynamicParams = false;
 export const generateStaticParams = () => SOLVER_IDS.map((solver) => ({ solver }));
@@ -17,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = (await params).solver;
   const s = isSolverId(id) ? solverById(id) : undefined;
   if (!s) return {};
-  return { title: `${s.title} solver`, description: s.sub, alternates: { canonical: study.solve(s.id) } };
+  return pageMeta(study.solve(s.id), `${s.title} solver`, s.sub);
 }
 
 /** Solve: one solver per page. Type the numbers from any problem; every question shows up with the work. */
@@ -35,7 +37,9 @@ export default async function SolvePage({ params }: Props) {
       </div>
       <SolveNav items={NAV.map((s) => ({ href: study.solve(s.id), label: s.name }))} current={study.solve(id)} />
       <div className="max-w-[980px] pb-8 pt-5">
-        <SolverPanel id={id} />
+        <SafePart name="solver">
+          <SolverPanel id={id} />
+        </SafePart>
       </div>
     </StudyShell>
   );

@@ -10,6 +10,7 @@ import type { Metadata } from "next";
 import { DECIDE_TOOLS, GAMES, TOPICS, decideHref, playHref, studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
+import { study } from "@/lib/study/routes";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-4 md:px-6";
 
@@ -74,8 +75,8 @@ export default function Home() {
               >
                 Start the first idea, 5 min <ArrowRight className="size-4" aria-hidden />
               </a>
-              <a href={studyHref("#practice/drill/start")} className="inline-flex min-h-11 items-center font-medium text-clay-ink underline-offset-4 hover:underline">
-                or take a 10-question drill
+              <a href={study.drillTopic(TOPICS[0].id, 5, true)} className="inline-flex min-h-11 items-center font-medium text-clay-ink underline-offset-4 hover:underline">
+                or try 5 questions, no timer
               </a>
             </div>
           </div>

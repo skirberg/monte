@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Flame, Snowflake, Trophy } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, exportProgress, getProgress, importProgress, levelOf, liveStreak, localDay, milestoneText, shiftDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { BADGES, CHIPS_FOR, DAILY_GOAL, addXp, exportProgress, getProgress, importProgress, keepStorage, levelOf, liveStreak, localDay, milestoneText, shiftDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
 import { confetti } from "@/lib/fun";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
@@ -35,7 +35,10 @@ export function ProgressBridge() {
       setToast({ text, id: Date.now() });
       confetti(d.levelUp ? 70 : d.badge ? 40 : 50);
       if (d.levelUp) track("Level up", { level: d.levelUp });
-      if (d.badge) track("Badge earned", { badge: d.badge });
+      if (d.badge) {
+        track("Badge earned", { badge: d.badge });
+        keepStorage();
+      }
     };
     window.addEventListener("monte:xp", onXp);
     window.addEventListener("monte:badge", onBadge);
@@ -98,7 +101,8 @@ export function ProgressButton() {
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
-  if (!p) return <span className="size-11" aria-hidden />;
+  // Nothing to show before the first point: no empty ring and grey 0 for a brand-new visitor.
+  if (!p || (p.xp === 0 && !p.badges.length)) return <span className="size-11" aria-hidden />;
   const day = localDay(now);
   const todayXp = p.days[day] ?? 0;
   const lv = levelOf(p.xp);
@@ -272,7 +276,7 @@ function BackupCard() {
         onSubmit={(e) => {
           e.preventDefault();
           if (!code.trim()) return;
-          if (!window.confirm("Replace the progress in this browser with the pasted code?")) return;
+          if (!window.confirm("Add the pasted progress to this browser? Nothing here is lost: the best of both is kept.")) return;
           const ok = importProgress(code);
           setMsg(ok ? "Restored. Reloading." : "That code didn't work. Copy it again from your other device.");
           if (ok) setTimeout(() => location.reload(), 600);

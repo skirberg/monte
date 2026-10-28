@@ -5,11 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { track } from "@vercel/analytics";
 import { Check, X } from "lucide-react";
 import { cn } from "cn";
-import { DATA, TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
+import { TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
 import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
 import { mt, plural, shuffle } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
-import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, setScore, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
 import { liveStreak, useProgress } from "@/lib/progress";
 import { useStoredString } from "@/lib/hooks";
@@ -89,7 +89,7 @@ export function Drill() {
   const nextRef = React.useRef<HTMLButtonElement>(null);
   const cardRef = React.useRef<HTMLElement>(null);
 
-  const due = p.due.length, won = wonCount(p), ready = Math.round((p.mock || 0) * 100);
+  const due = p.due.length, won = wonCount(p), answeredAll = Object.values(p.drill).reduce((n, d) => n + (d?.asked ?? 0), 0);
   const fresh = !hasAnyProgress(p);
   const streak = site ? liveStreak(site) : 0;
   // No timer: saved in this browser, read without a hydration mismatch, and changed here at once.
@@ -143,7 +143,7 @@ export function Drill() {
   }, [link, router]);
 
   const finish = React.useCallback((r: Run) => {
-    const n = r.qs.length, answered = r.correct + r.missed.length, pc = n ? r.correct / n : 0;
+    const n = r.qs.length, answered = r.correct + r.missed.length, pc = setScore(r.correct, answered, n, r.mock);
     const per: Partial<Record<TopicId, { a: number; c: number }>> = {};
     r.qs.forEach((q) => (per[q.mod] ??= { a: 0, c: 0 }));
     r.qs.slice(0, answered).forEach((q) => {
@@ -170,7 +170,8 @@ export function Drill() {
       s.due = [...s.due, ...r.missed.map((q) => q.mod)].slice(-40);
     });
     // A set ended before any answer earns nothing.
-    const mastered = mastersTopic(r.mode, n, pc);
+    // Mastery needs the whole set answered, so ending early on a hot streak never masters a topic.
+    const mastered = mastersTopic(r.mode, answered, pc);
     if (answered) {
       awardXp(answered >= n ? 20 : 5, "drill finished");
       awardBadge("first-drill");
@@ -221,7 +222,9 @@ export function Drill() {
   const done = run ? run.correct + run.missed.length : 0;
   const card = "grid gap-5 rounded-[18px] border border-line bg-paper p-5 shadow-[0_1px_0_var(--line),0_12px_32px_-24px_color-mix(in_oklch,var(--ink)_30%,transparent)] md:p-7";
   const resultMsg = result
-    ? `${result.correct} of ${result.n} correct${result.answered < result.n ? ` (${result.n - result.answered} left unanswered)` : ""}. ${
+    ? `${result.correct} of ${result.mock ? result.n : result.answered} correct${
+        result.answered < result.n ? (result.mock ? ` (${result.n - result.answered} left unanswered count as wrong)` : `, ended with ${result.n - result.answered} not answered`) : ""
+      }. ${
         result.mastered
           ? "Topic mastered."
           : result.pct >= 80
@@ -229,7 +232,7 @@ export function Drill() {
             : result.pct >= 60
               ? "Close. One more set and you have it."
               : "Warm-up set. Read the misses below, then go again."
-      }${result.mock ? ` ${DATA.copy.mockSaved}` : ""}`
+      }`
     : "";
 
   return (
@@ -238,7 +241,7 @@ export function Drill() {
       {!fresh && (
         <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
           <Meter k="Topics mastered" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
-          <Meter k="Readiness" v={`${ready}%`} bar={ready} c="From your best mock test" />
+          <Meter k="Answered" v={String(answeredAll)} c="Questions, across every set" />
           <Meter k="Streak" v={plural(streak, "day")} c="Learn something each day" />
           <Meter k="Due today" v={String(due)} c="Missed questions come back" />
         </div>

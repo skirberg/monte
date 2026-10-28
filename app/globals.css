@@ -195,10 +195,11 @@
   }
 }
 
-/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. */
+/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. Position only: text is readable on the
+   first frame, so a slow phone paints the headline at once instead of after the fade. */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
+  from { transform: translateY(14px); }
+  to { transform: none; }
 }
 .rise { animation: rise 0.6s var(--ease-settle) both; }
 
