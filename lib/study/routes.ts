@@ -15,6 +15,8 @@ export const study = {
   formulas: "/study/learn/formulas/",
   terms: "/study/learn/terms/",
   frameworks: "/study/learn/frameworks/",
+  /** "Same number, three questions": one value, an average, or a range for an unknown mean. */
+  start: "/study/learn/start/",
   drill: "/study/practice/drill/",
   /** Opens the drill page and starts a set right away. */
   drillStart: (go: "start" | "mock" | "due" | "daily") => `/study/practice/drill/?go=${go}`,
@@ -39,6 +41,7 @@ export function pathForHash(hash: string): string {
       if (view === "formulas") return study.formulas;
       if (view === "terms") return study.terms;
       if (view === "frameworks") return study.frameworks;
+      if (view === "start") return study.start;
       if (view === "topics" && isTopicId(item)) return study.topic(item);
       return study.learn;
     case "practice":

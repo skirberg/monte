@@ -95,7 +95,7 @@ export async function launch() {
 // Every route worth checking.
 export const ROUTES = [
   "/", "/study/", "/study/learn/", "/study/learn/topics/data/", "/study/learn/topics/normal/", "/study/learn/topics/clt/", "/study/learn/topics/test/",
-  "/study/learn/formulas/", "/study/learn/frameworks/", "/study/learn/terms/", "/study/practice/cards/",
+  "/study/learn/formulas/", "/study/learn/frameworks/", "/study/learn/start/", "/study/learn/terms/", "/study/practice/cards/",
   "/study/practice/drill/", "/study/practice/math/", "/study/solve/tree/", "/study/solve/normal/", "/study/solve/samp/", "/study/solve/test/", "/study/solve/data/",
   "/study/tools/excel/", "/study/tools/sql/", "/study/sources/",
   "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",

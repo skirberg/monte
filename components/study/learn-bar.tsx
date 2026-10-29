@@ -15,6 +15,7 @@ export const useLearnQuery = () => React.useContext(QueryContext).query;
 const VIEWS = [
   { href: study.learn, label: "Topics", placeholder: DATA.copy.search },
   { href: study.formulas, label: "Formulas", placeholder: "Search the formula sheet" },
+  { href: study.start, label: "Three questions", placeholder: "" },
   { href: study.frameworks, label: "Frameworks", placeholder: "Search the frameworks" },
   { href: study.terms, label: "Terms", placeholder: "Search the terms" },
 ];
@@ -36,7 +37,7 @@ export function LearnFrame({ children }: { children: React.ReactNode }) {
     <QueryContext.Provider value={ctx}>
       <div className="flex flex-col gap-3 py-5 print:hidden lg:flex-row lg:flex-wrap lg:items-center">
         <SegNav label="Learn views" items={VIEWS} current={view.href} />
-        <div className="relative lg:ml-auto lg:max-w-[760px] lg:flex-[1_1_18rem]">
+        {view.placeholder && <div className="relative lg:ml-auto lg:max-w-[760px] lg:flex-[1_1_18rem]">
           <label htmlFor="learn-find" className="sr-only">
             Search
           </label>
@@ -51,7 +52,7 @@ export function LearnFrame({ children }: { children: React.ReactNode }) {
             placeholder={view.placeholder}
             className={cn(input, "pl-9")}
           />
-        </div>
+        </div>}
       </div>
       {children}
     </QueryContext.Provider>
