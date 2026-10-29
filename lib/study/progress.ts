@@ -96,6 +96,15 @@ export const isWon = (p: StudyProgress, id: TopicId) => {
 export const wonCount = (p: StudyProgress) => TOPICS.filter((t) => isWon(p, t.id)).length;
 
 /** The "Topic mastered" badge: a single-topic drill of 8 or more questions at 80% or better. */
+/** The due list after a set: each answered due question leaves once, then the misses come back. Unanswered ones stay. */
+export function settleDue(due: TopicId[], answered: TopicId[], missed: TopicId[]) {
+  const left = due.slice();
+  for (const id of answered) {
+    const i = left.indexOf(id);
+    if (i >= 0) left.splice(i, 1);
+  }
+  return [...left, ...missed].slice(-40);
+}
 export const mastersTopic = (mode: string, n: number, pct: number) => mode === "topic" && n >= 8 && pct >= 0.8;
 
 /** True once anything at all has been studied: a drill, a miss, a card, a topic read, a sprint, a Daily. */

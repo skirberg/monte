@@ -1,5 +1,5 @@
 import { DATA, TOPIC_IDS, type TopicId } from "./data";
-import { Phi, PhiInv, Z, binom, choose, fmt, localDay, mean, median, parseAnswer, pick, pois, r2, r3, ri, sd, sum, tcrit, type Conf } from "./math";
+import { Phi, PhiInv, Z, binom, choose, fmt, localDay, mean, median, parseAnswer, pick, pois, r2, r3, ri, sd, shuffle, sum, tcrit, type Conf } from "./math";
 
 /** A drill question with fresh numbers. Numeric answers are checked to 2% or 0.01; text answers by word. */
 export type Question = {
@@ -349,9 +349,16 @@ const G: Record<TopicId, Gen> = {
 export const generate = (id: TopicId): Question => ({ ...G[id](), mod: id });
 
 /** The answer as shown after checking. */
-export const shownAnswer = (q: Question) => (q.text ? (Array.isArray(q.a) ? q.a[0] : String(q.a)) : fmt(q.a as number));
+/** Answers under 0.001 show to three significant figures, so what is shown can be typed back and keeps its digits. */
+const tiny = (x: number) => x.toFixed(Math.min(20, 2 - Math.floor(Math.log10(Math.abs(x))))).replace(/0+$/, "");
+export const shownAnswer = (q: Question) =>
+  q.text ? (Array.isArray(q.a) ? q.a[0] : String(q.a)) : q.a !== 0 && Math.abs(q.a as number) < 0.001 ? tiny(q.a as number) : fmt(q.a as number);
 
-/** True when what the student typed matches the answer. A percent counts for a probability (42% for 0.42). */
+/**
+ * True when what the student typed matches the answer. A percent counts for a probability (42% for 0.42).
+ * Close enough means within 2% of the answer, rounded to two significant figures, or rounded to 4 decimals.
+ * The allowance scales with the answer, so 0 never passes for a small probability.
+ */
 export function isCorrect(q: Question, raw: string) {
   if (q.text) {
     const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -361,10 +368,19 @@ export function isCorrect(q: Question, raw: string) {
   let v = parseAnswer(raw);
   if (raw.includes("%") && !q.exact && Math.abs(a) <= 1) v /= 100;
   if (Number.isNaN(v)) return false;
-  if (q.exact) return Math.round(v) === Math.round(a);
-  return Math.abs(v - a) <= Math.max(Math.abs(a) * 0.02, 0.01);
+  if (q.exact) return Number.isInteger(v) && v === Math.round(a);
+  if (a === 0) return Math.abs(v) < 0.00005;
+  const twoSig = 0.5 * 10 ** (Math.floor(Math.log10(Math.abs(a))) - 1), four = Math.round(a * 10000) / 10000;
+  if (four !== 0 && Math.abs(v - four) < 1e-12) return true;
+  return Math.abs(v - a) <= Math.max(Math.abs(a) * 0.02, twoSig) * (1 + 1e-9);
 }
 
+/** The topic for each question in a set: shuffled, and every chosen topic gets a turn before any repeats. */
+export function pickTopics(mods: readonly TopicId[], count: number): TopicId[] {
+  const out: TopicId[] = [];
+  while (out.length < count) out.push(...shuffle([...mods]));
+  return out.slice(0, count);
+}
 // ---------- Monte Daily: the same five questions for everyone on a given local date
 function seeded(a: number) {
   return () => {
