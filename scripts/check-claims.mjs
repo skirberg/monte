@@ -1,9 +1,10 @@
 // Reads every lesson line and story and asks Jev (TypeSafe) whether a line overclaims: cause from observed
 // data, an estimate stated as fact, a test said to prove something, a rule of thumb stated as always true,
 // or a statement a statistics teacher would mark wrong. A development check only; nothing here ships.
-// Flags are leads to read, not verdicts. Needs TYPESAFE_API_KEY. At $0.042 per million tokens a run is well under a dollar.
+// Flags are leads to read, not verdicts. Reads the personal TypeSafe key from the Keychain. At $0.042 per million tokens a run is well under a dollar.
 //   node scripts/check-claims.mjs            run and print flagged lines
 //   node scripts/check-claims.mjs --dry      count the lines and requests, send nothing
+import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const DRY = process.argv.includes("--dry");
@@ -43,9 +44,14 @@ const total = batches.reduce((s, b) => s + b.lines.length, 0);
 console.log(`${total} lines in ${batches.length} requests, ${Object.keys(QUESTIONS).length} questions per line.`);
 if (DRY) process.exit(0);
 
-const key = process.env.TYPESAFE_API_KEY;
+// Sami's personal key lives in the macOS Keychain (service "typesafe-personal"), the same place the harness
+// reads it, never in a file or the environment, so the Tickerz key can't be picked up by accident.
+let key = "";
+try {
+  key = execFileSync("security", ["find-generic-password", "-s", "typesafe-personal", "-w"], { encoding: "utf8" }).trim();
+} catch {}
 if (!key) {
-  console.error("Set TYPESAFE_API_KEY first (from console.typesafe.ai/keys). Don't paste it into a chat.");
+  console.error('No personal TypeSafe key in the Keychain (service "typesafe-personal").');
   process.exit(1);
 }
 
