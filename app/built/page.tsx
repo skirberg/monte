@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Motion } from "@/components/landing/motion-bits";
@@ -7,11 +8,7 @@ import { TOOLS as DECISIONS, toolHref } from "@/lib/decide/tools";
 import { DATA } from "@/lib/study/data";
 import { study } from "@/lib/study/routes";
 
-export const metadata: Metadata = {
-  title: "How it's built",
-  description: "The stack, the checks, the data sources and the math behind every lesson, game and decision on Monte.",
-  alternates: { canonical: "/built/" },
-};
+export const metadata: Metadata = pageMeta("/built/", "How it's built", "The stack, the checks, the data sources and the math behind every lesson, game and decision on Monte.");
 
 /** The labs in components/study/labs.tsx (the LabId union in lib/study/data.ts). */
 const LAB_COUNT = 13;

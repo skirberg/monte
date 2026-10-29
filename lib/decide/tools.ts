@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/seo";
+import { pageShare } from "@/lib/seo";
 
 /** Every decision on /decide/, in page order. Pages, the index, the sitemap and prev/next all read from here, so they never drift apart. */
 export type ToolInfo = {
@@ -155,14 +155,6 @@ export function toolMetadata(id: string): Metadata {
     title: t.question,
     description: t.description,
     alternates: { canonical: url },
-    openGraph: {
-      title: `${t.question} · ${SITE_NAME}`,
-      description: t.description,
-      type: "website",
-      siteName: SITE_NAME,
-      url,
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: `${SITE_NAME}: drop enough grains and the shape appears.` }],
-    },
-    twitter: { card: "summary_large_image", title: `${t.question} · ${SITE_NAME}`, description: t.description, images: ["/og.png"] },
+    ...pageShare(url, t.question, t.description),
   };
 }

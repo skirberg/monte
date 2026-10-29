@@ -11,6 +11,7 @@
 
 import { readFileSync, writeFileSync, renameSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { polymarketWinner } from "./market-result.mjs";
 
 const OUT = fileURLToPath(new URL("../lib/play/data/markets.json", import.meta.url));
 const TIMEOUT = 8000;
@@ -34,6 +35,17 @@ async function getJson(url) {
   const r = await fetch(url, { headers: { Accept: "application/json", "User-Agent": "monte-build/1.0" }, signal: AbortSignal.timeout(TIMEOUT) });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.json();
+}
+
+/** Who won each chamber, once Polymarket's market has settled. Empty until then. */
+async function results() {
+  const out = {};
+  for (const c of CHAMBERS) {
+    const events = await getJson(`https://gamma-api.polymarket.com/events?slug=${POLY[c]}`);
+    const w = polymarketWinner(events?.[0]?.markets);
+    if (w) out[c] = w;
+  }
+  return out;
 }
 
 async function polymarket(chamber) {
@@ -163,7 +175,18 @@ async function main() {
     if (old?.polls) out.polls = old.polls;
   }
 
-  if (!fresh && !pollsFresh) {
+  // A settled result never changes, so one found earlier is kept even if this run can't reach Polymarket.
+  try {
+    out.results = { ...(old?.results ?? {}), ...(await results()) };
+  } catch (e) {
+    console.warn(`fetch-markets: results check failed (${e?.message ?? e})`);
+    if (old?.results) out.results = old.results;
+  }
+  const newResult = JSON.stringify(out.results ?? {}) !== JSON.stringify(old?.results ?? {});
+  if (newResult) console.log(`fetch-markets: results ${JSON.stringify(out.results)}`);
+  if (!out.results || !Object.keys(out.results).length) delete out.results;
+
+  if (!fresh && !pollsFresh && !newResult) {
     console.warn("fetch-markets: nothing new, file left as it was");
     return;
   }

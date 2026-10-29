@@ -15,9 +15,9 @@ export function TopicPath({ id }: { id: TopicId }) {
   const p = useStudyProgress();
   const d = statsFor(p, id);
   const steps = [
-    { on: !!p.read?.[id], label: "Read it", sub: "Reach the end of the page" },
-    { on: d.asked >= 4, label: "Practice it", sub: d.asked ? `Best ${Math.round(d.best * 100)}%` : "Answer a few questions" },
-    { on: isWon(p, id), label: "Master it", sub: "80% on a drill of 8 or more" },
+    { on: !!p.read?.[id], label: "Read", sub: "Reach the end of the page" },
+    { on: d.asked >= 4, label: "Practice", sub: d.asked ? `Best ${Math.round(d.best * 100)}%` : "Answer a few questions" },
+    { on: isWon(p, id), label: "Master", sub: "80% on a drill of 8 or more" },
   ];
   return (
     <ol aria-label="Your progress on this topic" className="my-4 grid grid-cols-3 gap-2">
@@ -33,7 +33,7 @@ export function TopicPath({ id }: { id: TopicId }) {
             {s.on && <Check className="size-[13px]" strokeWidth={3} />}
           </span>
           <span className="min-w-0">
-            <b className="block text-sm">
+            <b className="block whitespace-nowrap text-sm">
               {s.label}
               <span className="sr-only">{s.on ? ", done" : ", not yet"}</span>
             </b>
