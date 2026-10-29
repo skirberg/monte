@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { abSampleSize, abTest, readNumber } from "@/lib/decide/math";
+import { abSampleSize, abTest, abTooSmall, readNumber } from "@/lib/decide/math";
 import { useMediaQuery } from "@/lib/hooks";
 import { HowItWorks, NumField, Presets, ResultBar, Stat, Stats, chance, useToolXp } from "@/components/decide/fields";
 
@@ -83,7 +83,8 @@ export function AbTest() {
   const badB = !(whole(b) && b >= 1 && whole(cb) && cb <= b);
   const none = !badA && !badB && ca + cb === 0;
   const all = !badA && !badB && ca === a && cb === b;
-  const ok = !badA && !badB && !none && !all;
+  const small = !badA && !badB && !none && !all && abTooSmall(a, ca, b, cb);
+  const ok = !badA && !badB && !none && !all && !small;
   const t = ok ? abTest(a, ca, b, cb) : null;
   const need = t ? abSampleSize(t.pA, t.pB) : NaN;
   const sig = t ? t.p < 0.05 : false;
@@ -92,6 +93,7 @@ export function AbTest() {
   let read = "Type the counts for both versions.";
   if (badA || badB) read = "Fix the counts in red.";
   else if (none || all) read = none ? "Nobody converted in either version, so there is nothing to compare yet." : "Everyone converted in both versions, so there is nothing to compare.";
+  else if (small) read = "Too few to call yet. With counts this small, luck alone can fake a big gap. This test needs about 5 of each outcome expected in each version. Keep collecting.";
   else if (t) {
     if (sig) {
       read = `${t.diff > 0 ? "B wins" : "B is worse"}. Luck alone would make a gap this big only ${chance(t.p, 1)} of the time. The real difference is probably ${pts(t.lo)} to ${pts(t.hi)}.`;

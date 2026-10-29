@@ -325,6 +325,15 @@ export function abTest(nA: number, xA: number, nB: number, xB: number) {
   return { pA, pB, diff, lift: pA > 0 ? diff / pA : NaN, z, p, se, lo: diff - Z95 * se, hi: diff + Z95 * se };
 }
 
+/**
+ * The z test above needs enough of both outcomes. Under "no difference", each version should expect
+ * at least 5 who did it and 5 who didn't; below that the p-value and range are not trustworthy.
+ */
+export function abTooSmall(nA: number, xA: number, nB: number, xB: number) {
+  const pool = (xA + xB) / (nA + nB);
+  return Math.min(nA * pool, nA * (1 - pool), nB * pool, nB * (1 - pool)) < 5;
+}
+
 /** Visitors needed in each version to detect a change from pA to pB 80% of the time at the two-sided 5% level. */
 export function abSampleSize(pA: number, pB: number) {
   if (!(pA !== pB)) return Infinity;

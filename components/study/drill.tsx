@@ -6,10 +6,10 @@ import { track } from "@vercel/analytics";
 import { Check, X } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
-import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
-import { mt, plural, shuffle } from "@/lib/study/math";
+import { dailyQuestions, dayKey, generate, isCorrect, pickTopics, shownAnswer, type Question } from "@/lib/study/drill";
+import { mt, plural } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
-import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, setScore, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, setScore, settleDue, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
 import { liveStreak, useProgress } from "@/lib/progress";
 import { useStoredString } from "@/lib/hooks";
@@ -31,7 +31,7 @@ const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2,
 const NOTHING_DUE = "Nothing is due yet. Run a drill first; any question you miss comes back here.";
 
 function newRun(mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[], timed = true): Run {
-  const qs = fixed ?? shuffle(Array.from({ length: count }, (_, i) => generate(mods[i % mods.length])));
+  const qs = fixed ?? pickTopics(mods, count).map(generate);
   return { qs, i: 0, correct: 0, missed: [], end: Date.now() + seconds * 1000, timed: mock || timed, inARow: 0, mode, mock, answered: false, ok: null };
 }
 
@@ -125,17 +125,14 @@ export function Drill() {
       setMsg(NOTHING_DUE);
       return;
     }
-    updateStudyProgress((s) => {
-      s.due = list.slice(10);
-    });
+    // Nothing leaves the list until it is answered; finish() settles it.
     start("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate));
   };
 
-  // A set started from a link: use up the due list, report it, and tidy the address.
+  // A set started from a link: report it and tidy the address.
   React.useEffect(() => {
     if (!link) return;
     if (link.run) {
-      if (link.run.mode === "due") updateStudyProgress((s) => void (s.due = s.due.slice(10)));
       track("Drill started", { mode: link.run.mode });
       focusCard();
     }
@@ -167,7 +164,7 @@ export function Drill() {
         if (first) s.daily[dk] = { c: r.correct, g: grid };
         daily = { grid, first, firstScore: s.daily[dk].c, share: `Monte Daily ${dk}  ${r.correct}/${n}\n${grid}\nmonte.markets${study.drillStart("daily")}` };
       }
-      s.due = [...s.due, ...r.missed.map((q) => q.mod)].slice(-40);
+      s.due = settleDue(s.due, r.mode === "due" ? r.qs.slice(0, answered).map((q) => q.mod) : [], r.missed.map((q) => q.mod));
     });
     // A set ended before any answer earns nothing.
     // Mastery needs the whole set answered, so ending early on a hot streak never masters a topic.
@@ -310,7 +307,7 @@ export function Drill() {
                   <button type="button" data-start="full" className={cn(linkBtn, "min-h-11 justify-self-start")} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
                     Full mock: 20 questions, 2 hours
                   </button>
-                  <p className="text-sm text-ink-muted">Answers count within 2% or 0.01. Type decimals like 0.42, not 42%.</p>
+                  <p className="text-sm text-ink-muted">Answers count within 2%, or rounded to two significant figures. Type decimals like 0.42, not 42%.</p>
                 </div>
               </Fold>
             </section>

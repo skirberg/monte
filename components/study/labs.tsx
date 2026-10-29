@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "cn";
 import { DATA, type LabId } from "@/lib/study/data";
-import { Phi, PhiInv, Z, binom, fmt, gauss, mean, pois, r2, r3, sd } from "@/lib/study/math";
+import { Phi, PhiInv, Z, binom, fmt, gauss, histogram, mean, pois, r2, r3, sd } from "@/lib/study/math";
 import { BarRow, Chart, Select, Slider, area, curve } from "@/components/study/chart";
 import { btn } from "@/components/study/ui";
 import { useHydrated } from "@/lib/hooks";
@@ -282,7 +282,7 @@ function PortfolioLab() {
       </Chart>
       <Note>
         {c.name1}: E {c.e1}%, σ {c.s1}%. {c.name2}: E {c.e2}%, σ {c.s2}%. Your mix: <b>E = {ee.toFixed(2)}%</b>, <b>σ = {vv.toFixed(2)}%</b>.{" "}
-        {rho < 1 ? "Because ρ is below 1, the curve dips below both assets. That dip is diversification." : "At ρ = 1 there is no dip; the mix is a straight line between the two."}
+        {rho < 1 ? "Because ρ is below 1, the curve bends below the straight line between the two assets. That bend is diversification, though it doesn't always dip below the safer one." : "At ρ = 1 there is no dip; the mix is a straight line between the two."}
       </Note>
     </Lab>
   );
@@ -362,6 +362,7 @@ function CltLab() {
       return next;
     });
   const truth = { die: 3.5, uni: 3, skew: 2 }[pop as "die"];
+  const over = histogram(means, 0, 6, 30).over;
   return (
     <Lab title="CLT: sample means turn into a bell" label="Central Limit Theorem lab">
       <Select id="cpop" label="Population shape" value={pop} onChange={(v) => { setPop(v); setMeans([]); }} options={[["skew", "Skewed, like incomes"], ["uni", "Flat, uniform"], ["die", "Die rolls"]]} />
@@ -374,11 +375,7 @@ function CltLab() {
       </Btns>
       <Chart ratio={0.36} minH={180} maxH={230} label="Histogram of sample means">
         {({ W, H }) => {
-          const x0 = 24, x1 = W - 12, base = H - 24, bins = 30, h = new Array(bins).fill(0);
-          means.forEach((m) => {
-            const b = Math.floor((m / 6) * bins);
-            if (b >= 0 && b < bins) h[b]++;
-          });
+          const x0 = 24, x1 = W - 12, base = H - 24, bins = 30, h = histogram(means, 0, 6, bins).counts;
           const mx = Math.max(...h) || 1, bw = (x1 - x0) / bins, tx = x0 + (truth / 6) * (x1 - x0);
           return (
             <>
@@ -397,7 +394,7 @@ function CltLab() {
       <Note>
         {means.length ? (
           <>
-            <b>{n0(means.length)} sample means</b>, n = {n} each. Their average: <b>{fmt(r2(mean(means)))}</b> (true μ = {truth}). Their SD: <b>{fmt(r3(means.length > 1 ? sd(means) : 0))}</b>. Raise n and watch the pile narrow into a bell, even when the population is skewed.
+            <b>{n0(means.length)} sample means</b>, n = {n} each. Their average: <b>{fmt(r2(mean(means)))}</b> (true μ = {truth}). Their SD: <b>{fmt(r3(means.length > 1 ? sd(means) : 0))}</b>.{over ? ` ${n0(over)} ${over === 1 ? "is" : "are"} above 6, off the right edge.` : ""} Raise n and watch the pile narrow into a bell, even when the population is skewed.
           </>
         ) : (
           "Pick a population, set n, and draw. The dashed line is the true mean."
