@@ -150,7 +150,7 @@ const G: Record<TopicId, Gen> = {
     }
     if (t === "comb") {
       const nn = pick([5, 6, 7, 8]), k = pick([2, 3]);
-      return { q: `How many ways to choose ${k} from ${nn}, order not mattering?`, a: choose(nn, k), why: `${nn}C${k}` };
+      return { q: `How many ways to choose ${k} from ${nn}, order not mattering?`, a: choose(nn, k), why: `${nn}C${k}`, exact: true };
     }
     if (t === "mean") return { q: `Binomial with n = ${n}, p = ${p}. Expected number of successes?`, a: n * p, why: "np" };
     const k = ri(0, Math.min(3, n));
@@ -369,6 +369,8 @@ export function isCorrect(q: Question, raw: string) {
   if (raw.includes("%") && !q.exact && Math.abs(a) <= 1) v /= 100;
   if (Number.isNaN(v)) return false;
   if (q.exact) return Number.isInteger(v) && v === Math.round(a);
+  // A probability can't be below 0 or above 1, however close to the answer.
+  if (/P\(/.test(q.q) && a >= 0 && a <= 1 && (v < 0 || v > 1)) return false;
   if (a === 0) return Math.abs(v) < 0.00005;
   const twoSig = 0.5 * 10 ** (Math.floor(Math.log10(Math.abs(a))) - 1), four = Math.round(a * 10000) / 10000;
   if (four !== 0 && Math.abs(v - four) < 1e-12) return true;

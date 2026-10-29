@@ -20,7 +20,7 @@ import { sym } from "@/lib/study/symbols";
 type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
 /** `timed` is false for a set run without a clock; `inARow` counts right answers since the last miss. */
 type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; timed: boolean; inARow: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
-type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
+type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; whole: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
 
 /** Saved choice: "1" runs normal drills without a clock. Mock tests are always timed. */
 const UNTIMED_KEY = "sigmaUntimed";
@@ -140,7 +140,7 @@ export function Drill() {
   }, [link, router]);
 
   const finish = React.useCallback((r: Run) => {
-    const n = r.qs.length, answered = r.correct + r.missed.length, pc = setScore(r.correct, answered, n, r.mock);
+    const n = r.qs.length, answered = r.correct + r.missed.length, whole = r.mock || r.mode === "daily", pc = setScore(r.correct, answered, n, whole);
     const per: Partial<Record<TopicId, { a: number; c: number }>> = {};
     r.qs.forEach((q) => (per[q.mod] ??= { a: 0, c: 0 }));
     r.qs.slice(0, answered).forEach((q) => {
@@ -180,7 +180,7 @@ export function Drill() {
     track("Drill finished", { mode: r.mode, score: scoreBand(Math.round(pc * 100)) });
     if (pc >= 0.8) celebrate(mastered ? "Topic mastered." : "Great set.");
     setRun(null);
-    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mastered, mock: r.mock, missed: r.missed, daily });
+    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mastered, mock: r.mock, whole, missed: r.missed, daily });
   }, []);
 
   // The clock: tick twice a second, finish when it runs out. Untimed sets have no clock.
@@ -219,8 +219,8 @@ export function Drill() {
   const done = run ? run.correct + run.missed.length : 0;
   const card = "grid gap-5 rounded-[18px] border border-line bg-paper p-5 shadow-[0_1px_0_var(--line),0_12px_32px_-24px_color-mix(in_oklch,var(--ink)_30%,transparent)] md:p-7";
   const resultMsg = result
-    ? `${result.correct} of ${result.mock ? result.n : result.answered} correct${
-        result.answered < result.n ? (result.mock ? ` (${result.n - result.answered} left unanswered count as wrong)` : `, ended with ${result.n - result.answered} not answered`) : ""
+    ? `${result.correct} of ${result.whole ? result.n : result.answered} correct${
+        result.answered < result.n ? (result.whole ? ` (${result.n - result.answered} left unanswered count as wrong)` : `, ended with ${result.n - result.answered} not answered`) : ""
       }. ${
         result.mastered
           ? "Topic mastered."

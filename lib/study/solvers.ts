@@ -124,7 +124,7 @@ const tree: Solver = {
     });
     const top = cells.sort((x, y) => y[1] - x[1])[0];
     const table: Table = { head: ["", H, nH, "Total"], rows: br.map((b) => [b.n, sF(b.j), sF(b.jn), sF(b.p)]), foot: ["Total", sF(pH), sF(pN), "1"] };
-    const ind = Math.abs(A.j - A.p * pH) < 1e-9;
+    const ind = Math.abs(A.j - A.p * pH) <= 1e-9 * Math.max(A.j, A.p * pH);
     const rows: Row[] = [];
     rows.push(strong(`P(${H})`, sF(pH), `${br.map((b) => `${sF(b.p)} × ${sF(b.h)}`).join(" + ")} = ${br.map((b) => sF(b.j)).join(" + ")}. Add every ${H} branch${fill}.`, true));
     rows.push(row(`P(${nH})`, sF(pN), `1 − ${sF(pH)}`));
@@ -581,18 +581,26 @@ const ci: Solver = {
     if (!(n >= 2)) return { err: "n has to be a whole number of at least 2." };
     if (kind === "p") {
       const x = sNum(v.x);
-      if (!(x >= 0 && x <= n)) return { err: "Type the count with the trait, between 0 and n." };
+      if (!(Number.isInteger(x) && x >= 0 && x <= n)) return { err: "Type the count with the trait: a whole number between 0 and n." };
       const ph = x / n, q = 1 - ph, se = Math.sqrt((ph * q) / n), me = zc * se, big = n * ph >= 10 && n * q >= 10;
+      let wil: [number, number] | null = null;
       rows.push(row("p̂", sF(ph), `${sF(x)} / ${n}`));
       if (big) rows.push(strong(`${lvl} interval for p`, `${sF(ph - me)} to ${sF(ph + me)}`, `p̂ ± z√[p̂(1 − p̂)/n] = ${sF(ph)} ± ${zc} × ${sF(se)} = ${sF(ph)} ± ${sF(me)}`, true));
       else {
         // Too few of one outcome for p̂ ± z·SE (0 of 10 would give "0 to 0"). The Wilson interval stays honest here.
         const z2 = zc * zc, c = (ph + z2 / (2 * n)) / (1 + z2 / n), h = (zc * Math.sqrt((ph * q) / n + z2 / (4 * n * n))) / (1 + z2 / n);
-        rows.push(strong(`${lvl} interval for p (small sample)`, `${sF(Math.max(0, c - h))} to ${sF(Math.min(1, c + h))}`, `The usual p̂ ± z·SE needs at least 10 of each outcome; here it would say ${sF(ph - me)} to ${sF(ph + me)}. This is the Wilson interval, which works with few successes.`, true));
+        wil = [Math.max(0, c - h), Math.min(1, c + h)];
+        rows.push(strong(`${lvl} interval for p (small sample)`, `${sF(wil[0])} to ${sF(wil[1])}`, `The usual p̂ ± z·SE needs at least 10 of each outcome; here it would say ${sF(ph - me)} to ${sF(ph + me)}. This is the Wilson interval, which works with few successes.`, true));
         rows.push(row(`Usual formula, not reliable here`, `${sF(ph - me)} to ${sF(ph + me)}`, `p̂ ± z√[p̂(1 − p̂)/n] = ${sF(ph)} ± ${zc} × ${sF(se)}`));
       }
       rows.push(row("Margin of error", sF(me), `${zc} × ${sF(se)}${big ? "" : ", from the usual formula"}`));
-      rows.push(row("Interval for the complement (1 − p)", `${sF(q - me)} to ${sF(q + me)}`, `${sF(q)} ± ${sF(me)}. Trap: read whether the question asks about those with the trait or without.`));
+      rows.push(
+        row(
+          "Interval for the complement (1 − p)",
+          wil ? `${sF(1 - wil[1])} to ${sF(1 - wil[0])}` : `${sF(q - me)} to ${sF(q + me)}`,
+          `${wil ? "1 minus each end of the interval above" : `${sF(q)} ± ${sF(me)}`}. Trap: read whether the question asks about those with the trait or without.`,
+        ),
+      );
       rows.push(row("Normal check", n * ph >= 10 && n * q >= 10 ? "OK" : "Too small", `np̂ = ${sF(n * ph)} and n(1 − p̂) = ${sF(n * q)}; both need to be at least 10.`));
       if (isFinite(E1)) {
         const n0 = (zc * zc * 0.25) / (E1 * E1), n1 = (zc * zc * ph * q) / (E1 * E1);

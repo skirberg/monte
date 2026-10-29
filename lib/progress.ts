@@ -262,6 +262,18 @@ export function mergeProgress(a: Json, b: Json): Json {
   };
 }
 
+/** Both due lists, kept: each topic appears as many times as it does in whichever list has more of it. */
+function mergeDue(a: unknown[], b: unknown[]) {
+  const out = a.slice();
+  const left = [...a];
+  for (const x of b) {
+    const i = left.indexOf(x);
+    if (i >= 0) left.splice(i, 1);
+    else out.push(x);
+  }
+  return out.slice(-40);
+}
+
 /** Study progress (the `sigma` key): per topic the side with more answered, best scores and boxes kept. */
 export function mergeStudy(a: Json, b: Json): Json {
   const drill: Json = {};
@@ -276,7 +288,7 @@ export function mergeStudy(a: Json, b: Json): Json {
     ...a,
     ...b,
     drill,
-    due: due(b.due).length > due(a.due).length ? due(b.due) : due(a.due),
+    due: mergeDue(due(a.due), due(b.due)),
     mock: Math.max(num(a.mock), num(b.mock)),
     math: maxEach(a.math, b.math),
     cards: maxEach(a.cards, b.cards),

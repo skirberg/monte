@@ -4,7 +4,8 @@ import { generate, isCorrect, pickTopics, shownAnswer, type Question } from "@/l
 import { histogram, parseAnswer } from "@/lib/study/math";
 import { settleDue } from "@/lib/study/progress";
 import { defaults, solverById, type Answers, type Result } from "@/lib/study/solvers";
-import { abTooSmall } from "@/lib/decide/math";
+import { abTest, abTooSmall } from "@/lib/decide/math";
+import { mergeStudy } from "@/lib/progress";
 
 const num = (a: number, extra: Partial<Question> = {}): Question => ({ q: "", a, why: "", mod: "prob", ...extra });
 
@@ -134,3 +135,40 @@ describe("explanations don't overclaim", () => {
   });
 });
 
+
+describe("second review: Codex on the merged branch", () => {
+  it("combination counts must be whole", () => {
+    for (let i = 0; i < 2000; i++) {
+      const q = generate("count");
+      if (!/How many ways to choose/.test(q.q)) continue;
+      expect(isCorrect(q, String(q.a))).toBe(true);
+      expect(isCorrect(q, String((q.a as number) + 0.49))).toBe(false);
+      expect(isCorrect(q, String((q.a as number) - 1))).toBe(false);
+    }
+  });
+  it("a probability answer above 1 or below 0 never counts", () => {
+    const q = num(1 - Math.exp(-18) * 19, { q: "Arrivals average 6 per hour. Over 3 hours, P(at least 2)?" });
+    expect(isCorrect(q, "0.99999")).toBe(true);
+    expect(isCorrect(q, "1")).toBe(true);
+    expect(isCorrect(q, "1.01")).toBe(false);
+  });
+  it("small-sample interval for p has a matching complement", () => {
+    const r = solverById("ci").run({ kind: "p", cl: "0.95", n: "10", xbar: "", s: "", x: "0", e: "", em: "m" });
+    expect(answer(r, "Interval for the complement (1 − p)")).toMatch(/^0\.72\d* to 1$/);
+  });
+  it("interval for p rejects a fractional count", () => {
+    expect("err" in solverById("ci").run({ kind: "p", cl: "0.95", n: "10", xbar: "", s: "", x: "0.5", e: "", em: "m" })).toBe(true);
+  });
+  it("A/B range is never zero width", () => {
+    const t = abTest(10, 0, 10, 10);
+    expect(t.hi - t.lo).toBeGreaterThan(0.05);
+  });
+  it("a rare branch that raises H is not called independent", () => {
+    const r = solverById("tree").run({ a: "A", b: "B", c: "", pa: "0.00000001", pb: "", pc: "", ha: "1", hb: "0.95", hc: "", h: "H" });
+    expect(answer(r, "Are A and H independent?")).toBe("No");
+  });
+  it("restoring a backup keeps due questions from both sides", () => {
+    expect(mergeStudy({ due: ["prob"] }, { due: ["ci", "test"] }).due).toEqual(expect.arrayContaining(["prob", "ci", "test"]));
+    expect(mergeStudy({ due: ["ci", "ci"] }, { due: ["ci"] }).due).toEqual(["ci", "ci"]);
+  });
+});

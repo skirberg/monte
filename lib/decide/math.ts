@@ -321,8 +321,13 @@ export function abTest(nA: number, xA: number, nB: number, xB: number) {
   const sePool = Math.sqrt(pool * (1 - pool) * (1 / nA + 1 / nB));
   const z = sePool > 0 ? diff / sePool : 0;
   const p = sePool > 0 ? Math.min(1, Math.max(0, 2 * Phi(-Math.abs(z)))) : 1;
-  const se = Math.sqrt((pA * (1 - pA)) / nA + (pB * (1 - pB)) / nB);
-  return { pA, pB, diff, lift: pA > 0 ? diff / pA : NaN, z, p, se, lo: diff - Z95 * se, hi: diff + Z95 * se };
+  // When a rate is 0% or 100% the usual range collapses to zero width. Then use the plus-four range
+  // (Agresti and Caffo): one success and one failure added to each version.
+  const edge = xA === 0 || xA === nA || xB === 0 || xB === nB;
+  const [a4, b4] = edge ? [(xA + 1) / (nA + 2), (xB + 1) / (nB + 2)] : [pA, pB];
+  const se = edge ? Math.sqrt((a4 * (1 - a4)) / (nA + 2) + (b4 * (1 - b4)) / (nB + 2)) : Math.sqrt((pA * (1 - pA)) / nA + (pB * (1 - pB)) / nB);
+  const mid = b4 - a4;
+  return { pA, pB, diff, lift: pA > 0 ? diff / pA : NaN, z, p, se, lo: Math.max(-1, mid - Z95 * se), hi: Math.min(1, mid + Z95 * se) };
 }
 
 /**
