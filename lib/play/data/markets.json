@@ -4,78 +4,85 @@
     {
       "id": "polymarket",
       "name": "Polymarket",
-      "asOf": "2026-11-02T21:41:27.330Z",
-      "asOfText": "Nov 2, 2026, 4:41 PM ET",
+      "asOf": "2026-11-03T19:28:39.331Z",
+      "asOfText": "Nov 3, 2026, 2:28 PM ET",
       "house": {
-        "dem": 0.955,
-        "rep": 0.045
+        "dem": 0.945,
+        "rep": 0.055
       },
       "senate": {
-        "dem": 0.765,
-        "rep": 0.235
+        "dem": 0.755,
+        "rep": 0.245
       }
     },
     {
       "id": "kalshi",
       "name": "Kalshi",
-      "asOf": "2026-11-02T21:41:27.330Z",
-      "asOfText": "Nov 2, 2026, 4:41 PM ET",
+      "asOf": "2026-11-03T19:28:39.331Z",
+      "asOfText": "Nov 3, 2026, 2:28 PM ET",
       "house": {
-        "dem": 0.936,
-        "rep": 0.064
+        "dem": 0.933,
+        "rep": 0.068
       },
       "senate": {
-        "dem": 0.745,
-        "rep": 0.255
+        "dem": 0.725,
+        "rep": 0.275
       }
     }
   ],
   "polls": {
-    "asOf": "2026-11-02T21:41:27.330Z",
-    "asOfText": "Nov 2, 2026, 4:41 PM ET",
+    "asOf": "2026-11-03T19:28:39.331Z",
+    "asOfText": "Nov 3, 2026, 2:28 PM ET",
     "lead": 8.6,
     "leader": "Democrats",
     "averages": [
       {
         "name": "Decision Desk HQ",
-        "updated": "November 1, 2026",
-        "dem": 51.2,
-        "rep": 42.3,
-        "lead": 8.9
-      },
-      {
-        "name": "FiftyPlusOne",
-        "updated": "November 1, 2026",
-        "dem": 52.3,
-        "rep": 43.7,
+        "updated": "November 3, 2026",
+        "dem": 51.4,
+        "rep": 42.8,
         "lead": 8.6
       },
       {
+        "name": "FiftyPlusOne",
+        "updated": "November 3, 2026",
+        "dem": 52.8,
+        "rep": 44.1,
+        "lead": 8.7
+      },
+      {
         "name": "NBC News",
-        "updated": "November 1, 2026",
+        "updated": "November 3, 2026",
         "dem": 52,
         "rep": 44,
         "lead": 8
       },
       {
         "name": "RealClearPolitics",
-        "updated": "November 1, 2026",
-        "dem": 52,
-        "rep": 43.1,
-        "lead": 8.9
+        "updated": "November 3, 2026",
+        "dem": 52.1,
+        "rep": 43.3,
+        "lead": 8.8
       },
       {
         "name": "Silver Bulletin",
-        "updated": "November 1, 2026",
-        "dem": 51.4,
-        "rep": 42.6,
+        "updated": "November 3, 2026",
+        "dem": 51.8,
+        "rep": 43,
         "lead": 8.8
       }
     ],
     "raw": {
-      "count": 10,
-      "newest": "2026-10-04",
+      "count": 5,
+      "newest": "2026-11-02",
       "latest": [
+        {
+          "end": "2026-11-02",
+          "pollster": "Ipsos",
+          "n": 1212,
+          "d": 52,
+          "r": 44
+        },
         {
           "end": "2026-10-04",
           "pollster": "Pew Research Center",
@@ -103,20 +110,6 @@
           "n": null,
           "d": 55,
           "r": 45
-        },
-        {
-          "end": "2026-09-08",
-          "pollster": "YouGov",
-          "n": 1015,
-          "d": 49,
-          "r": 38
-        },
-        {
-          "end": "2026-09-06",
-          "pollster": "Morning Consult",
-          "n": 2203,
-          "d": 46,
-          "r": 42
         }
       ]
     },
