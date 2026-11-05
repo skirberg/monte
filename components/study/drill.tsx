@@ -5,11 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { track } from "@vercel/analytics";
 import { Check, X } from "lucide-react";
 import { cn } from "cn";
-import { DATA, TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
-import { dailyQuestions, dayKey, generate, isCorrect, shownAnswer, type Question } from "@/lib/study/drill";
-import { mt, plural, shuffle } from "@/lib/study/math";
+import { TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
+import { dailyQuestions, dayKey, generate, isCorrect, pickTopics, shownAnswer, type Question } from "@/lib/study/drill";
+import { mt, plural } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
-import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
+import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, setScore, settleDue, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
 import { awardBadge, awardXp } from "@/lib/study/events";
 import { liveStreak, useProgress } from "@/lib/progress";
 import { useStoredString } from "@/lib/hooks";
@@ -20,7 +20,7 @@ import { sym } from "@/lib/study/symbols";
 type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
 /** `timed` is false for a set run without a clock; `inARow` counts right answers since the last miss. */
 type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; timed: boolean; inARow: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
-type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
+type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; whole: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
 
 /** Saved choice: "1" runs normal drills without a clock. Mock tests are always timed. */
 const UNTIMED_KEY = "sigmaUntimed";
@@ -31,7 +31,7 @@ const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2,
 const NOTHING_DUE = "Nothing is due yet. Run a drill first; any question you miss comes back here.";
 
 function newRun(mode: Mode, mods: TopicId[], count: number, seconds: number, mock: boolean, fixed?: Question[], timed = true): Run {
-  const qs = fixed ?? shuffle(Array.from({ length: count }, (_, i) => generate(mods[i % mods.length])));
+  const qs = fixed ?? pickTopics(mods, count).map(generate);
   return { qs, i: 0, correct: 0, missed: [], end: Date.now() + seconds * 1000, timed: mock || timed, inARow: 0, mode, mock, answered: false, ok: null };
 }
 
@@ -89,7 +89,7 @@ export function Drill() {
   const nextRef = React.useRef<HTMLButtonElement>(null);
   const cardRef = React.useRef<HTMLElement>(null);
 
-  const due = p.due.length, won = wonCount(p), ready = Math.round((p.mock || 0) * 100);
+  const due = p.due.length, won = wonCount(p), answeredAll = Object.values(p.drill).reduce((n, d) => n + (d?.asked ?? 0), 0);
   const fresh = !hasAnyProgress(p);
   const streak = site ? liveStreak(site) : 0;
   // No timer: saved in this browser, read without a hydration mismatch, and changed here at once.
@@ -125,17 +125,14 @@ export function Drill() {
       setMsg(NOTHING_DUE);
       return;
     }
-    updateStudyProgress((s) => {
-      s.due = list.slice(10);
-    });
+    // Nothing leaves the list until it is answered; finish() settles it.
     start("due", TOPIC_IDS, 0, 600, false, list.slice(0, 10).map(generate));
   };
 
-  // A set started from a link: use up the due list, report it, and tidy the address.
+  // A set started from a link: report it and tidy the address.
   React.useEffect(() => {
     if (!link) return;
     if (link.run) {
-      if (link.run.mode === "due") updateStudyProgress((s) => void (s.due = s.due.slice(10)));
       track("Drill started", { mode: link.run.mode });
       focusCard();
     }
@@ -143,7 +140,7 @@ export function Drill() {
   }, [link, router]);
 
   const finish = React.useCallback((r: Run) => {
-    const n = r.qs.length, answered = r.correct + r.missed.length, pc = n ? r.correct / n : 0;
+    const n = r.qs.length, answered = r.correct + r.missed.length, whole = r.mock || r.mode === "daily", pc = setScore(r.correct, answered, n, whole);
     const per: Partial<Record<TopicId, { a: number; c: number }>> = {};
     r.qs.forEach((q) => (per[q.mod] ??= { a: 0, c: 0 }));
     r.qs.slice(0, answered).forEach((q) => {
@@ -167,10 +164,11 @@ export function Drill() {
         if (first) s.daily[dk] = { c: r.correct, g: grid };
         daily = { grid, first, firstScore: s.daily[dk].c, share: `Monte Daily ${dk}  ${r.correct}/${n}\n${grid}\nmonte.markets${study.drillStart("daily")}` };
       }
-      s.due = [...s.due, ...r.missed.map((q) => q.mod)].slice(-40);
+      s.due = settleDue(s.due, r.mode === "due" ? r.qs.slice(0, answered).map((q) => q.mod) : [], r.missed.map((q) => q.mod));
     });
     // A set ended before any answer earns nothing.
-    const mastered = mastersTopic(r.mode, n, pc);
+    // Mastery needs the whole set answered, so ending early on a hot streak never masters a topic.
+    const mastered = mastersTopic(r.mode, answered, pc);
     if (answered) {
       awardXp(answered >= n ? 20 : 5, "drill finished");
       awardBadge("first-drill");
@@ -182,7 +180,7 @@ export function Drill() {
     track("Drill finished", { mode: r.mode, score: scoreBand(Math.round(pc * 100)) });
     if (pc >= 0.8) celebrate(mastered ? "Topic mastered." : "Great set.");
     setRun(null);
-    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mastered, mock: r.mock, missed: r.missed, daily });
+    setResult({ pct: Math.round(pc * 100), correct: r.correct, n, answered, mastered, mock: r.mock, whole, missed: r.missed, daily });
   }, []);
 
   // The clock: tick twice a second, finish when it runs out. Untimed sets have no clock.
@@ -221,7 +219,9 @@ export function Drill() {
   const done = run ? run.correct + run.missed.length : 0;
   const card = "grid gap-5 rounded-[18px] border border-line bg-paper p-5 shadow-[0_1px_0_var(--line),0_12px_32px_-24px_color-mix(in_oklch,var(--ink)_30%,transparent)] md:p-7";
   const resultMsg = result
-    ? `${result.correct} of ${result.n} correct${result.answered < result.n ? ` (${result.n - result.answered} left unanswered)` : ""}. ${
+    ? `${result.correct} of ${result.whole ? result.n : result.answered} correct${
+        result.answered < result.n ? (result.whole ? ` (${result.n - result.answered} left unanswered count as wrong)` : `, ended with ${result.n - result.answered} not answered`) : ""
+      }. ${
         result.mastered
           ? "Topic mastered."
           : result.pct >= 80
@@ -229,7 +229,7 @@ export function Drill() {
             : result.pct >= 60
               ? "Close. One more set and you have it."
               : "Warm-up set. Read the misses below, then go again."
-      }${result.mock ? ` ${DATA.copy.mockSaved}` : ""}`
+      }`
     : "";
 
   return (
@@ -238,7 +238,7 @@ export function Drill() {
       {!fresh && (
         <div role="group" aria-label="Your progress" className="grid grid-cols-2 divide-line overflow-hidden rounded-[18px] border border-line md:grid-cols-4 md:divide-x [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(-n+2)]:border-line md:[&>*:nth-child(-n+2)]:border-b-0 [&>*:nth-child(odd)]:border-r [&>*:nth-child(odd)]:border-line md:[&>*:nth-child(odd)]:border-r-0">
           <Meter k="Topics mastered" v={`${won} of ${TOPICS.length}`} bar={Math.round((won / TOPICS.length) * 100)} />
-          <Meter k="Readiness" v={`${ready}%`} bar={ready} c="From your best mock test" />
+          <Meter k="Answered" v={String(answeredAll)} c="Questions, across every set" />
           <Meter k="Streak" v={plural(streak, "day")} c="Learn something each day" />
           <Meter k="Due today" v={String(due)} c="Missed questions come back" />
         </div>
@@ -307,7 +307,7 @@ export function Drill() {
                   <button type="button" data-start="full" className={cn(linkBtn, "min-h-11 justify-self-start")} onClick={() => start("full", TOPIC_IDS, 20, 7200, true)}>
                     Full mock: 20 questions, 2 hours
                   </button>
-                  <p className="text-sm text-ink-muted">Answers count within 2% or 0.01. Type decimals like 0.42, not 42%.</p>
+                  <p className="text-sm text-ink-muted">Answers count within 2%, or rounded to two significant figures. Type decimals like 0.42, not 42%.</p>
                 </div>
               </Fold>
             </section>

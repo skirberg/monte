@@ -5,13 +5,9 @@ import { Today } from "@/components/study/today";
 import { OldHashRedirect } from "@/components/study/old-hash-redirect";
 import { lead } from "@/components/study/ui";
 import { TOPICS } from "@/lib/study/data";
-import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, abs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Study",
-  description: "Statistics, one idea at a time. Fourteen topics in plain English, drills with fresh numbers, and solvers that show the work.",
-  alternates: { canonical: "/study/" },
-};
+export const metadata: Metadata = pageMeta("/study/", "Study", "Statistics, one idea at a time. Fourteen topics in plain English, drills with fresh numbers, and solvers that show the work.");
 
 export default function StudyPage() {
   return (

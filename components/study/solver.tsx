@@ -97,7 +97,7 @@ function Panel({ solver: S }: { solver: Solver }) {
       </div>
 
       <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-        {S.fields.map((f) => (
+        {S.fields.filter((f) => !f.when || f.when[1].includes(values[f.when[0]])).map((f) => (
           <FieldInput key={f.k} solver={S.id} field={f} value={values[f.k]} onChange={(v) => set(f.k, v)} />
         ))}
       </div>

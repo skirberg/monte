@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Azeret_Mono, Bricolage_Grotesque, Geologica } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { MODE_SCRIPT } from "@/lib/mode-script";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
@@ -78,6 +79,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Vercel Web Analytics: anonymous page counts, no cookies. Inactive until enabled in the Vercel project. */}
         <ProgressBridge />
         <Analytics />
+        {/* Real-visitor load times (LCP, INP, CLS). Inactive until Speed Insights is enabled in the Vercel project. */}
+        <SpeedInsights />
       </body>
     </html>
   );

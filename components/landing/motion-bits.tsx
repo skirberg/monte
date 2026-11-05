@@ -26,8 +26,10 @@ export function Reveal({
   return (
     <M
       className={className}
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      // Position only, like .rise: the server HTML is readable before any script runs,
+      // so a slow phone, a fast scroll, find-in-page or print never meets an empty section.
+      initial={{ y: 14 }}
+      whileInView={{ y: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: 0.5, delay, ease: settle }}
     >

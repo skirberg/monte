@@ -7,6 +7,7 @@ import { Motion } from "@/components/landing/motion-bits";
 import { JsonLd } from "@/components/json-ld";
 import { DISCLAIMER, TOOLS, prevNext, toolHref, toolInfo } from "@/lib/decide/tools";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
+import { SafePart } from "@/components/safe-part";
 
 /** One decision on its own page: the question, the tool, then where to go next. Each page imports only its own tool, so only that one runs. */
 export function ToolPage({ id, children }: { id: string; children: ReactNode }) {
@@ -62,7 +63,7 @@ export function ToolPage({ id, children }: { id: string; children: ReactNode }) 
           <h2 id="tool-h" className="sr-only">
             Try it with your own numbers
           </h2>
-          {children}
+          <SafePart name="tool">{children}</SafePart>
         </section>
 
         {/* ---------- where next: one way on, one way back ---------- */}

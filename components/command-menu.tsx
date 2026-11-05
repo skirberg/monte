@@ -16,13 +16,8 @@ import {
 } from "@/components/ui/command";
 import { DECIDE_TOOLS, GAMES, SITE_NAV, SOLVERS, TOOLS, TOPICS, decideHref, playHref, studyHref } from "@/lib/site-data";
 import { setMode, useMode } from "@/lib/mode";
+import { match } from "@/lib/command-match";
 
-
-/** Every word typed must appear somewhere in the item. Fuzzy letter matching found "bayes" in every topic. */
-function match(value: string, search: string) {
-  const v = value.toLowerCase();
-  return search.toLowerCase().split(/\s+/).filter(Boolean).every((w) => v.includes(w)) ? 1 : 0;
-}
 
 export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const { resolvedTheme, setTheme } = useTheme();
@@ -76,6 +71,9 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
             </CommandItem>
             <CommandItem value="learn frameworks chooser which formula" onSelect={() => run(() => goStudy("#learn/frameworks"))}>
               <Compass /> Which formula do I need?
+            </CommandItem>
+            <CommandItem value="learn start first step one value average range unknown mean three questions" onSelect={() => run(() => goStudy("#learn/start"))}>
+              <Compass /> One value, an average, or a range?
             </CommandItem>
             <CommandItem value="learn terms glossary definitions vocabulary words" onSelect={() => run(() => goStudy("#learn/terms"))}>
               <BookOpen /> Terms: every key word in plain English

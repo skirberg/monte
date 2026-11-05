@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { StudyShell } from "@/components/study/study-shell";
 import { SourceList } from "@/components/study/sources";
 import { PageHead, lead } from "@/components/study/ui";
 import { DATA } from "@/lib/study/data";
 
-export const metadata: Metadata = {
-  title: "Sources",
-  description: "Free videos, books and apps for statistics, plus R, Python, Excel and Power Query. Every link opened and checked.",
-  alternates: { canonical: "/study/sources/" },
-};
+export const metadata: Metadata = pageMeta("/study/sources/", "Sources", "Free videos, books and apps for statistics, plus R, Python, Excel and Power Query. Every link opened and checked.");
 
 export default function SourcesPage() {
   return (

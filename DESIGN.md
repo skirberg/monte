@@ -6,13 +6,13 @@ Statistics for everyone, one idea at a time: learn it, practice it, solve with i
 
 **Statistics is a sandbox: drop enough grains and the shape appears.**
 
-Proof: every data point is a grain of sand. Pour enough of them through chance and they pile into a bell curve (a Galton board, the Central Limit Theorem). The tennis thread comes from the study app: fourteen topics are fourteen matches in "the draw", won by scoring 80% on a fresh timed drill. Sand plus tennis means clay, the court surface made of crushed brick.
+Proof: every data point is a grain of sand, and one grain tells you little; the pattern shows up in many. A Galton board is the honest version of the picture: each grain's landing spot is the sum of many left-or-right bounces, and sums like that pile into a bell shape. More data does not make every dataset bell-shaped (incomes and wait times stay skewed however many you collect); what the Central Limit Theorem says is that averages of many independent draws come out close to normal. The board is about sums and averages, and the brand should never say more than that. The tennis thread comes from the study app: fourteen topics are fourteen matches in "the draw", won by scoring 80% on a fresh timed drill. Sand plus tennis means clay, the court surface made of crushed brick.
 
 The site's public pages (home, menus, footer) say **topics** and **mastered**, not matches and won: a newcomer should not need the tennis to follow along. Clay, the court baseline and the grains stay as the look.
 
 ## Name
 
-**Monte.** Short, one word, and it names what the site does three ways at once: Monte Carlo simulation (the long-run and options games, and every check behind the math), the Monty Hall doors game, and three-card monte, the street game that is all about odds. Chosen October 2, 2026 from a shortlist of Monte, Probably, Probs, Fluke and Oddly. Quick web check found no statistics or study product called Monte; no trademark search has been run.
+**Monte.** Short, one word, and it names what the site does three ways at once: Monte Carlo simulation (the long-run and options games, and every check behind the math), the Monty Hall doors game, and three-card monte, the street con where the game is rigged (the cups in the mark come from its cousin, the shell game). The lesson in it is a statistics lesson too: when the game is rigged, better math doesn't win; the right call is not to play. Chosen October 2, 2026 from a shortlist of Monte, Probably, Probs, Fluke and Oddly. Quick web check found no statistics or study product called Monte; no trademark search has been run.
 
 ## Voice
 

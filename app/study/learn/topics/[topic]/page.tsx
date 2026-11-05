@@ -7,7 +7,7 @@ import { plainText } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
 import { studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
-import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, abs, pageMeta } from "@/lib/seo";
 import { TopicLab } from "@/components/study/labs";
 import { Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
 import { Box, Fold, Html, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
@@ -21,11 +21,7 @@ type Props = { params: Promise<{ topic: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = topicById((await params).topic);
   if (!t) return {};
-  return {
-    title: t.name,
-    description: plainText(t.line),
-    alternates: { canonical: study.topic(t.id) },
-  };
+  return pageMeta(study.topic(t.id), t.name, plainText(t.line));
 }
 
 export default async function TopicPage({ params }: Props) {

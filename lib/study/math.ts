@@ -99,11 +99,23 @@ export const shuffle = <T,>(a: T[]) => {
 
 /** Parses what a student types: 0.42, 42%, 3/8, 1,200, $40, −2 (any minus sign). NaN when it is not a number. */
 export function parseAnswer(raw: string) {
-  if (raw.includes("/")) {
-    const [a, b] = raw.split("/");
-    return parseFloat(a) / parseFloat(b);
+  const s = raw.replace(/[%,$\s]/g, "").replace(/[−–]/g, "-");
+  const one = (t: string) => (/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(t) ? parseFloat(t) : NaN);
+  const parts = s.split("/");
+  if (parts.length > 2) return NaN;
+  return parts.length === 2 ? one(parts[0]) / one(parts[1]) : one(s);
+}
+
+/** Counts in equal bins from lo to hi. A value equal to hi goes in the last bin; values outside are counted, not dropped. */
+export function histogram(values: number[], lo: number, hi: number, bins: number) {
+  const counts = new Array<number>(bins).fill(0);
+  let under = 0, over = 0;
+  for (const v of values) {
+    if (v < lo) under++;
+    else if (v > hi) over++;
+    else counts[Math.min(bins - 1, Math.floor(((v - lo) / (hi - lo)) * bins))]++;
   }
-  return parseFloat(raw.replace(/[%,$\s]/g, "").replace(/[−–]/g, "-"));
+  return { counts, under, over };
 }
 /** A local calendar day, YYYY-MM-DD, so streaks and Monte Daily turn over at the student's midnight. */
 export function localDay(t: number) {

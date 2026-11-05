@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { Download } from "lucide-react";
 import { TOOLS, toolById } from "@/lib/study/data";
@@ -14,7 +15,7 @@ type Props = { params: Promise<{ tool: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = toolById((await params).tool);
   if (!t) return {};
-  return { title: `${t.name} for statistics`, description: t.blurb, alternates: { canonical: study.tools(t.id) } };
+  return pageMeta(study.tools(t.id), `${t.name} for statistics`, t.blurb);
 }
 
 /** Tools: the same statistics in Excel, R, Python, Power Query and SQL, one page each. */

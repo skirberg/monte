@@ -12,8 +12,9 @@ describe("drill answer grader", () => {
     expect(isCorrect(num(0.37), "0.37")).toBe(true);
     expect(isCorrect(num(0.37), ".37")).toBe(true);
   });
-  it("allows 2% or 0.01, whichever is wider, and no more", () => {
-    expect(isCorrect(num(0.37), "0.379")).toBe(true);
+  it("allows 2%, or two significant figures, and no more", () => {
+    expect(isCorrect(num(0.37), "0.374")).toBe(true);
+    expect(isCorrect(num(0.37), "0.379")).toBe(false);
     expect(isCorrect(num(0.37), "0.39")).toBe(false);
     expect(isCorrect(num(250), "254")).toBe(true);
     expect(isCorrect(num(250), "256")).toBe(false);
@@ -21,9 +22,9 @@ describe("drill answer grader", () => {
   it("does not divide a percent for answers that are not probabilities", () => {
     expect(isCorrect(num(37), "37%")).toBe(true);
   });
-  it("whole-number answers must match after rounding", () => {
+  it("whole-number answers must be that whole number", () => {
     expect(isCorrect(num(385, { exact: true }), "385")).toBe(true);
-    expect(isCorrect(num(385, { exact: true }), "384.6")).toBe(true);
+    expect(isCorrect(num(385, { exact: true }), "384.6")).toBe(false);
     expect(isCorrect(num(385, { exact: true }), "386")).toBe(false);
   });
   it("accepts fractions and typed minus signs", () => {
@@ -51,10 +52,8 @@ describe("drill generators", () => {
         expect(q.mod).toBe(id);
         expect(typeof q.q).toBe("string");
         if (!q.text) expect(Number.isFinite(q.a as number), `${id}: ${q.q}`).toBe(true);
-        // Tiny answers show as "< 0.0001", which is not a number to type; 0 is within tolerance for them.
         const shown = shownAnswer(q);
-        const typed = /^[<>]/.test(shown) ? "0" : shown;
-        expect(isCorrect(q, typed), `${id}: ${q.q} → ${shown}`).toBe(true);
+        expect(isCorrect(q, shown), `${id}: ${q.q} → ${shown}`).toBe(true);
       }
     }
   });

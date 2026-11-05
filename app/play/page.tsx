@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { ArrowRight, Target } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -6,11 +7,7 @@ import { GameArt } from "@/components/play/game-art";
 import { Motion, Reveal } from "@/components/landing/motion-bits";
 import { GAMES, GAME_GROUPS, playHref, studyHref } from "@/lib/site-data";
 
-export const metadata: Metadata = {
-  title: "Play",
-  alternates: { canonical: "/play/" },
-  description: "Ten games, each hiding a real statistics idea: correlation, Monty Hall, randomness, tennis, casinos, betting odds, A/B tests, market history, options and election polls.",
-};
+export const metadata: Metadata = pageMeta("/play/", "Play", "Ten games, each hiding a real statistics idea: correlation, Monty Hall, randomness, tennis, casinos, betting odds, A/B tests, market history, options and election polls.");
 
 export default function PlayHub() {
   return (

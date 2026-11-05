@@ -15,6 +15,8 @@ export type Field = {
   wide?: boolean;
   /** A select: [value, label]. */
   opts?: [value: string, label: string][];
+  /** Shown only while another field holds one of these values, like the mean inputs for a mean. */
+  when?: [key: string, values: string[]];
 };
 export type Row = { q: string; a: string; w: string; hl: boolean; strong?: boolean };
 /** The first cell of each body row is its row header. */
@@ -112,7 +114,7 @@ const tree: Solver = {
     });
     if (br.some((b) => !isProb(b.p) || !isProb(b.h))) return { err: "Each probability has to be between 0 and 1. You can type 0.7, 70%, or 7/10." };
     const tot = br.reduce((s, b) => s + b.p, 0);
-    if (Math.abs(tot - 1) > 0.001) return { err: `The branch probabilities add to ${sF(tot)}. They have to add to 1.` };
+    if (Math.abs(tot - 1) > 1e-9) return { err: `The branch probabilities add to ${sF(tot)}. They have to add to exactly 1. For thirds, type 1/3.` };
     const pH = br.reduce((s, b) => s + b.j, 0), pN = 1 - pH, A = br[0];
     const fill = blanks ? ` (${br.filter((_, i) => blank(raw[i][1]))[0].n} = 1 minus the others)` : "";
     const cells: [string, number][] = [];
@@ -122,17 +124,18 @@ const tree: Solver = {
     });
     const top = cells.sort((x, y) => y[1] - x[1])[0];
     const table: Table = { head: ["", H, nH, "Total"], rows: br.map((b) => [b.n, sF(b.j), sF(b.jn), sF(b.p)]), foot: ["Total", sF(pH), sF(pN), "1"] };
-    const ind = Math.abs(A.h - pH) < 1e-9;
+    const ind = Math.abs(A.j - A.p * pH) <= 1e-9 * Math.max(A.j, A.p * pH);
     const rows: Row[] = [];
     rows.push(strong(`P(${H})`, sF(pH), `${br.map((b) => `${sF(b.p)} × ${sF(b.h)}`).join(" + ")} = ${br.map((b) => sF(b.j)).join(" + ")}. Add every ${H} branch${fill}.`, true));
     rows.push(row(`P(${nH})`, sF(pN), `1 − ${sF(pH)}`));
-    br.forEach((b) => rows.push(row(`P(${H} | ${b.n})`, sF(b.h), "Given, so read it straight off the branch.")));
+    br.forEach((b) => rows.push(row(`P(${H} | ${b.n})`, b.p > 0 ? sF(b.h) : "n/a", b.p > 0 ? "Given, so read it straight off the branch." : `${b.n} has probability 0, so this is undefined.`)));
     rows.push(row(`P(${A.n} and ${H})`, sF(A.j), `And means multiply along the branch: ${sF(A.p)} × ${sF(A.h)}`));
     br.forEach((b, i) => rows.push(row(`P(${b.n} | ${H})`, pH ? sF(b.j / pH) : "n/a", `Bayes: ${sF(b.j)} ÷ ${sF(pH)}${i === 0 ? `. The given (${H}) is the new total.` : ""}`, true)));
     br.forEach((b) => rows.push(row(`P(${b.n} | ${nH})`, pN ? sF(b.jn / pN) : "n/a", `${sF(b.jn)} ÷ ${sF(pN)}`)));
     rows.push(row(`P(${A.n} or ${H})`, sF(A.p + pH - A.j), `${sF(A.p)} + ${sF(pH)} − ${sF(A.j)}. Or means add, minus the overlap.`));
-    rows.push(row(`Are ${A.n} and ${H} independent?`, ind ? "Yes" : "No", `P(${H} | ${A.n}) = ${sF(A.h)}${ind ? " equals " : " is not "}P(${H}) = ${sF(pH)}.`));
-    rows.push(row(`Trap: is P(${A.n} | ${H}) the same as P(${H} | ${A.n})?`, `No: ${pH ? sF(A.j / pH) : "n/a"} vs ${sF(A.h)}`, "Flipping the given changes the denominator."));
+    rows.push(row(`Are ${A.n} and ${H} independent?`, ind ? "Yes" : "No", `P(${A.n} and ${H}) = ${sF(A.j)}${ind ? " equals " : " is not "}P(${A.n}) × P(${H}) = ${sF(A.p * pH)}.`));
+    const flip = pH > 0 && A.p > 0, same = flip && Math.abs(A.j / pH - A.h) < 1e-9;
+    rows.push(row(`Trap: is P(${A.n} | ${H}) the same as P(${H} | ${A.n})?`, flip ? `${same ? "Here, yes" : "No"}: ${sF(A.j / pH)} vs ${sF(A.h)}` : "n/a", flip ? `Flipping the given changes the denominator.${same ? " These numbers happen to match; usually they don't." : ""}` : "One of the givens has probability 0."));
     rows.push(row("Most likely single outcome", top[0], `${sF(top[1])}, the biggest branch.`));
     rows.push(row(`Two independent times: ${H} both`, sF(pH * pH), `${sF(pH)}²`));
     rows.push(row(`Two independent times: at least one ${H}`, sF(1 - pN * pN), `1 − ${sF(pN)}²`));
@@ -545,9 +548,9 @@ const ci: Solver = {
     { k: "kind", l: "Type", v: "t", opts: [["t", "Mean, s from the sample (t)"], ["z", "Mean, σ known (z)"], ["p", "Proportion"]] },
     { k: "cl", l: "Confidence", v: "0.95", opts: [["0.90", "90%"], ["0.95", "95%"], ["0.99", "99%"]] },
     { k: "n", l: "Sample size n", v: "25" },
-    { k: "xbar", l: "Mean x̄ (mean types)", v: "42.5" },
-    { k: "s", l: "SD s or σ (mean types)", v: "6.2" },
-    { k: "x", l: "Count with the trait (proportion)", v: "" },
+    { k: "xbar", l: "Mean x̄", v: "42.5", when: ["kind", ["t", "z"]] },
+    { k: "s", l: "SD s or σ", v: "6.2", when: ["kind", ["t", "z"]] },
+    { k: "x", l: "Count with the trait", v: "", when: ["kind", ["p"]] },
     { k: "e", l: "Target E (for sample size)", v: "2" },
     { k: "em", l: "E is", v: "m", opts: [["m", "The margin (±)"], ["l", "The full length"]] },
   ],
@@ -578,12 +581,26 @@ const ci: Solver = {
     if (!(n >= 2)) return { err: "n has to be a whole number of at least 2." };
     if (kind === "p") {
       const x = sNum(v.x);
-      if (!(x >= 0 && x <= n)) return { err: "Type the count with the trait, between 0 and n." };
-      const ph = x / n, q = 1 - ph, se = Math.sqrt((ph * q) / n), me = zc * se;
+      if (!(Number.isInteger(x) && x >= 0 && x <= n)) return { err: "Type the count with the trait: a whole number between 0 and n." };
+      const ph = x / n, q = 1 - ph, se = Math.sqrt((ph * q) / n), me = zc * se, big = n * ph >= 10 && n * q >= 10;
+      let wil: [number, number] | null = null;
       rows.push(row("p̂", sF(ph), `${sF(x)} / ${n}`));
-      rows.push(strong(`${lvl} interval for p`, `${sF(ph - me)} to ${sF(ph + me)}`, `p̂ ± z√[p̂(1 − p̂)/n] = ${sF(ph)} ± ${zc} × ${sF(se)} = ${sF(ph)} ± ${sF(me)}`, true));
-      rows.push(row("Margin of error", sF(me), `${zc} × ${sF(se)}`));
-      rows.push(row("Interval for the complement (1 − p)", `${sF(q - me)} to ${sF(q + me)}`, `${sF(q)} ± ${sF(me)}. Trap: read whether the question asks about those with the trait or without.`));
+      if (big) rows.push(strong(`${lvl} interval for p`, `${sF(ph - me)} to ${sF(ph + me)}`, `p̂ ± z√[p̂(1 − p̂)/n] = ${sF(ph)} ± ${zc} × ${sF(se)} = ${sF(ph)} ± ${sF(me)}`, true));
+      else {
+        // Too few of one outcome for p̂ ± z·SE (0 of 10 would give "0 to 0"). The Wilson interval stays honest here.
+        const z2 = zc * zc, c = (ph + z2 / (2 * n)) / (1 + z2 / n), h = (zc * Math.sqrt((ph * q) / n + z2 / (4 * n * n))) / (1 + z2 / n);
+        wil = [Math.max(0, c - h), Math.min(1, c + h)];
+        rows.push(strong(`${lvl} interval for p (small sample)`, `${sF(wil[0])} to ${sF(wil[1])}`, `The usual p̂ ± z·SE needs at least 10 of each outcome; here it would say ${sF(ph - me)} to ${sF(ph + me)}. This is the Wilson interval, which works with few successes.`, true));
+        rows.push(row(`Usual formula, not reliable here`, `${sF(ph - me)} to ${sF(ph + me)}`, `p̂ ± z√[p̂(1 − p̂)/n] = ${sF(ph)} ± ${zc} × ${sF(se)}`));
+      }
+      rows.push(row("Margin of error", sF(me), `${zc} × ${sF(se)}${big ? "" : ", from the usual formula"}`));
+      rows.push(
+        row(
+          "Interval for the complement (1 − p)",
+          wil ? `${sF(1 - wil[1])} to ${sF(1 - wil[0])}` : `${sF(q - me)} to ${sF(q + me)}`,
+          `${wil ? "1 minus each end of the interval above" : `${sF(q)} ± ${sF(me)}`}. Trap: read whether the question asks about those with the trait or without.`,
+        ),
+      );
       rows.push(row("Normal check", n * ph >= 10 && n * q >= 10 ? "OK" : "Too small", `np̂ = ${sF(n * ph)} and n(1 − p̂) = ${sF(n * q)}; both need to be at least 10.`));
       if (isFinite(E1)) {
         const n0 = (zc * zc * 0.25) / (E1 * E1), n1 = (zc * zc * ph * q) / (E1 * E1);
@@ -631,9 +648,9 @@ const test: Solver = {
     { k: "side", l: "H₁", v: "two", opts: [["two", "Not equal (two-sided)"], ["less", "Less than (left tail)"], ["greater", "Greater than (right tail)"]] },
     { k: "h0", l: "H₀ value, μ₀ or p₀", v: "250" },
     { k: "n", l: "Sample size n", v: "36" },
-    { k: "xbar", l: "Sample mean x̄ (mean tests)", v: "247.5" },
-    { k: "s", l: "σ or s (mean tests)", v: "6" },
-    { k: "x", l: "Count with the trait (proportion)", v: "" },
+    { k: "xbar", l: "Sample mean x̄", v: "247.5", when: ["kind", ["z", "t"]] },
+    { k: "s", l: "σ or s", v: "6", when: ["kind", ["z", "t"]] },
+    { k: "x", l: "Count with the trait", v: "", when: ["kind", ["p"]] },
     { k: "a", l: "α", v: "0.05", opts: [["0.10", "0.10"], ["0.05", "0.05"], ["0.01", "0.01"]] },
   ],
   presets: [
@@ -675,7 +692,8 @@ const test: Solver = {
     const inv = (q: number) => (df ? tinv(q, df) : PhiInv(q));
     const pval = side === "two" ? 2 * (1 - cdf(Math.abs(stat))) : side === "less" ? cdf(stat) : 1 - cdf(stat);
     const crit = side === "two" ? inv(1 - a / 2) : inv(1 - a);
-    const L = kind === "t" ? "t" : "z", rej = pval < a;
+    // The z test for p needs np₀ and n(1 − p₀) of at least 10; below that its p-value can't support a decision.
+    const L = kind === "t" ? "t" : "z", rej = pval < a, small = kind === "p" && (n * h0 < 10 || n * (1 - h0) < 10);
     const critTxt = side === "two" ? `±${crit.toFixed(3)}` : `${side === "less" ? "−" : ""}${crit.toFixed(3)}`;
     rows.push(row("Hypotheses", `H₀: ${sym} = ${sF(h0)}   H₁: ${sym} ${op} ${sF(h0)}`, "H₀ holds the equals sign. H₁ is the claim you want evidence for."));
     rows.push(
@@ -697,15 +715,19 @@ const test: Solver = {
     rows.push(
       strong(
         "Decision",
-        rej ? "Reject H₀" : "Fail to reject H₀",
-        rej ? `p-value ${sF(pval)} < α = ${sF(a)}` : `p-value ${sF(pval)} ≥ α = ${sF(a)}. That does not prove H₀; the evidence is just not strong enough.`,
+        small ? "No call: sample too small" : rej ? "Reject H₀" : "Fail to reject H₀",
+        small
+          ? `np₀ = ${sF(n * h0)} and n(1 − p₀) = ${sF(n * (1 - h0))}; the z test needs both at least 10, so this p-value is not reliable. An exact binomial test is the right tool here.`
+          : rej
+            ? `p-value ${sF(pval)} < α = ${sF(a)}`
+            : `p-value ${sF(pval)} ≥ α = ${sF(a)}. That does not prove H₀; the evidence is just not strong enough.`,
         true,
       ),
     );
     rows.push(
       row(
         "In words",
-        rej ? `The data are strong evidence that ${sym} ${op} ${sF(h0)}.` : `The data are not strong evidence that ${sym} ${op} ${sF(h0)}.`,
+        small ? "Not enough data for this test to say." : rej ? `The data are strong evidence that ${sym} ${op} ${sF(h0)}.` : `The data are not strong evidence that ${sym} ${op} ${sF(h0)}.`,
         `Say it about the population, at α = ${sF(a)}.`,
       ),
     );
@@ -814,7 +836,7 @@ const data: Solver = {
         row("Sample SD s", sF(Math.sqrt(s2)), `√${sF(s2)}`, true),
         row("Shortcut check", sF((sx2 - (S * S) / n) / (n - 1)), `[Σx² − (Σx)²/n] / (n − 1) = (${sF(sx2)} − ${sF((S * S) / n)}) / ${n - 1}`),
         row("If the question says population", `${sF(ss / n)} and σ = ${sF(Math.sqrt(ss / n))}`, `Divide by n = ${n} instead.`),
-        row("Mean vs median", m < med ? "Mean below median: pulled left" : m > med ? "Mean above median: pulled right" : "Equal: symmetric", "The mean chases the tail; the median does not move."),
+        row("Mean vs median", m < med ? "Mean below median: maybe a left tail" : m > med ? "Mean above median: maybe a right tail" : "Equal", "The mean chases a tail; the median does not move. A hint about shape, not proof: plot it to be sure."),
       ],
     };
   },

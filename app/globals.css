@@ -112,6 +112,13 @@
   * {
     @apply border-border outline-ring/60;
   }
+  /* No one-word last lines: headings even out their lines, paragraphs avoid a lone last word. */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p, li, dd {
+    text-wrap: pretty;
+  }
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
@@ -195,10 +202,11 @@
   }
 }
 
-/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. */
+/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. Position only: text is readable on the
+   first frame, so a slow phone paints the headline at once instead of after the fade. */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
+  from { transform: translateY(14px); }
+  to { transform: none; }
 }
 .rise { animation: rise 0.6s var(--ease-settle) both; }
 

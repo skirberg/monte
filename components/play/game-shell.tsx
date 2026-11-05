@@ -7,6 +7,7 @@ import { GAMES, playHref, studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
 import { Fold } from "@/components/study/ui";
 import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
+import { SafePart } from "@/components/safe-part";
 
 /** Every game page: the game first, then what is going on, then where to learn it. */
 export function GameShell({
@@ -57,7 +58,9 @@ export function GameShell({
           </p>
         </header>
 
-        <GamePlayed game={slug}>{children}</GamePlayed>
+        <SafePart name="game">
+          <GamePlayed game={slug}>{children}</GamePlayed>
+        </SafePart>
 
         {/* The game is the page. The idea behind it waits one tap away, then one way on. */}
         <Fold title="What’s going on" teaser="The real idea behind the game, in plain words." className="mt-12" bodyClassName="max-w-[62ch] space-y-4 text-[1.05rem] leading-relaxed [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em]">

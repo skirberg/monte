@@ -9,7 +9,8 @@ Business statistics, one idea at a time. Fourteen topics with labs, timed drills
 | `/` | Landing page with the interactive hero board (`components/landing/hero-board.tsx`): tap to drop grains, hold to pour |
 | `/study/` | Study home (Today): what is due, topics won, every way in |
 | `/study/learn/`, `/study/learn/topics/<id>/` | The fourteen topics, each a page with its lesson, labs, quiz, formulas and videos |
-| `/study/learn/formulas/`, `/study/learn/terms/`, `/study/learn/frameworks/` | Formula sheet (prints), glossary, "which formula?" chooser |
+| `/study/learn/start/` | Same number, three questions: one value, an average, or a range for an unknown mean, with a live lab and fifteen cases whose help fades (`lib/study/start.ts`) |
+| `/study/learn/formulas/`, `/study/learn/terms/`, `/study/learn/frameworks/` | Formula sheet (prints), glossary, "which method?" chooser with the conditions each method needs |
 | `/study/practice/drill/`, `/study/practice/math/`, `/study/practice/cards/` | Timed drills, mock exam, Due today and Monte Daily (`?go=start\|mock\|due\|daily`, `?topic=<id>`); quick math; flashcards |
 | `/study/solve/<id>/` | Eleven solvers that show the work |
 | `/study/tools/<id>/`, `/study/sources/` | Excel, R, Python, Power Query and SQL guides; free sources |
@@ -45,7 +46,7 @@ npx tsx scripts/make-og.tsx   # share cards: public/og.png and one per game in p
 
 Import this repository on Vercel; it detects Next.js and needs no settings. The public URL lives in one place, `lib/seo.ts` (used for canonical links, social cards, robots and the sitemap). Change it there if the site moves to its own domain.
 
-Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. Every study view is its own page, so page views need no extra code. Custom events (Vercel Pro), sent from the components that cause them: Drill started and Drill finished (mode, score band), Solver used, Quick math started, Formula sheet printed, Game played (`components/play/game-played.tsx`) and Mode switched. Only fixed names are sent, never anything a visitor types.
+Progress is saved in each visitor's browser only. There is no account and no server. Page visits are counted with Vercel Web Analytics (cookie-free); turn it on in the Vercel project under Analytics. Every study view is its own page, so page views need no extra code. Custom events (Vercel Pro), sent from the components that cause them: Drill started and Drill finished (mode, score band), Start cases finished (right picks), Solver used, Quick math started, Formula sheet printed, Game played (`components/play/game-played.tsx`) and Mode switched. Only fixed names are sent, never anything a visitor types.
 
 ## Backlog
 

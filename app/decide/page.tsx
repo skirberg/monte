@@ -7,26 +7,13 @@ import { Motion } from "@/components/landing/motion-bits";
 import { JsonLd } from "@/components/json-ld";
 import { HashRedirect } from "@/components/decide/hash-redirect";
 import { DISCLAIMER, GROUPS, TOOLS, toolHref } from "@/lib/decide/tools";
-import { SITE_NAME, SITE_URL, abs } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, abs, pageMeta } from "@/lib/seo";
 
 const TITLE = "The odds of anything";
 const DESCRIPTION =
   "Run the numbers on a real decision in plain English: a warranty, a test result, an A/B test, a savings goal, a shift schedule, two job offers or a bet.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: "/decide/" },
-  openGraph: {
-    title: `${TITLE} · ${SITE_NAME}`,
-    description: DESCRIPTION,
-    type: "website",
-    siteName: SITE_NAME,
-    url: "/decide/",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: `${SITE_NAME}: drop enough grains and the shape appears.` }],
-  },
-  twitter: { card: "summary_large_image", title: `${TITLE} · ${SITE_NAME}`, description: DESCRIPTION, images: ["/og.png"] },
-};
+export const metadata: Metadata = pageMeta("/decide/", TITLE, DESCRIPTION);
 
 /** Numbers come from the page order, so the cards and the tool pages agree. */
 const NUMBER = new Map(TOOLS.map((t, i) => [t.id, String(i + 1).padStart(2, "0")]));
