@@ -20,7 +20,7 @@ function Lab({ title, sub, children, label }: { title: string; sub?: string; chi
   return (
     <section aria-label={label} className="grid gap-4 rounded-[18px] border border-line bg-paper p-5 md:p-6">
       <div className="grid gap-1">
-        <h2 className="font-display text-[1.2rem] font-[650] tracking-[-0.02em]">{title}</h2>
+        <h2 className="font-display text-xl font-semibold">{title}</h2>
         {sub && <p className="text-sm text-ink-muted">{sub}</p>}
       </div>
       {children}
@@ -29,7 +29,7 @@ function Lab({ title, sub, children, label }: { title: string; sub?: string; chi
 }
 function Note({ children, live = true }: { children: React.ReactNode; live?: boolean }) {
   return (
-    <p className="text-[15px] [&_b]:font-semibold [&_b]:tabular-nums" aria-live={live ? "polite" : undefined}>
+    <p className="text-base [&_b]:font-semibold [&_b]:tabular-nums" aria-live={live ? "polite" : undefined}>
       {children}
     </p>
   );
@@ -236,7 +236,7 @@ function DiceLab() {
           <BarRow key={f} label={`Face ${f}`} p={n ? dc[f] / n : 0} target={100 / 6} />
         ))}
       </div>
-      <label className="flex min-h-11 items-center gap-2.5 text-[15px]">
+      <label className="flex min-h-11 items-center gap-2.5 text-base">
         <input type="checkbox" checked={given} onChange={(e) => setGiven(e.target.checked)} className="size-5 accent-clay" /> {L.diceGiven}
       </label>
       <Note>
@@ -552,7 +552,7 @@ function EveryLab() {
         )}
       </Note>
       {!undefinedS2 && n <= 2 && (
-        <ul aria-label="Every sample and its value" className="grid list-none grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-x-4 gap-y-0.5 font-mono text-[13px] tabular-nums text-ink-muted">
+        <ul aria-label="Every sample and its value" className="grid list-none grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-x-4 gap-y-0.5 font-mono text-sm tabular-nums text-ink-muted">
           {samples.map((a, i) => (
             <li key={i}>
               ({a.join(", ")}) → {fmt(r3(stat(a)))}
@@ -638,7 +638,7 @@ function RegLab() {
     <Lab title={c.title} label="Regression lab">
       <Slider id="rx" label="Your point x =" value={x} min={0} max={12} step={0.5} onChange={setX} />
       <Slider id="ry" label="Your point y =" value={y} min={0} max={16} step={0.2} onChange={setY} />
-      <label className="flex min-h-11 items-center gap-2.5 text-[15px]">
+      <label className="flex min-h-11 items-center gap-2.5 text-base">
         <input type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} className="size-5 accent-clay" /> Include my point
       </label>
       <Chart ratio={0.5} minH={240} maxH={300} label="Scatter plot with the fitted line">

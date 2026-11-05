@@ -93,7 +93,7 @@ function Chooser() {
       {trail}
       {step ? (
         <>
-          <p className="font-display text-xl font-[650] tracking-[-0.02em]">{step.q}</p>
+          <p className="font-display text-xl font-semibold">{step.q}</p>
           <div className="grid gap-2">
             {step.opts.map(([label, next]) => (
               <button
@@ -110,7 +110,7 @@ function Chooser() {
         </>
       ) : (
         <div className="grid gap-3 rounded-[14px] bg-sand p-5">
-          <p className="font-display text-xl font-[650] tracking-[-0.02em]">{res[0]}</p>
+          <p className="font-display text-xl font-semibold">{res[0]}</p>
           <p className="tabular-nums">{sym(res[1])}</p>
           <div className="flex flex-wrap gap-2">
             <Link href={study.topic(res[2])} className={btn.primary}>

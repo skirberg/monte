@@ -333,17 +333,17 @@ export function MonteCarlo() {
                   </p>
                   <dl className="space-y-2 font-mono text-sm tabular">
                     <div>
-                      <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Comes out on top</dt>
-                      <dd className={cn("text-3xl font-medium tracking-[-0.03em]", j === leader && "text-clay-ink")}>{chance(s.top, 0)}</dd>
+                      <dt className="text-sm font-medium text-ink-muted">Comes out on top</dt>
+                      <dd className={cn("text-3xl font-medium tracking-tight", j === leader && "text-clay-ink")}>{chance(s.top, 0)}</dd>
                     </div>
                     <div>
-                      <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">8 in 10 land between</dt>
+                      <dt className="text-sm font-medium text-ink-muted">8 in 10 land between</dt>
                       <dd>
                         {fmt(s.p10)} and {fmt(s.p90)}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Chance {missWord}</dt>
+                      <dt className="text-sm font-medium text-ink-muted">Chance {missWord}</dt>
                       <dd>{chance(s.miss, 1)}</dd>
                     </div>
                   </dl>
@@ -410,7 +410,7 @@ export function MonteCarlo() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">Why ranges beat single guesses</p>
+            <p className="font-display text-xl font-semibold !text-ink">Why ranges beat single guesses</p>
             <p>
               A single guess hides how wrong you could be. In the job example both offers have a likely pay near $100,000, so one guess each calls it a tie. The ranges say
               something different: Job B wins more often, and it is also the only one that can leave you short.

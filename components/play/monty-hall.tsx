@@ -129,7 +129,7 @@ export function MontyHall() {
                 <span className="self-start font-mono text-sm text-ink-muted tabular">0{d + 1}</span>
                 <span
                   className={cn(
-                    "font-display text-2xl font-[680] tracking-[-0.03em] sm:text-4xl",
+                    "font-display text-2xl font-semibold sm:text-4xl",
                     isOpen ? (hasCar ? "text-clay-ink" : "text-ink-muted") : "",
                   )}
                   style={{ fontVariationSettings: "'wdth' 82" }}
@@ -138,7 +138,7 @@ export function MontyHall() {
                 </span>
                 <span className={cn("h-1.5 w-1/3 rounded-full", isOpen ? "bg-line" : "bg-ink")} aria-hidden />
                 {chosen && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-ink px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] text-paper">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-ink px-2.5 py-0.5 text-sm font-medium text-paper">
                     Yours
                   </span>
                 )}
@@ -169,7 +169,7 @@ export function MontyHall() {
 
       <div className="space-y-8 lg:col-span-5">
         <section aria-labelledby="mine-t" className="space-y-4 rounded-2xl border border-line p-5">
-          <h2 id="mine-t" className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+          <h2 id="mine-t" className="text-sm font-medium text-ink-muted">
             Your games ({mine.stay.plays + mine.swap.plays})
           </h2>
           <Bar label="Stayed" t={mine.stay} />
@@ -177,7 +177,7 @@ export function MontyHall() {
           <p className="text-sm text-ink-muted">A handful of games proves nothing. That is what the button below is for.</p>
         </section>
         <section aria-labelledby="sim-t" className="space-y-4 rounded-2xl bg-sand p-5">
-          <h2 id="sim-t" className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+          <h2 id="sim-t" className="text-sm font-medium text-ink-muted">
             Simulated games ({sim.stay.plays.toLocaleString()} each way)
           </h2>
           <Bar label="Stay" t={sim.stay} />

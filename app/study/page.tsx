@@ -29,7 +29,7 @@ export default function StudyPage() {
       <section aria-labelledby="hero-t" className="grid gap-3 pt-8 md:pt-16">
         <h1
           id="hero-t"
-          className="max-w-[22ch] font-display text-[clamp(2.4rem,1.4rem+4vw,4.4rem)] font-[650] leading-[0.98] tracking-[-0.02em] [font-variation-settings:'wdth'_82]"
+          className="max-w-[22ch] font-display text-title font-semibold leading-none [font-variation-settings:'wdth'_82]"
         >
           Statistics, one idea at a time.
         </h1>

@@ -154,7 +154,7 @@ export function GuessR() {
             ["Best avg miss", best === null ? "–" : best.toFixed(2)],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-4">
-              <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
+              <dt className="text-sm font-medium text-ink-muted">{k}</dt>
               <dd className="mt-1 text-xl">{v}</dd>
             </div>
           ))}
@@ -163,10 +163,10 @@ export function GuessR() {
         {!done ? (
           <>
             <div>
-              <label htmlFor="r-guess" className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+              <label htmlFor="r-guess" className="text-sm font-medium text-ink-muted">
                 Your call for r
               </label>
-              <p className="mt-1 font-mono text-[clamp(3.2rem,7vw,4.8rem)] font-medium leading-none tracking-[-0.05em] tabular">
+              <p className="mt-1 font-mono text-figure font-medium leading-none tracking-tight tabular">
                 {fmt(guess)}
               </p>
               <input
@@ -191,7 +191,7 @@ export function GuessR() {
             <div aria-live="polite">
               {called ? (
                 <div className="space-y-4 rounded-2xl border border-line p-5">
-                  <p ref={callRef} className={cn("font-display text-4xl font-[680]", isIn ? "text-clay-ink" : "text-ink")}>
+                  <p ref={callRef} className={cn("font-display text-4xl font-semibold", isIn ? "text-clay-ink" : "text-ink")}>
                     {isIn ? "In." : "Out."}
                   </p>
                   <p className="font-mono text-sm tabular">
@@ -219,8 +219,8 @@ export function GuessR() {
           </>
         ) : (
           <div className="space-y-4 rounded-2xl border border-line p-6" aria-live="polite">
-            <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">Average miss over {ROUNDS} plots</p>
-            <p className="font-mono text-6xl font-medium tracking-[-0.05em] text-clay-ink tabular">{avg.toFixed(2)}</p>
+            <p className="text-sm font-medium text-ink-muted">Average miss over {ROUNDS} plots</p>
+            <p className="font-mono text-figure font-medium tracking-tight text-clay-ink tabular">{avg.toFixed(2)}</p>
             <p className="text-ink-muted">
               {avg <= 0.08
                 ? "Sharp. You read scatter plots like a regression table."

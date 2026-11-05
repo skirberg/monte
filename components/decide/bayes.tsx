@@ -205,7 +205,7 @@ export function Bayes() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">The words doctors use</p>
+            <p className="font-display text-xl font-semibold !text-ink">The words doctors use</p>
             <p>
               How often a test catches a real case is its <b>sensitivity</b>. How often it clears a case that is not real is its <b>specificity</b>, which is 100% minus the
               false-alarm rate. The chance a yes is real is the <b>positive predictive value</b>.

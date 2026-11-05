@@ -124,14 +124,14 @@ function Panel({ solver: S }: { solver: Solver }) {
         {!("err" in result) &&
           (practice ? (
             <>
-              <p className="text-[15px]">
+              <p className="text-base">
                 <b className="font-semibold">Practice.</b> Work these on paper, then tap Show answers.
               </p>
               <ol className={divided}>
                 {result.rows.map((r, i) => (
                   <li key={i} className="grid grid-cols-[2rem_minmax(0,1fr)] items-baseline py-3">
                     <Num i={i} />
-                    <span className="min-w-0 text-[15px] [overflow-wrap:anywhere]">{sym(r.q)}</span>
+                    <span className="min-w-0 text-base [overflow-wrap:anywhere]">{sym(r.q)}</span>
                   </li>
                 ))}
               </ol>
@@ -175,7 +175,7 @@ function FieldInput({ solver, field: f, value, onChange }: { solver: SolverId; f
 }
 
 const Num = ({ i }: { i: number }) => (
-  <span aria-hidden="true" className="font-mono text-[12.5px] tabular-nums text-ink-muted">
+  <span aria-hidden="true" className="font-mono text-xs tabular-nums text-ink-muted">
     {i + 1}.
   </span>
 );
@@ -189,9 +189,9 @@ function Answer({ i, row: r }: { i: number; row: Row }) {
       <span className="col-start-2 min-w-0 md:col-start-auto">
         <span
           className={cn(
-            "rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono text-[0.95em] tabular-nums [box-decoration-break:clone] [overflow-wrap:anywhere]",
+            "rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono text-symbol tabular-nums [box-decoration-break:clone] [overflow-wrap:anywhere]",
             r.hl ? "text-clay-ink" : "text-ink",
-            r.strong ? "font-bold" : "font-semibold",
+            r.strong ? "font-semibold" : "font-semibold",
           )}
         >
           {sym(r.a)}

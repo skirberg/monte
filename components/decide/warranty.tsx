@@ -203,7 +203,7 @@ export function Warranty() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">Check what already covers you</p>
+            <p className="font-display text-xl font-semibold !text-ink">Check what already covers you</p>
             <p>
               Before buying cover at the counter, check what you already have. Many credit cards include rental car damage cover. New products come with a maker&rsquo;s warranty,
               usually for the first year, and some cards extend it. Home and renters policies can cover theft. Paying twice for the same cover is the worst deal of all.

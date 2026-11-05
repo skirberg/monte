@@ -93,7 +93,7 @@ export function CutoffLab() {
         <p className="text-ink-muted">{L.sub} How often do you sell more than the cutoff?</p>
         <div>
           <p className="text-sm text-ink-muted">P(more than {x} coffees)</p>
-          <p className="font-display text-[clamp(3.5rem,8vw,5.5rem)] font-[650] leading-none tracking-[-0.03em] text-clay-ink tabular-nums">
+          <p className="font-display text-figure font-semibold leading-none text-clay-ink tabular-nums">
             {(above * 100).toFixed(1)}%
           </p>
         </div>

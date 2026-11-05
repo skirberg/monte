@@ -34,10 +34,10 @@ function Worked() {
         {rows.map(([q, work, answer]) => (
           <li key={q} className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-x-6">
             <span className="grid gap-1">
-              <b className="font-[600]">{q}</b>
+              <b className="font-semibold">{q}</b>
               <span className="text-sm text-ink-muted">{work}</span>
             </span>
-            <span className="font-display text-2xl font-[650] tabular-nums tracking-[-0.01em] sm:text-right">{answer}</span>
+            <span className="font-display text-2xl font-semibold tabular-nums sm:text-right">{answer}</span>
           </li>
         ))}
       </ol>
@@ -113,7 +113,7 @@ function Readout({ label, value, strong }: { label: string; value: string; stron
   return (
     <div className="grid content-start gap-1">
       <span className="text-sm text-ink-muted">{label}</span>
-      <span className={cn("font-display text-[1.6rem] font-[650] leading-none tabular-nums tracking-[-0.01em]", strong && "text-clay-ink")}>{value}</span>
+      <span className={cn("font-display text-2xl font-semibold leading-none tabular-nums", strong && "text-clay-ink")}>{value}</span>
     </div>
   );
 }
@@ -249,7 +249,7 @@ function CaseCard({ c, hint, onResult, onNext, last }: { c: Case; hint: "open" |
     <div className="grid gap-5 rounded-[18px] border border-line bg-paper p-5 md:p-6">
       <div className="grid gap-2">
         <p>{c.setup}</p>
-        <p className="font-display text-xl font-[650] leading-snug tracking-[-0.015em]">{c.q}</p>
+        <p className="font-display text-xl font-semibold leading-snug">{c.q}</p>
       </div>
 
       {hint === "open" && !pick && <Ask className="text-sm text-ink-muted" />}
@@ -265,7 +265,7 @@ function CaseCard({ c, hint, onResult, onNext, last }: { c: Case; hint: "open" |
       )}
 
       <fieldset className="grid gap-2">
-        <legend className="mb-2 font-[600]">Which question is it?</legend>
+        <legend className="mb-2 font-semibold">Which question is it?</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {KINDS.map((k) => {
             const state = !pick ? "" : k.id === c.kind ? "right" : k.id === pick ? "wrong" : "off";
@@ -296,14 +296,14 @@ function CaseCard({ c, hint, onResult, onNext, last }: { c: Case; hint: "open" |
       <div aria-live="polite" className="grid gap-5">
         {pick && (
           <p className={cn("rounded-xl p-4", pick === c.kind ? "bg-sand" : "bg-clay-tint")}>
-            <b className="font-[600]">{pick === c.kind ? "Right. " : "Not this one. "}</b>
+            <b className="font-semibold">{pick === c.kind ? "Right. " : "Not this one. "}</b>
             {pickNote(c, pick)}
           </p>
         )}
 
         {pick && needsNum && (
           <form onSubmit={check} className="grid gap-3">
-            <p className="font-[600]">{isCi ? "Now give the range." : "Now work out the chance."}</p>
+            <p className="font-semibold">{isCi ? "Now give the range." : "Now work out the chance."}</p>
             <div className={cn("grid gap-3", isCi ? "grid-cols-2 sm:max-w-md" : "sm:max-w-xs")}>
               <label className="grid gap-1 text-sm">
                 {isCi ? "From" : "Probability"}
@@ -328,7 +328,7 @@ function CaseCard({ c, hint, onResult, onNext, last }: { c: Case; hint: "open" |
         {graded && (
           <div className="grid gap-3">
             <p className={cn("rounded-xl p-4", graded.ok ? "bg-sand" : "bg-clay-tint")}>
-              <b className="font-[600]">{graded.ok ? "Right." : "Not quite."}</b> {graded.ok ? `It's ${shown(c)}.` : graded.slip ?? "Here is the work."}
+              <b className="font-semibold">{graded.ok ? "Right." : "Not quite."}</b> {graded.ok ? `It's ${shown(c)}.` : graded.slip ?? "Here is the work."}
             </p>
             <ol className="grid gap-1 border-l-2 border-line pl-4 tabular-nums">
               {c.steps.map((s) => (
@@ -365,7 +365,7 @@ function Summary({ cases, results, again }: { cases: Case[]; results: Result[]; 
       </div>
       {missed.length > 0 ? (
         <div className="grid gap-2">
-          <p className="font-[600]">Worth a second look</p>
+          <p className="font-semibold">Worth a second look</p>
           <ul className="divide-y divide-line border-y border-line">
             {missed.map(({ c, r }) => (
               <li key={c.q} className="grid gap-0.5 py-3">

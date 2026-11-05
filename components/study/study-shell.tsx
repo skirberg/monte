@@ -11,7 +11,7 @@ export function StudyShell({ children }: { children: React.ReactNode }) {
         <main id="main" tabIndex={-1} className="min-h-[70vh] outline-none">
           {children}
         </main>
-        <footer className="mt-8 border-t border-line py-6 font-mono text-xs tracking-[0.04em] text-ink-muted print:hidden">
+        <footer className="mt-8 border-t border-line py-6 font-mono text-xs text-ink-muted print:hidden">
           Your progress saves in this browser only.
         </footer>
       </div>

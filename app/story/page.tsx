@@ -260,7 +260,7 @@ function StoryFigure({ figure }: { figure: Figure }) {
   return (
     <figure className="border-t-2 border-ink pt-4">
       {"value" in figure ? (
-        <p className="font-display text-[2.6rem] font-[650] leading-none tracking-[-0.02em] text-clay-ink tabular-nums">{figure.value}</p>
+        <p className="font-display text-4xl font-semibold leading-none text-clay-ink tabular-nums">{figure.value}</p>
       ) : figure.art === "bell" ? (
         <BellArt />
       ) : (
@@ -289,12 +289,12 @@ function StoryItem({ s }: { s: Story }) {
         </div>
 
         <p className="col-start-2 row-start-1 flex items-center justify-between gap-3 md:sticky md:top-24 md:col-start-1 md:block md:self-start md:text-right">
-          <time dateTime={s.year} className="font-display text-xl font-[650] leading-8 tracking-[-0.01em] text-ink tabular-nums md:text-[2rem] md:leading-10">
+          <time dateTime={s.year} className="font-display text-xl font-semibold leading-8 text-ink tabular-nums md:text-3xl md:leading-10">
             {s.year}
           </time>
           {/* the story's number as a small tag on phones; the fold below repeats it with its caption */}
           {value && (
-            <span aria-hidden className="rounded-full bg-sand px-2.5 py-0.5 font-display text-[0.95rem] font-[650] text-clay-ink tabular-nums md:hidden">
+            <span aria-hidden className="rounded-full bg-sand px-2.5 py-0.5 font-display text-base font-semibold text-clay-ink tabular-nums md:hidden">
               {value}
             </span>
           )}
@@ -304,23 +304,23 @@ function StoryItem({ s }: { s: Story }) {
           <Reveal>
             <h3
               id={`s-${s.id}`}
-              className="font-display text-[clamp(1.55rem,1.2rem+1.5vw,2.35rem)] font-[650] leading-[1.02] tracking-[-0.015em]"
+              className="font-display text-heading font-semibold leading-tight"
               style={{ fontVariationSettings: "'wdth' 86" }}
             >
               {s.title}
             </h3>
-            <p className="mt-4 hidden max-w-[62ch] text-[1.0625rem] leading-[1.65] lg:block">{s.body}</p>
+            <p className="mt-4 hidden max-w-[62ch] text-base leading-relaxed lg:block">{s.body}</p>
             <div className="mt-3.5 max-w-[62ch] rounded-[20px] bg-sand px-4 pb-1.5 pt-3 md:px-6 lg:mt-6 lg:pb-3 lg:pt-4">
               <p className="text-sm font-medium text-clay-ink">The idea</p>
               <p
-                className="mt-0.5 font-display text-[1.125rem] lg:mt-1 font-[600] leading-snug md:text-[1.3rem] lg:text-[1.45rem]"
+                className="mt-0.5 font-display text-lg lg:mt-1 font-semibold leading-snug md:text-xl lg:text-2xl"
                 style={{ fontVariationSettings: "'wdth' 92" }}
               >
                 {s.idea}
               </p>
               <a
                 href={topicHref(s.topic)}
-                className="group mt-0.5 inline-block py-3 text-sm font-medium leading-snug underline-offset-4 hover:underline md:text-[0.95rem] lg:mt-2 lg:py-2.5 lg:leading-6"
+                className="group mt-0.5 inline-block py-3 text-sm font-medium leading-snug underline-offset-4 hover:underline md:text-base lg:mt-2 lg:py-2.5 lg:leading-6"
               >
                 Learn it in topic {t.n}: {nameHead}
                 {/* the last word rides with the arrow, so a wrap never leaves the arrow alone */}
@@ -331,12 +331,12 @@ function StoryItem({ s }: { s: Story }) {
               </a>
             </div>
             <details className="group/fold mt-1 max-w-[62ch] lg:hidden">
-              <summary className="-mx-1 inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full px-1 text-[0.95rem] font-medium text-ink-muted transition-colors hover:text-ink [&::-webkit-details-marker]:hidden">
+              <summary className="-mx-1 inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full px-1 text-base font-medium text-ink-muted transition-colors hover:text-ink [&::-webkit-details-marker]:hidden">
                 <ChevronDown aria-hidden className="size-4 transition-transform duration-200 group-open/fold:rotate-180 motion-reduce:transition-none" />
                 <span className="group-open/fold:hidden">Read the story</span>
                 <span className="hidden group-open/fold:inline">Hide the story</span>
               </summary>
-              <p className="mt-1 text-[1.0625rem] leading-[1.65]">{s.body}</p>
+              <p className="mt-1 text-base leading-relaxed">{s.body}</p>
               {s.figure && (
                 <div className="mt-6 pb-2">
                   <StoryFigure figure={s.figure} />
@@ -375,13 +375,13 @@ export default function Story() {
           <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">Why statistics</p>
           <div className="md:col-span-9">
             <h1
-              className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.6rem)] font-[680] leading-[0.92] tracking-[-0.02em]"
+              className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}
             >
               Nobody gets to
               <span className="block">see everything.</span>
             </h1>
-            <div className="rise mt-6 max-w-[56ch] space-y-3 text-[1.0625rem] text-ink-muted md:mt-7 md:space-y-4 md:text-xl" style={{ animationDelay: "80ms" }}>
+            <div className="rise mt-6 max-w-[56ch] space-y-3 text-base text-ink-muted md:mt-7 md:space-y-4 md:text-xl" style={{ animationDelay: "80ms" }}>
               <p>
                 Statistics is deciding what to do from a slice of the data. You can&rsquo;t ask every voter or inspect every plane, so you
                 study some and speak carefully about all.
@@ -395,7 +395,7 @@ export default function Story() {
                   <li key={c.id} className="border-b border-line lg:border-b-0">
                     <a href={`#${c.id}`} className="group flex min-h-11 flex-col gap-0.5 py-3 pr-3 md:py-4 md:pr-4">
                       <span className="text-xs text-ink-muted tabular-nums">{c.years}</span>
-                      <span className="flex items-center gap-1.5 font-display text-lg font-[650] group-hover:underline group-hover:underline-offset-4 max-md:leading-tight md:text-xl">
+                      <span className="flex items-center gap-1.5 font-display text-lg font-semibold group-hover:underline group-hover:underline-offset-4 max-md:leading-tight md:text-xl">
                         {c.title}
                       </span>
                     </a>
@@ -415,7 +415,7 @@ export default function Story() {
                 <div className="col-span-2 mt-2 md:col-span-1 md:col-start-3 md:mt-0">
                   <h2
                     id={`c-${c.id}`}
-                    className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
+                    className="font-display text-title font-semibold leading-none"
                     style={{ fontVariationSettings: "'wdth' 84" }}
                   >
                     {c.title}
@@ -440,7 +440,7 @@ export default function Story() {
               <div className="space-y-4 md:col-span-9">
                 <h2
                   id="everyday-uses"
-                  className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em]"
+                  className="font-display text-title font-semibold leading-none"
                   style={{ fontVariationSettings: "'wdth' 84" }}
                 >
                   Where you already use it
@@ -452,7 +452,7 @@ export default function Story() {
               {EVERYDAY.map((e) => (
                 <li key={e.name} className="bg-ink">
                   <a href={topicHref(e.topic)} className="group flex h-full flex-col gap-2 p-4 transition-colors hover:bg-paper/5 sm:min-h-40 sm:gap-3 sm:p-6">
-                    <span className="flex items-center justify-between gap-2 font-display text-xl font-[650] sm:gap-3 sm:text-2xl">
+                    <span className="flex items-center justify-between gap-2 font-display text-xl font-semibold sm:gap-3 sm:text-2xl">
                       {e.name}
                       <ArrowUpRight className="size-4 shrink-0 text-paper/40 sm:size-5 transition-colors group-hover:text-clay" />
                     </span>
@@ -469,7 +469,7 @@ export default function Story() {
         <section className="mx-auto w-full max-w-[1200px] px-4 py-10 md:px-6 md:py-28">
           <Reveal className="flex flex-col items-center text-center">
             <h2
-              className="max-w-[16ch] font-display text-[clamp(2.4rem,1.4rem+4vw,4.8rem)] font-[680] leading-[0.95] tracking-[-0.02em]"
+              className="max-w-[16ch] font-display text-title font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 80" }}
             >
               Every idea here is a topic.
@@ -488,7 +488,7 @@ export default function Story() {
         <section aria-labelledby="story-sources" className="mx-auto w-full max-w-[1200px] px-4 pb-14 md:px-6 md:pb-20">
           <div className="grid gap-3 border-t border-line pt-6 md:grid-cols-12 md:gap-4 md:pt-10">
             <div className="md:col-span-3">
-              <h2 id="story-sources" className="font-display text-2xl font-[650]">
+              <h2 id="story-sources" className="font-display text-2xl font-semibold">
                 Sources
               </h2>
             </div>
@@ -497,7 +497,7 @@ export default function Story() {
                 Every date and number above was checked against these. Where accounts disagree, the story leaves the detail out.
               </p>
               <details className="group/src mt-5">
-                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-line px-4 text-[0.95rem] font-medium transition-colors hover:bg-sand [&::-webkit-details-marker]:hidden">
+                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-line px-4 text-base font-medium transition-colors hover:bg-sand [&::-webkit-details-marker]:hidden">
                   <span className="group-open/src:hidden">Show all {SOURCES.length} sources</span>
                   <span className="hidden group-open/src:inline">Hide the sources</span>
                   <ChevronDown aria-hidden className="size-4 transition-transform duration-200 group-open/src:rotate-180 motion-reduce:transition-none" />

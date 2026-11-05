@@ -60,7 +60,7 @@ function Grains({ s, label }: { s: Seq; label: string }) {
             key={i}
             aria-label={v === undefined ? undefined : v ? "H" : "T"}
             className={cn(
-              "grid aspect-square place-items-center rounded-full font-mono text-[10px] sm:text-xs",
+              "grid aspect-square place-items-center rounded-full font-mono text-xs sm:text-xs",
               v === undefined ? "border border-dashed border-line" : v ? "bg-clay text-paper" : "border-2 border-ink text-ink",
             )}
           >
@@ -136,10 +136,10 @@ export function FakeCoin() {
         </div>
         {!done ? (
           <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={() => add(true)} className="h-16 min-w-28 flex-1 rounded-2xl bg-clay font-display text-2xl font-[680] text-paper sm:flex-none">
+            <button type="button" onClick={() => add(true)} className="h-16 min-w-28 flex-1 rounded-2xl bg-clay font-display text-2xl font-semibold text-paper sm:flex-none">
               H
             </button>
-            <button type="button" onClick={() => add(false)} className="h-16 min-w-28 flex-1 rounded-2xl border-2 border-ink font-display text-2xl font-[680] sm:flex-none">
+            <button type="button" onClick={() => add(false)} className="h-16 min-w-28 flex-1 rounded-2xl border-2 border-ink font-display text-2xl font-semibold sm:flex-none">
               T
             </button>
             <button
@@ -167,7 +167,7 @@ export function FakeCoin() {
         {done && (
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">A real coin, for comparison</h2>
+              <h2 className="text-sm font-medium text-ink-muted">A real coin, for comparison</h2>
               <button type="button" onClick={() => setReal(flip())} className="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium hover:bg-sand">
                 <Shuffle className="size-4" /> {real ? "Flip again" : "Flip 50"}
               </button>
@@ -187,20 +187,20 @@ export function FakeCoin() {
       <div className="lg:col-span-5" aria-live="polite">
         {!done ? (
           <div className="space-y-3 rounded-2xl border border-dashed border-line-strong p-6 text-ink-muted">
-            <p className="font-mono text-xs uppercase tracking-[0.08em]">The verdict appears at 50</p>
+            <p className="text-sm font-medium">The verdict appears at 50</p>
             <p>Two things give fakes away: how often you switch between H and T, and how long your longest streak is.</p>
           </div>
         ) : !dist || !tRuns || !tLong || !tHeads ? (
           <p className="rounded-2xl bg-sand p-6 font-mono text-sm">Flipping {SIMS.toLocaleString()} real coins to compare…</p>
         ) : (
           <div className="space-y-6 rounded-2xl border border-line p-6">
-            <p ref={resultRef} className={cn("font-display text-5xl font-[680] tracking-[-0.03em]", faked ? "text-ink" : "text-clay-ink")}>
+            <p ref={resultRef} className={cn("font-display text-headline font-semibold", faked ? "text-ink" : "text-clay-ink")}>
               {faked ? "Faked." : "Passes."}
             </p>
             <table className="w-full font-mono text-sm tabular">
               <caption className="sr-only">Your flips compared with {SIMS.toLocaleString()} real sequences of 50</caption>
               <thead>
-                <tr className="text-left text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                <tr className="text-left text-sm font-medium text-ink-muted">
                   <th scope="col" className="pb-2 font-normal">Measure</th>
                   <th scope="col" className="pb-2 text-right font-normal">You</th>
                   <th scope="col" className="pb-2 text-right font-normal">Real avg</th>

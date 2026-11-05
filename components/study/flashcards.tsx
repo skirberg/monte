@@ -107,17 +107,17 @@ export function Flashcards() {
           flipped ? "bg-sand" : "bg-paper",
         )}
       >
-        <span className="font-mono text-xs uppercase tracking-[0.04em] text-clay-ink">{cur ? cur.kick : ready ? "Round done" : "Shuffling"}</span>
-        <span className="text-balance font-display text-[clamp(1.5rem,1.2rem+1.4vw,2.25rem)] font-[650] leading-[1.1] tracking-[-0.02em]">
+        <span className="text-sm font-medium text-clay-ink">{cur ? cur.kick : ready ? "Round done" : "Shuffling"}</span>
+        <span className="text-balance font-display text-heading font-semibold leading-tight">
           {cur ? sym(cur.front) : !ready ? "" : state.pool.length ? "Nice. Shuffle for another round." : "No cards match."}
         </span>
         {cur && flipped && (
           <span className="grid max-w-[34rem] gap-2">
-            <span className="text-[clamp(1.05rem,1rem+0.4vw,1.25rem)] leading-normal">{sym(cur.main)}</span>
+            <span className="text-lead leading-normal">{sym(cur.main)}</span>
             <span className="text-sm text-ink-muted">{sym(cur.sub)}</span>
           </span>
         )}
-        {cur && <span className="text-[13px] text-ink-muted">{flipped ? "Did you have it?" : "Tap to flip"}</span>}
+        {cur && <span className="text-sm text-ink-muted">{flipped ? "Did you have it?" : "Tap to flip"}</span>}
       </button>
       <div className="flex flex-wrap gap-2 [&>*]:flex-[1_1_8rem]">
         <button type="button" className={btn.ghost} disabled={!flipped} onClick={() => rate(false)}>

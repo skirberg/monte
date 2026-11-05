@@ -74,7 +74,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
       href={n.href}
       aria-current={n.active ? "page" : undefined}
       className={cn(
-        "relative flex min-h-11 items-center whitespace-nowrap px-3 text-[0.9rem] text-ink-muted transition-colors hover:text-ink",
+        "relative flex min-h-11 items-center whitespace-nowrap px-3 text-base text-ink-muted transition-colors hover:text-ink",
         "aria-[current=page]:font-medium aria-[current=page]:text-ink",
         "after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-clay after:transition-transform after:duration-200 aria-[current=page]:after:scale-x-100",
         n.funOnly && "fun-only",
@@ -123,7 +123,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
             >
               <Search className="size-[18px]" />
               <span className="hidden xl:inline">Jump to</span>
-              <kbd className="hidden rounded-md border border-line bg-sand px-1.5 py-0.5 font-mono text-[11px] text-ink-muted xl:inline">
+              <kbd className="hidden rounded-md border border-line bg-sand px-1.5 py-0.5 font-mono text-xs text-ink-muted xl:inline">
                 ⌘K
               </kbd>
             </button>

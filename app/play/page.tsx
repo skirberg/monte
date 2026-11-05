@@ -18,7 +18,7 @@ export default function PlayHub() {
           <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">{GAMES.length} games</p>
           <div className="space-y-4 md:col-span-9">
             <h1
-              className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.6rem)] font-[680] leading-[0.92] tracking-[-0.02em]"
+              className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}
             >
               Every game hides
@@ -35,7 +35,7 @@ export default function PlayHub() {
           {GAME_GROUPS.map((grp) => (
             <section key={grp.id} aria-labelledby={`g-${grp.id}`}>
               <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3">
-                <h2 id={`g-${grp.id}`} className="font-display text-3xl font-[650]" style={{ fontVariationSettings: "'wdth' 85" }}>
+                <h2 id={`g-${grp.id}`} className="font-display text-3xl font-semibold" style={{ fontVariationSettings: "'wdth' 85" }}>
                   {grp.name}
                 </h2>
                 {grp.id === "money" && <p className="text-sm text-ink-muted">For learning, not advice.</p>}
@@ -52,7 +52,7 @@ export default function PlayHub() {
                       </div>
                       <div className="flex flex-col justify-center gap-1 p-4 sm:justify-start sm:gap-3 sm:p-6">
                         <p className="text-sm text-ink-muted">{g.topicName}</p>
-                        <h3 className="flex items-center justify-between gap-3 font-display text-xl font-[650] sm:text-2xl" style={{ fontVariationSettings: "'wdth' 88" }}>
+                        <h3 className="flex items-center justify-between gap-3 font-display text-xl font-semibold sm:text-2xl" style={{ fontVariationSettings: "'wdth' 88" }}>
                           {g.name}
                           <ArrowRight className="size-5 shrink-0 text-ink-muted transition-transform group-hover:translate-x-1 group-hover:text-ink" />
                         </h3>

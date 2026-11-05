@@ -78,7 +78,7 @@ export function LoopSteps() {
             />
             <span className="mb-1 font-mono text-xs text-ink-muted tabular">0{i + 1}</span>
           </div>
-          <h3 className="font-display text-4xl font-[650]" style={{ fontVariationSettings: "'wdth' 85" }}>
+          <h3 className="font-display text-4xl font-semibold" style={{ fontVariationSettings: "'wdth' 85" }}>
             {s.k}
           </h3>
           <p className="max-w-[34ch] text-ink-muted">{s.t}</p>

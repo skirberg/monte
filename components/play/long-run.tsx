@@ -157,7 +157,7 @@ export function LongRun() {
 
       <section className="grid gap-8 lg:grid-cols-12 lg:gap-12" aria-labelledby="hist-t">
         <div className="lg:col-span-7">
-          <h2 id="hist-t" className="mb-3 font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">
+          <h2 id="hist-t" className="mb-3 text-sm font-medium text-ink-muted">
             Every year since {DATA.years[0]}, total return
           </h2>
           <div className="rounded-[28px] bg-sand p-4 sm:p-6">
@@ -175,7 +175,7 @@ export function LongRun() {
               [`Best · ${DATA.years[s.best]}`, pct(r[s.best], 1)],
             ].map(([k, v], i) => (
               <div key={k} className="bg-paper p-4">
-                <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
+                <dt className="text-sm font-medium text-ink-muted">{k}</dt>
                 <dd className={cn("mt-1 text-xl", i === 1 && "text-clay-ink")}>{v}</dd>
               </div>
             ))}
@@ -189,7 +189,7 @@ export function LongRun() {
 
       <section className="grid gap-8 lg:grid-cols-12 lg:gap-12" aria-labelledby="mc-t">
         <div className="space-y-5 lg:col-span-5">
-          <h2 id="mc-t" className="font-display text-2xl font-[650]">
+          <h2 id="mc-t" className="font-display text-2xl font-semibold">
             Simulate {PATHS.toLocaleString()} futures
           </h2>
           <p className="text-ink-muted">
@@ -233,7 +233,7 @@ export function LongRun() {
                   ["Chance of losing money", pct(fan.lose, 1)],
                 ].map(([k, v], i) => (
                   <div key={k}>
-                    <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
+                    <dt className="text-sm font-medium text-ink-muted">{k}</dt>
                     <dd className={cn("text-xl", i === 2 && "text-clay-ink")}>{v}</dd>
                   </div>
                 ))}

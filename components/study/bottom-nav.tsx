@@ -70,7 +70,7 @@ function ModeChoice() {
           >
             <Icon className="size-[18px] shrink-0" aria-hidden />
             <span className="grid leading-tight">
-              <span className={cn("text-[0.95rem]", on && "font-medium")}>{label}</span>
+              <span className={cn("text-base", on && "font-medium")}>{label}</span>
               <span className="text-xs text-ink-muted">{line}</span>
             </span>
           </button>
@@ -93,7 +93,7 @@ export function StudyBottomNav({ site = false }: { site?: boolean }) {
   const to = (hash: string) => studyHref(hash);
   const [open, setOpen] = React.useState(false);
   const moreActive = navKey === "decide" || navKey === "play" || !!pathname?.startsWith("/story");
-  const item = "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors";
+  const item = "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors";
 
   return (
     <>
@@ -131,7 +131,7 @@ export function StudyBottomNav({ site = false }: { site?: boolean }) {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="bottom" showCloseButton={false} className="rounded-t-[24px] bg-paper px-4 pb-[calc(16px+env(safe-area-inset-bottom))] pt-3">
           <div className="flex items-center justify-between">
-            <SheetTitle className="font-display text-xl font-[650]">More</SheetTitle>
+            <SheetTitle className="font-display text-xl font-semibold">More</SheetTitle>
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -144,11 +144,11 @@ export function StudyBottomNav({ site = false }: { site?: boolean }) {
           <div className="max-h-[70dvh] space-y-5 overflow-y-auto overscroll-contain pb-1">
             {MORE.map((group) => (
               <section key={group.title} aria-label={group.title} className={group.funOnly ? "fun-only" : undefined}>
-                <h3 className="mb-1 px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">{group.title}</h3>
+                <h3 className="mb-1 px-1 text-sm font-medium text-ink-muted">{group.title}</h3>
                 <ul className="divide-y divide-line border-y border-line">
                   {group.links.map(({ label, href, Icon }) => (
                     <li key={label}>
-                      <a href={href} onClick={() => setOpen(false)} className="flex min-h-14 items-center gap-3 px-1 text-[0.98rem] hover:text-clay-ink">
+                      <a href={href} onClick={() => setOpen(false)} className="flex min-h-14 items-center gap-3 px-1 text-base hover:text-clay-ink">
                         <Icon className="size-5 text-ink-muted" aria-hidden /> {label}
                       </a>
                     </li>
@@ -157,7 +157,7 @@ export function StudyBottomNav({ site = false }: { site?: boolean }) {
               </section>
             ))}
             <section aria-label="Site mode">
-              <h3 className="mb-1.5 px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Mode</h3>
+              <h3 className="mb-1.5 px-1 text-sm font-medium text-ink-muted">Mode</h3>
               <ModeChoice />
             </section>
             <a href="/built/" onClick={() => setOpen(false)} className="flex min-h-11 items-center gap-2 px-1 text-sm text-ink-muted hover:text-ink">

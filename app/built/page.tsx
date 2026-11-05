@@ -144,7 +144,7 @@ export default function Built() {
         <header className="grid gap-4 md:grid-cols-12">
           <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">How it&rsquo;s built</p>
           <div className="space-y-4 md:col-span-9">
-            <h1 className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.2rem)] font-[680] leading-[0.92] tracking-[-0.02em]" style={{ fontVariationSettings: "'wdth' 78" }}>
+            <h1 className="rise font-display text-display font-semibold leading-none" style={{ fontVariationSettings: "'wdth' 78" }}>
               How it&rsquo;s built
             </h1>
             <p className="rise max-w-[56ch] text-lg text-ink-muted" style={{ animationDelay: "80ms" }}>

@@ -65,16 +65,16 @@ function Preview({ t, stat }: { t: Topic; stat?: Stat }) {
       className="flex h-full flex-col gap-5"
     >
       <div className="flex items-start justify-between gap-4">
-        <span className="font-mono text-[5.5rem] leading-[0.8] font-medium tracking-[-0.06em] text-clay tabular">
+        <span className="font-mono text-figure leading-none font-medium tracking-tight text-clay tabular">
           {String(t.n).padStart(2, "0")}
         </span>
         <MiniPile n={t.n} className="mt-2 w-32" />
       </div>
       <div className="space-y-3">
-        <h3 className="font-display text-3xl font-[650] leading-tight" style={{ fontVariationSettings: "'wdth' 88" }}>
+        <h3 className="font-display text-3xl font-semibold leading-tight" style={{ fontVariationSettings: "'wdth' 88" }}>
           {t.name}
         </h3>
-        <p className="text-[1.05rem] leading-relaxed text-ink-muted">{t.line}</p>
+        <p className="text-base leading-relaxed text-ink-muted">{t.line}</p>
       </div>
       <p className="text-sm text-ink-muted">
         {st.won ? <span className="text-clay-ink">Mastered</span> : st.label}
@@ -124,12 +124,12 @@ export function TheDraw() {
                   {String(x.n).padStart(2, "0")}
                 </span>
                 <span
-                  className="font-display text-[1.2rem] font-[600] leading-snug md:text-[1.35rem]"
+                  className="font-display text-xl font-semibold leading-snug md:text-2xl"
                   style={{ fontVariationSettings: "'wdth' 92" }}
                 >
                   {x.name}
                 </span>
-                <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                <span className="flex items-center gap-2 text-sm font-medium text-ink-muted">
                   {st.won ? (
                     <span className="inline-flex items-center gap-1 text-clay-ink">
                       <Check className="size-3.5" /> Mastered

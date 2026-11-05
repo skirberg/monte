@@ -48,7 +48,7 @@ export function ToolPage({ id, children }: { id: string; children: ReactNode }) 
           </nav>
           <div className="space-y-3 md:col-span-9">
             <h1
-              className="rise font-display text-[clamp(2.1rem,1.4rem+3.6vw,4.2rem)] font-[680] leading-[0.96] tracking-[-0.02em]"
+              className="rise font-display text-title font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 80" }}
             >
               {t.question}
@@ -71,7 +71,7 @@ export function ToolPage({ id, children }: { id: string; children: ReactNode }) 
           {next ? (
             <Link href={toolHref(next.id)} className="group grid min-h-11 gap-0.5 py-1">
               <span className="text-xs text-ink-muted">Next decision</span>
-              <span className="inline-flex items-center gap-2 font-display text-lg font-[650] leading-tight">
+              <span className="inline-flex items-center gap-2 font-display text-lg font-semibold leading-tight">
                 {next.question} <ArrowRight className="size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink" aria-hidden />
               </span>
             </Link>

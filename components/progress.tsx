@@ -53,7 +53,7 @@ export function ProgressBridge() {
   return (
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-4 top-[84px] z-[61] flex justify-center print:hidden">
       {toast && (
-        <p key={toast.id} className="max-w-md rounded-2xl bg-ink px-4 py-2.5 text-center text-[15px] font-medium text-paper shadow-[0_12px_32px_-12px_rgba(0,0,0,.35)]">
+        <p key={toast.id} className="max-w-md rounded-2xl bg-ink px-4 py-2.5 text-center text-base font-medium text-paper shadow-[0_12px_32px_-12px_rgba(0,0,0,.35)]">
           {toast.text}
         </p>
       )}
@@ -128,7 +128,7 @@ export function ProgressButton() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" initialFocus={titleRef} className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-md">
           <SheetHeader>
-            <SheetTitle ref={titleRef} tabIndex={-1} className="font-display text-2xl font-[650] outline-none">
+            <SheetTitle ref={titleRef} tabIndex={-1} className="font-display text-2xl font-semibold outline-none">
               Your progress
             </SheetTitle>
             <SheetDescription>Saved in this browser. XP comes from answering, finishing and remembering, never from clicking around.</SheetDescription>
@@ -136,7 +136,7 @@ export function ProgressButton() {
           <div className="grid gap-6 px-4 pb-8">
             <section className="grid gap-2">
               <div className="flex items-baseline justify-between">
-                <p className="font-display text-3xl font-[650]">Level {lv.level}</p>
+                <p className="font-display text-3xl font-semibold">Level {lv.level}</p>
                 <p className="text-sm text-ink-muted tabular-nums">
                   {lv.into} / {lv.span} XP
                 </p>
@@ -150,12 +150,12 @@ export function ProgressButton() {
             <section className="grid grid-cols-3 gap-2 text-center">
               <div className="rounded-2xl bg-sand p-3">
                 <p className="text-xs text-ink-muted">Today</p>
-                <p className="font-display text-2xl font-[650] tabular-nums">{todayXp}</p>
+                <p className="font-display text-2xl font-semibold tabular-nums">{todayXp}</p>
                 <p className="text-xs text-ink-muted">of {DAILY_GOAL} XP</p>
               </div>
               <div className="rounded-2xl bg-sand p-3">
                 <p className="text-xs text-ink-muted">Streak</p>
-                <p className="flex items-center justify-center gap-1 font-display text-2xl font-[650] tabular-nums">
+                <p className="flex items-center justify-center gap-1 font-display text-2xl font-semibold tabular-nums">
                   <Flame className="size-5 text-clay" /> {streak}
                 </p>
                 <p className="flex items-center justify-center gap-1 text-xs text-ink-muted">
@@ -164,7 +164,7 @@ export function ProgressButton() {
               </div>
               <div className="rounded-2xl bg-sand p-3">
                 <p className="text-xs text-ink-muted">Monte chips</p>
-                <p className="font-display text-2xl font-[650] tabular-nums">{p.chips.toLocaleString()}</p>
+                <p className="font-display text-2xl font-semibold tabular-nums">{p.chips.toLocaleString()}</p>
                 <p className="text-xs text-ink-muted">play money</p>
               </div>
             </section>

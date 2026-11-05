@@ -78,7 +78,7 @@ export function ServeMath() {
             <line x1={PAD.l} x2={X(p)} y1={Y(h)} y2={Y(h)} stroke="var(--clay)" strokeWidth={2} strokeDasharray="4 5" />
             <circle cx={X(p)} cy={Y(h)} r={8} fill="var(--clay)" stroke="var(--paper)" strokeWidth={3} />
           </svg>
-          <figcaption className="mt-2 flex flex-wrap justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+          <figcaption className="mt-2 flex flex-wrap justify-between gap-2 text-sm font-medium text-ink-muted">
             <span>Serve points won → service games held</span>
             <span>Dashed: if games just matched points</span>
           </figcaption>
@@ -91,7 +91,7 @@ export function ServeMath() {
           <Slider id="serve-them" label="They win on their serve" value={r} onChange={setR} />
         </div>
         <section aria-labelledby="real-t" className="space-y-3 rounded-2xl bg-sand p-5">
-          <h2 id="real-t" className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+          <h2 id="real-t" className="text-sm font-medium text-ink-muted">
             Serve like a real player · ATP 2025
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -137,12 +137,12 @@ export function ServeMath() {
         </section>
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line" aria-live="polite">
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">You hold serve</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{pc(h)}</dd>
+            <dt className="text-sm font-medium text-ink-muted">You hold serve</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight text-clay-ink tabular">{pc(h)}</dd>
           </div>
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">You win the set</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{pc(s)}</dd>
+            <dt className="text-sm font-medium text-ink-muted">You win the set</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight text-clay-ink tabular">{pc(s)}</dd>
           </div>
         </dl>
         <p className="text-ink-muted">

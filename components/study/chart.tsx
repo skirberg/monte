@@ -42,7 +42,7 @@ export function Chart({
       viewBox={`0 0 ${W} ${H}`}
       role="img"
       aria-label={label}
-      className="block h-auto w-full overflow-visible [&_text]:fill-ink-muted [&_text]:font-mono [&_text]:text-[11px]"
+      className="block h-auto w-full overflow-visible [&_text]:fill-ink-muted [&_text]:font-mono [&_text]:text-xs"
     >
       {children({ W, H })}
     </svg>
@@ -52,7 +52,7 @@ export function Chart({
 /** One labelled bar against a track, with an optional target tick (the true probability). */
 export function BarRow({ label, p, target }: { label: string; p: number; target?: number }) {
   return (
-    <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_3.5rem] items-center gap-3 font-mono text-[13px] tabular-nums">
+    <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_3.5rem] items-center gap-3 font-mono text-sm tabular-nums">
       <span>{label}</span>
       <span className="relative h-3 rounded-[4px] bg-sand-2">
         <span className="absolute inset-y-0 left-0 rounded-[4px] bg-clay" style={{ width: `${Math.min(100, p * 100).toFixed(1)}%` }} />

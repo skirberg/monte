@@ -23,14 +23,14 @@ const WAYS = [
   { key: "play", kicker: "Play", title: `${GAMES.length} games, each hiding an idea`, href: playHref(), className: "fun-only" },
 ];
 
-const h2 = "font-display text-[clamp(1.9rem,1.3rem+2.6vw,3.4rem)] font-[650] leading-[0.98] tracking-[-0.018em]";
+const h2 = "font-display text-headline font-semibold leading-none";
 
 function SectionHead({ kicker, title }: { kicker: string; title: React.ReactNode }) {
   return (
     <Reveal className="mb-10 grid gap-4 md:mb-14 md:grid-cols-12">
       <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-3">{kicker}</p>
       <h2
-        className="font-display text-[clamp(2.2rem,1.4rem+3.2vw,4rem)] font-[650] leading-[0.98] tracking-[-0.018em] md:col-span-9"
+        className="font-display text-title font-semibold leading-none md:col-span-9"
         style={{ fontVariationSettings: "'wdth' 84" }}
       >
         {title}
@@ -58,7 +58,7 @@ export default function Home() {
           <div className="flex flex-col justify-center lg:col-span-6">
             <div className="rise">
               <h1
-                className="font-display text-[clamp(3.1rem,1.6rem+5vw,5.4rem)] font-[680] leading-[0.9] tracking-[-0.02em]"
+                className="font-display text-display font-semibold leading-none"
                 style={{ fontVariationSettings: "'wdth' 78" }}
               >
                 Drop enough grains.
@@ -101,8 +101,8 @@ export default function Home() {
                   className="group flex min-h-16 items-center justify-between gap-4 py-3 transition-colors md:h-full md:flex-col md:items-start md:rounded-[24px] md:border md:border-line md:p-6 md:hover:border-ink"
                 >
                   <span className="grid gap-0.5 md:gap-2">
-                    <span className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">{w.kicker}</span>
-                    <span className="font-display text-[1.3rem] font-[650] leading-tight md:text-2xl" style={{ fontVariationSettings: "'wdth' 88" }}>
+                    <span className="text-sm font-medium text-ink-muted">{w.kicker}</span>
+                    <span className="font-display text-xl font-semibold leading-tight md:text-2xl" style={{ fontVariationSettings: "'wdth' 88" }}>
                       {w.title}
                     </span>
                   </span>
@@ -148,7 +148,7 @@ export default function Home() {
           <div className="grid gap-3 md:grid-cols-12">
             <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-2">Why statistics</p>
             <div className="grid gap-2 md:col-span-9">
-              <h2 id="story-t" className="font-display text-[clamp(1.5rem,1.2rem+1.4vw,2.2rem)] font-[650] leading-tight" style={{ fontVariationSettings: "'wdth' 86" }}>
+              <h2 id="story-t" className="font-display text-heading font-semibold leading-tight" style={{ fontVariationSettings: "'wdth' 86" }}>
                 The biggest poll ever taken called the wrong winner.
               </h2>
               <a href="/story/" className="inline-flex min-h-11 items-center gap-2 self-start font-medium text-clay-ink underline-offset-4 hover:underline">
@@ -168,7 +168,7 @@ export default function Home() {
                   <span className="block bg-sand px-8 py-6 transition-colors group-hover:bg-sand-2">
                     <GameArt slug={g.slug} />
                   </span>
-                  <span className="flex items-center justify-between gap-2 p-5 font-display text-xl font-[650]">
+                  <span className="flex items-center justify-between gap-2 p-5 font-display text-xl font-semibold">
                     {g.name}
                     <ArrowRight className="size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-1 group-hover:text-ink" />
                   </span>
@@ -185,7 +185,7 @@ export default function Home() {
               <MarkBuild className="size-14 shrink-0 md:size-20" />
               <div className="space-y-1.5">
                 <h2
-                  className="font-display text-[clamp(2rem,1.4rem+3vw,3.6rem)] font-[680] leading-[0.95] tracking-[-0.02em]"
+                  className="font-display text-headline font-semibold leading-none"
                   style={{ fontVariationSettings: "'wdth' 80" }}
                 >
                   Ten minutes a day.

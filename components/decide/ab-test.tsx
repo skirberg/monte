@@ -225,7 +225,7 @@ export function AbTest() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">Don&rsquo;t peek and stop</p>
+            <p className="font-display text-xl font-semibold !text-ink">Don&rsquo;t peek and stop</p>
             <p>
               Decide how many people you need before you start, and stop there. Checking every day and stopping the moment B looks ahead turns luck into a &ldquo;win&rdquo; far
               more often than 5% of the time.

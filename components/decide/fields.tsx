@@ -220,7 +220,7 @@ export function Stat({ k, v, sub, tone }: { k: string; v: React.ReactNode; sub?:
   return (
     <div className="min-w-0 border-l border-t border-line p-4 sm:p-5">
       <dt className="text-sm text-ink-muted">{k}</dt>
-      <dd className={cn("mt-1 break-words font-display text-[1.75rem] font-[650] leading-tight tracking-[-0.02em]", tone === "clay" && "text-clay-ink", tone === "danger" && "text-[var(--danger)]")}>{v}</dd>
+      <dd className={cn("mt-1 break-words font-display text-3xl font-semibold leading-tight", tone === "clay" && "text-clay-ink", tone === "danger" && "text-[var(--danger)]")}>{v}</dd>
       {sub && <dd className="mt-1 font-sans text-xs text-ink-muted">{sub}</dd>}
     </div>
   );
@@ -260,7 +260,7 @@ export function ResultBar({ lead, rest }: { lead: string | null; rest: string | 
     <>
       <LiveSummary text={sentence} />
       <div className="sticky top-14 z-30 -mx-4 border-b border-line bg-paper/90 px-4 py-2.5 backdrop-blur-md md:top-16 md:-mx-6 md:px-6 lg:hidden">
-        <p className={cn("text-[0.95rem] leading-snug transition-colors", pending && "text-ink-muted")}>
+        <p className={cn("text-base leading-snug transition-colors", pending && "text-ink-muted")}>
           {shown ? (
             <>
               {shown.lead && <span className="font-semibold text-clay-ink tabular-nums">{shown.lead}</span>} {shown.rest}
@@ -311,7 +311,7 @@ export function HowItWorks({ id, steps, after }: { id: string; steps: Step[]; af
           +
         </span>
       </summary>
-      <div className="grid gap-6 px-5 pb-6 pt-2 lg:grid-cols-12 lg:gap-10 [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em]">
+      <div className="grid gap-6 px-5 pb-6 pt-2 lg:grid-cols-12 lg:gap-10 [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-symbol">
         <ol className="space-y-5 lg:col-span-7">
           {steps.map((s, i) => (
             <li key={s.title} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-2">
@@ -319,7 +319,7 @@ export function HowItWorks({ id, steps, after }: { id: string; steps: Step[]; af
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="max-w-[62ch] space-y-1.5">
-                <p className="font-display text-lg font-[650]">{s.title}</p>
+                <p className="font-display text-lg font-semibold">{s.title}</p>
                 <div className="leading-relaxed text-ink-muted">{s.body}</div>
                 {s.math && <p className="break-words font-mono text-sm leading-relaxed text-ink">{s.math}</p>}
               </div>

@@ -335,9 +335,9 @@ export function Election() {
               ["Streak", String(streak), `best ${best}`],
             ].map(([k, v, sub]) => (
               <div key={k} className="bg-paper p-4">
-                <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
+                <dt className="text-sm font-medium text-ink-muted">{k}</dt>
                 <dd className="mt-1 text-xl">{v}</dd>
-                <dd className="text-[11px] text-ink-muted">{sub}</dd>
+                <dd className="text-xs text-ink-muted">{sub}</dd>
               </div>
             ))}
           </dl>
@@ -361,10 +361,10 @@ export function Election() {
           )}
 
           <div className="space-y-2">
-            <p className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted">{last ? `Poll ${polls.length} · ${last.n.toLocaleString()} people` : "Latest poll"}</p>
+            <p className="text-sm font-medium text-ink-muted">{last ? `Poll ${polls.length} · ${last.n.toLocaleString()} people` : "Latest poll"}</p>
             {last ? (
               <>
-                <p className="font-display text-[clamp(1.9rem,1.2rem+2.4vw,2.8rem)] font-[650] leading-none tracking-[-0.02em] tabular-nums">
+                <p className="font-display text-headline font-semibold leading-none tabular-nums">
                   A {pts(last.a)} <span className="text-ink-muted">·</span> B {pts(1 - last.a)}
                 </p>
                 <p className="text-ink-muted">
@@ -423,7 +423,7 @@ export function Election() {
           <div>
             {called && (
               <div className="space-y-4 rounded-2xl border border-line p-5">
-                <p ref={resultRef} className={cn("font-display text-4xl font-[680]", right ? "text-clay-ink" : "text-ink")}>
+                <p ref={resultRef} className={cn("font-display text-4xl font-semibold", right ? "text-clay-ink" : "text-ink")}>
                   {locked === 0.5 ? "No lean." : right ? "Good call." : "Wrong way."}
                 </p>
                 <p className="font-mono text-sm tabular">
@@ -496,7 +496,7 @@ function Calibration({ history, avg }: { history: Race[]; avg: number | null }) 
             <div className="overflow-hidden rounded-2xl bg-paper">
               <table className="w-full text-left font-mono text-sm tabular">
                 <caption className="sr-only">Your calls grouped by how sure you were, with how many came true</caption>
-                <thead className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                <thead className="text-sm font-medium text-ink-muted">
                   <tr className="border-b border-line">
                     <th scope="col" className="p-3 font-normal sm:p-4">
                       You said
@@ -619,8 +619,8 @@ function ThousandElections() {
         <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-3">
           {ks.map((k, i) => (
             <div key={k} className="bg-paper p-5">
-              <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k === 1 ? "One poll" : `Average of ${k}`}</dt>
-              <dd className={cn("mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular", k === 1 && "text-clay-ink")}>{rates ? pct(rates[i], 1) : "?"}</dd>
+              <dt className="text-sm font-medium text-ink-muted">{k === 1 ? "One poll" : `Average of ${k}`}</dt>
+              <dd className={cn("mt-1 font-mono text-4xl font-medium tracking-tight tabular", k === 1 && "text-clay-ink")}>{rates ? pct(rates[i], 1) : "?"}</dd>
               <dd className="mt-1 text-xs text-ink-muted">named the wrong leader · formula {pct(formula(k), 1)}</dd>
             </div>
           ))}

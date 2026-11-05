@@ -60,7 +60,7 @@ function Meter({ k, v, bar, c }: { k: string; v: string; bar?: number; c?: strin
   return (
     <div className="grid content-start gap-1.5 p-4">
       <span className={eyebrow}>{k}</span>
-      <span className="font-mono text-[28px] font-medium tabular-nums tracking-[-0.03em]">{v}</span>
+      <span className="font-mono text-3xl font-medium tabular-nums tracking-tight">{v}</span>
       {bar != null && (
         <span className="h-2 overflow-hidden rounded-full bg-sand-2">
           <i className="block h-full bg-clay" style={{ width: `${bar}%` }} />
@@ -315,13 +315,13 @@ export function Drill() {
 
           {run && q && (
             <section ref={cardRef} aria-labelledby="d-q" className={card}>
-              <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-muted">
+              <div className="flex items-center justify-between gap-3 text-sm font-medium text-ink-muted">
                 <span>
                   {run.mode === "daily" ? `Monte Daily, ${dayKey()}: ` : ""}Question {run.i + 1} of {run.qs.length}
                   {done ? `, score ${run.correct} of ${done}` : ""}
                 </span>
                 {run.timed ? (
-                  <span role="timer" aria-label="Time left" className={cn("text-[22px] font-medium normal-case tracking-normal tabular-nums", left < 30 && "text-danger")}>
+                  <span role="timer" aria-label="Time left" className={cn("text-2xl font-medium tabular-nums", left < 30 && "text-danger")}>
                     {clock(left)}
                   </span>
                 ) : (
@@ -330,7 +330,7 @@ export function Drill() {
               </div>
               <div className="grid gap-2">
                 <p className={eyebrow}>{topicById(q.mod)?.short}</p>
-                <p id="d-q" className="text-[clamp(1.15rem,1rem+0.6vw,1.4rem)] font-medium leading-snug">
+                <p id="d-q" className="text-lead font-medium leading-snug">
                   {sym(mt(q.q))}
                 </p>
               </div>
@@ -393,7 +393,7 @@ export function Drill() {
           {result && (
             <section aria-labelledby="r-score" className={card}>
               <div className="grid gap-2">
-                <p id="r-score" className="font-mono text-[clamp(40px,6vw,64px)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+                <p id="r-score" className="font-mono text-figure font-medium leading-none tracking-tight tabular-nums">
                   {result.pct}%
                 </p>
                 <p>{resultMsg}</p>
@@ -434,7 +434,7 @@ export function Drill() {
               const d = statsFor(p, t.id), w = isWon(p, t.id), v = Math.round((d.best || 0) * 100);
               return (
                 <li key={t.id} className="border-b border-line last:border-b-0">
-                  <button type="button" onClick={() => start("topic", [t.id], 8, 480, false)} className="grid min-h-11 w-full grid-cols-[1.5rem_minmax(0,1fr)_4rem] items-center gap-3 px-3 py-2 text-left text-[15px] transition-colors hover:bg-sand">
+                  <button type="button" onClick={() => start("topic", [t.id], 8, 480, false)} className="grid min-h-11 w-full grid-cols-[1.5rem_minmax(0,1fr)_4rem] items-center gap-3 px-3 py-2 text-left text-base transition-colors hover:bg-sand">
                     <span className="font-mono text-xs tabular-nums text-ink-muted">{t.n}</span>
                     <span className="grid">
                       {t.short}
@@ -471,7 +471,7 @@ function DailyShare({ d, correct, n }: { d: NonNullable<Result["daily"]>; correc
   };
   return (
     <div className="grid justify-items-start gap-2.5 rounded-[18px] bg-sand p-5">
-      <p className="text-[34px] leading-none tracking-[6px]" aria-label={`${correct} of ${n} right`}>
+      <p className="text-4xl leading-none tracking-widest" aria-label={`${correct} of ${n} right`}>
         {d.grid}
       </p>
       <p className="text-sm text-ink-muted">{d.first ? "Same five questions for everyone today. New set tomorrow." : `Your first try today was ${d.firstScore} of ${n}. That one counts.`}</p>

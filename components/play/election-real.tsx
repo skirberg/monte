@@ -122,7 +122,7 @@ function Split({ pair }: { pair: Pair }) {
 function MarketCard({ chamber, label, sources }: { chamber: Chamber; label: string; sources: Source[] }) {
   return (
     <div className="space-y-5 rounded-2xl bg-paper p-5">
-      <h4 className="font-display text-xl font-[650]">Who controls the {label}</h4>
+      <h4 className="font-display text-xl font-semibold">Who controls the {label}</h4>
       <ul className="space-y-5">
         {sources.map((s) => {
           const pr = s[chamber];
@@ -131,7 +131,7 @@ function MarketCard({ chamber, label, sources }: { chamber: Chamber; label: stri
               <p className="sr-only">
                 {s.name}: {whole(pr.dem)} chance Democrats control the {label}, {rest(pr.dem)} chance Republicans do.
               </p>
-              <p aria-hidden="true" className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+              <p aria-hidden="true" className="text-sm font-medium text-ink-muted">
                 {s.name}
               </p>
               <div aria-hidden="true" className="flex flex-wrap items-baseline justify-between gap-x-3 font-mono text-sm tabular">
@@ -164,7 +164,7 @@ export function RealRace() {
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="space-y-4 lg:col-span-7">
-          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the markets {say}</h3>
+          <h3 className="text-sm font-medium text-ink-muted">What the markets {say}</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {CHAMBERS.map(([c, l]) => (
               <MarketCard key={c} chamber={c} label={l} sources={sources} />
@@ -182,9 +182,9 @@ export function RealRace() {
         </div>
 
         <div className="space-y-4 lg:col-span-5">
-          <h3 className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">What the polls {say}</h3>
+          <h3 className="text-sm font-medium text-ink-muted">What the polls {say}</h3>
           <div className="space-y-3 rounded-2xl bg-sand p-5">
-            <p className="font-display text-[clamp(1.9rem,1.2rem+2.4vw,2.6rem)] font-[650] leading-none tracking-[-0.02em] tabular-nums">
+            <p className="font-display text-heading font-semibold leading-none tabular-nums">
               {POLL.leader} +{POLL.lead}
             </p>
             <p className="text-ink-muted">
@@ -230,14 +230,14 @@ function Results({ sources }: { sources: Source[] }) {
   const settled = CHAMBERS.filter(([c]) => RESULTS[c]);
   return (
     <div className="space-y-4 rounded-2xl bg-sand p-5 md:p-6">
-      <h3 className="font-display text-2xl font-[650]">{settled.length ? "The results" : "The vote is in. The count isn't, yet."}</h3>
+      <h3 className="font-display text-2xl font-semibold">{settled.length ? "The results" : "The vote is in. The count isn't, yet."}</h3>
       {settled.length > 0 ? (
         <ul className="grid gap-4 sm:grid-cols-2">
           {settled.map(([c, label]) => {
             const w = RESULTS[c]!;
             return (
               <li key={c} className="space-y-2 rounded-2xl bg-paper p-5">
-                <p className="font-display text-xl font-[650]">
+                <p className="font-display text-xl font-semibold">
                   {PARTY_NAME[w]} won the {label}
                 </p>
                 <ul className="space-y-1 font-mono text-sm tabular">
@@ -288,9 +288,9 @@ function PollToProbability({ markets }: { markets: { name: string; p: number }[]
   return (
     <div className="grid gap-6 border-t border-line pt-6 lg:grid-cols-12">
       <div className="space-y-4 lg:col-span-5">
-        <h3 className="font-display text-2xl font-[650]">Turn a poll lead into a chance</h3>
+        <h3 className="font-display text-2xl font-semibold">Turn a poll lead into a chance</h3>
         <p className="text-ink-muted">
-          If the lead is roughly normal around the true lead, the chance the leader is really ahead is <code className="rounded-md bg-sand px-1.5 py-0.5 font-mono text-[0.92em]">Φ(lead ÷ SE)</code>, where SE is the margin
+          If the lead is roughly normal around the true lead, the chance the leader is really ahead is <code className="rounded-md bg-sand px-1.5 py-0.5 font-mono text-symbol">Φ(lead ÷ SE)</code>, where SE is the margin
           of error on the lead divided by 1.96.
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -319,13 +319,13 @@ function PollToProbability({ markets }: { markets: { name: string; p: number }[]
         </p>
         <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2">
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Polls, if only luck mattered</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{implied === null ? "?" : fine(implied)}</dd>
+            <dt className="text-sm font-medium text-ink-muted">Polls, if only luck mattered</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight tabular">{implied === null ? "?" : fine(implied)}</dd>
             <dd className="mt-1 text-xs text-ink-muted">{implied === null ? "Enter a lead from 0 to 50 and a margin above 0." : "chance the leader truly leads the vote"}</dd>
           </div>
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Markets, House control</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{marketText}</dd>
+            <dt className="text-sm font-medium text-ink-muted">Markets, House control</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight tabular">{marketText}</dd>
             <dd className="mt-1 text-xs text-ink-muted">chance the same party wins the House · {markets.map((m) => `${m.name} ${whole(m.p)}`).join(" · ")}</dd>
           </div>
         </dl>

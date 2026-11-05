@@ -111,7 +111,7 @@ export function TestResultMini() {
       <div className="flex flex-col gap-5 lg:col-span-7">
         <div>
           <p className="text-sm text-ink-muted">If you test positive, the chance you really have it</p>
-          <p className="font-mono text-[clamp(3.4rem,2.4rem+4vw,5.5rem)] font-medium leading-none tracking-[-0.05em] text-clay-ink tabular" aria-hidden="true">
+          <p className="font-mono text-figure font-medium leading-none tracking-tight text-clay-ink tabular" aria-hidden="true">
             {answer}
           </p>
           <p className="sr-only" aria-live="polite">

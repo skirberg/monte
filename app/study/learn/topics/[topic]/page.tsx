@@ -60,13 +60,13 @@ export default async function TopicPage({ params }: Props) {
           <h2 id="why-t" className="sr-only">
             Why it matters
           </h2>
-          <p className="text-pretty font-display text-[clamp(1.2rem,1.05rem+0.6vw,1.5rem)] font-semibold leading-tight tracking-[-0.015em]">{sym(t.why.click)}</p>
+          <p className="text-pretty font-display text-lead font-semibold leading-tight">{sym(t.why.click)}</p>
           <p className="max-w-[62ch] text-ink-muted">{sym(t.why.care)}</p>
           <ul className="mt-1 grid gap-2.5 md:grid-cols-3 md:gap-4">
             {t.why.uses.map(([field, use]) => (
               <li key={field} className="grid content-start gap-0.5 border-l-2 border-clay pl-3.5">
                 <b className="text-sm">{field}</b>
-                <span className="text-[15px]">{sym(use)}</span>
+                <span className="text-base">{sym(use)}</span>
               </li>
             ))}
           </ul>

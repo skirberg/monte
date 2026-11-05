@@ -41,14 +41,14 @@ export function GameShell({
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 pt-6 outline-none md:px-6 md:pt-10">
         <a
           href={playHref()}
-          className="inline-flex min-h-11 items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-ink-muted hover:text-ink"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink"
         >
           <ArrowLeft className="size-3.5" /> Play <span className="text-clay-ink">·</span> {String(i + 1).padStart(2, "0")} of{" "}
           {String(GAMES.length).padStart(2, "0")}
         </a>
         <header className="mb-8 mt-3 max-w-3xl space-y-3 md:mb-12">
           <h1
-            className="rise font-display text-[clamp(2.4rem,1.4rem+4vw,4.4rem)] font-[680] leading-[0.95] tracking-[-0.02em]"
+            className="rise font-display text-title font-semibold leading-none"
             style={{ fontVariationSettings: "'wdth' 80" }}
           >
             {g.name}
@@ -63,7 +63,7 @@ export function GameShell({
         </SafePart>
 
         {/* The game is the page. The idea behind it waits one tap away, then one way on. */}
-        <Fold title="What’s going on" teaser="The real idea behind the game, in plain words." className="mt-12" bodyClassName="max-w-[62ch] space-y-4 text-[1.05rem] leading-relaxed [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.92em]">
+        <Fold title="What’s going on" teaser="The real idea behind the game, in plain words." className="mt-12" bodyClassName="max-w-[62ch] space-y-4 text-base leading-relaxed [&_b]:font-semibold [&_code]:rounded-md [&_code]:bg-sand [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-symbol">
           {explain}
         </Fold>
 

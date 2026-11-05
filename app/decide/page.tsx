@@ -40,7 +40,7 @@ export default function Decide() {
           <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">Decide</p>
           <div className="md:col-span-9">
             <h1
-              className="rise font-display text-[clamp(2.8rem,1.6rem+5vw,5.6rem)] font-[680] leading-[0.92] tracking-[-0.02em]"
+              className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}
             >
               The odds
@@ -59,7 +59,7 @@ export default function Decide() {
             return (
               <section key={g.name} aria-labelledby={slug} className="grid gap-2 md:grid-cols-12 md:gap-4 md:border-t md:border-ink md:pt-5">
                 <div className="md:col-span-3">
-                  <h2 id={slug} className="font-mono text-xs uppercase tracking-[0.08em] text-ink-muted md:font-display md:text-2xl md:font-[650] md:normal-case md:tracking-normal md:text-ink">
+                  <h2 id={slug} className="text-sm font-medium text-ink-muted md:font-display md:text-2xl md:font-semibold md:text-ink">
                     {g.name}
                   </h2>
                   <p className="mt-1.5 hidden max-w-[30ch] text-sm text-ink-muted md:block">{g.line}</p>
@@ -77,7 +77,7 @@ export default function Decide() {
                             <span>{t.kicker}</span>
                           </span>
                           <span
-                            className="block font-display text-[1.3rem] font-[650] leading-[1.08] tracking-[-0.012em] md:text-[1.6rem]"
+                            className="block font-display text-xl font-semibold leading-tight md:text-2xl"
                             style={{ fontVariationSettings: "'wdth' 84" }}
                           >
                             {t.question}

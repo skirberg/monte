@@ -164,17 +164,17 @@ export function QuickMath() {
 
           {run && (
             <section ref={cardRef} aria-labelledby="m-q" className={card}>
-              <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-muted">
+              <div className="flex items-center justify-between gap-3 text-sm font-medium text-ink-muted">
                 <span>
                   Answered {run.n}, correct {run.c}
                 </span>
-                <span role="timer" aria-label="Time left" className={cn("text-[22px] font-medium normal-case tracking-normal tabular-nums", !run.learn && left < 10 && "text-danger")}>
+                <span role="timer" aria-label="Time left" className={cn("text-2xl font-medium tabular-nums", !run.learn && left < 10 && "text-danger")}>
                   {run.learn ? "No clock" : clock(left)}
                 </span>
               </div>
               <div className="grid gap-2">
-                <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-ink-muted">{run.q.t.name}</p>
-                <p id="m-q" className="font-mono text-[clamp(1.6rem,1.2rem+1.6vw,2.4rem)] font-medium tabular-nums">
+                <p className="text-sm font-medium text-ink-muted">{run.q.t.name}</p>
+                <p id="m-q" className="font-mono text-heading font-medium tabular-nums">
                   {mt(run.q.q)}
                 </p>
                 {run.learn && <p className="text-sm text-ink-muted">Trick: {run.q.h}</p>}
@@ -231,7 +231,7 @@ export function QuickMath() {
           {done && (
             <section aria-labelledby="ms-score" className={card}>
               <div className="grid gap-2">
-                <p id="ms-score" className="font-mono text-[clamp(40px,6vw,64px)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+                <p id="ms-score" className="font-mono text-figure font-medium leading-none tracking-tight tabular-nums">
                   {plural(done.c, "correct answer")}
                 </p>
                 <p>

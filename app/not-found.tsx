@@ -10,9 +10,9 @@ export default function NotFound() {
     <>
       <SiteHeader mode="landing" />
       <main id="main" tabIndex={-1} className="mx-auto flex min-h-[60vh] w-full max-w-[1200px] flex-col justify-center px-4 py-20 outline-none md:px-6">
-        <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink-muted">404 · line call</p>
+        <p className="text-sm font-medium text-ink-muted">404 · line call</p>
         <h1
-          className="mt-4 font-display text-[clamp(4rem,2rem+10vw,10rem)] font-[680] leading-[0.85] tracking-[-0.025em]"
+          className="mt-4 font-display text-hero font-semibold leading-none"
           style={{ fontVariationSettings: "'wdth' 75" }}
         >
           Out.

@@ -126,7 +126,7 @@ export function Odds() {
             <table className="w-full font-mono text-sm tabular">
               <caption className="sr-only">Implied and fair probabilities</caption>
               <thead>
-                <tr className="text-left text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                <tr className="text-left text-sm font-medium text-ink-muted">
                   <th scope="col" className="pb-2 font-normal">Side</th>
                   <th scope="col" className="pb-2 text-right font-normal">Implied</th>
                   <th scope="col" className="pb-2 text-right font-normal">Fair</th>
@@ -149,12 +149,12 @@ export function Odds() {
             </table>
             <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line">
               <div className="bg-paper p-5">
-                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">The two add to</p>
-                <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">{pct(book, 2)}</p>
+                <p className="text-sm font-medium text-ink-muted">The two add to</p>
+                <p className="mt-1 font-mono text-4xl font-medium tracking-tight tabular">{pct(book, 2)}</p>
               </div>
               <div className="bg-paper p-5">
-                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">{format === "american" ? "Bookmaker's cut" : "Spread you pay"}</p>
-                <p className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{pct(margin, 2)}</p>
+                <p className="text-sm font-medium text-ink-muted">{format === "american" ? "Bookmaker's cut" : "Spread you pay"}</p>
+                <p className="mt-1 font-mono text-4xl font-medium tracking-tight text-clay-ink tabular">{pct(margin, 2)}</p>
               </div>
             </div>
             <p className="text-ink-muted">

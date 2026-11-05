@@ -26,7 +26,7 @@ export function TopicIndex() {
         <Link href={study.topic(lastTopic.id)} className="group flex items-center justify-between gap-4 rounded-[18px] bg-sand p-5 transition-colors hover:bg-sand-2">
           <span className="grid gap-1">
             <span className={eyebrow}>Pick up where you left off</span>
-            <span className="font-display text-xl font-[650] tracking-[-0.02em]">
+            <span className="font-display text-xl font-semibold">
               {lastTopic.n}. {lastTopic.name}
             </span>
           </span>
@@ -54,7 +54,7 @@ export function TopicIndex() {
                     </span>
                   )}
                 </span>
-                <span className="font-display text-[1.05rem] font-[650] leading-snug tracking-[-0.02em] sm:text-lg">{t.short}</span>
+                <span className="font-display text-base font-semibold leading-snug sm:text-lg">{t.short}</span>
                 <span className="hidden text-sm text-ink-muted sm:line-clamp-3">{plainText(t.line)}</span>
               </Link>
             </li>

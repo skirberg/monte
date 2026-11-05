@@ -193,7 +193,7 @@ export function HouseEdge() {
             ["House edge", pct(EDGE[wheel], 2)],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-4">
-              <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">{k}</dt>
+              <dt className="text-sm font-medium text-ink-muted">{k}</dt>
               <dd className={cn("mt-1 text-xl", k === "House edge" && "text-clay-ink")}>{v}</dd>
             </div>
           ))}
@@ -202,7 +202,7 @@ export function HouseEdge() {
 
       <section aria-labelledby="crowd-t" className="grid gap-6 rounded-[28px] border border-line p-5 sm:p-7 lg:grid-cols-12">
         <div className="space-y-4 lg:col-span-4">
-          <h2 id="crowd-t" className="font-display text-2xl font-[650]">A thousand players</h2>
+          <h2 id="crowd-t" className="font-display text-2xl font-semibold">A thousand players</h2>
           <p className="text-ink-muted">
             One person can get lucky. Simulate {PLAYERS.toLocaleString()} players each betting {money(STAKE)} a spin for {PLAYER_SPINS.toLocaleString()} spins and
             see who the wheel pays.
@@ -217,15 +217,15 @@ export function HouseEdge() {
               <Histogram values={sorted} />
               <dl className="grid grid-cols-3 gap-3 font-mono text-sm tabular">
                 <div>
-                  <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Still ahead</dt>
+                  <dt className="text-sm font-medium text-ink-muted">Still ahead</dt>
                   <dd className="text-2xl text-clay-ink">{pct(ahead, 1)}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Average result</dt>
+                  <dt className="text-sm font-medium text-ink-muted">Average result</dt>
                   <dd className="text-2xl">{money(crowdMean)}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Middle player</dt>
+                  <dt className="text-sm font-medium text-ink-muted">Middle player</dt>
                   <dd className="text-2xl">{money(pctile(sorted, 0.5))}</dd>
                 </div>
               </dl>

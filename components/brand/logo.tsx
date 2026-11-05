@@ -31,7 +31,7 @@ export function Wordmark({ className }: { className?: string }) {
     <span className={cn("inline-flex items-center gap-2", className)}>
       <Mark className="size-8" />
       <span
-        className="font-display text-[1.3rem] font-[680] leading-none tracking-[-0.04em]"
+        className="font-display text-xl font-semibold leading-none"
         style={{ fontVariationSettings: "'wdth' 88" }}
       >
         {SITE_NAME}

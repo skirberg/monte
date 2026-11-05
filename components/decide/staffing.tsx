@@ -131,7 +131,7 @@ export function Staffing() {
                 <table className="w-full font-mono text-sm tabular">
                   <caption className="sr-only">Chance an hour brings more than the team can serve, for 1 to 6 people</caption>
                   <thead>
-                    <tr className="border-b border-line text-left text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                    <tr className="border-b border-line text-left text-sm font-medium text-ink-muted">
                       <th scope="col" className="px-3 py-2.5 font-normal sm:px-4">Staff</th>
                       <th scope="col" className="px-3 py-2.5 font-normal sm:px-4">Can serve</th>
                       <th scope="col" className="px-3 py-2.5 font-normal sm:px-4">Busy</th>
@@ -220,7 +220,7 @@ export function Staffing() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">What this counts, and what it doesn&rsquo;t</p>
+            <p className="font-display text-xl font-semibold !text-ink">What this counts, and what it doesn&rsquo;t</p>
             <p>
               This counts hours, not waits. Someone who isn&rsquo;t served in a busy hour spills into the next one, and even an hour that isn&rsquo;t over can have a line if
               everyone arrives in the same ten minutes. A full waiting-line model, called <b>Erlang C</b>, uses how long each person takes to find how long people wait.

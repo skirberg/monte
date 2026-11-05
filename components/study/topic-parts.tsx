@@ -37,7 +37,7 @@ export function TopicPath({ id }: { id: TopicId }) {
               {s.label}
               <span className="sr-only">{s.on ? ", done" : ", not yet"}</span>
             </b>
-            <span className="hidden text-[12.5px] leading-tight text-ink-muted min-[30rem]:block">{s.sub}</span>
+            <span className="hidden text-xs leading-tight text-ink-muted min-[30rem]:block">{s.sub}</span>
           </span>
         </li>
       ))}
@@ -108,7 +108,7 @@ export function QuizList({ id }: { id: TopicId }) {
   return (
     <section aria-labelledby="qa-t" className="grid gap-3">
       <div className="flex items-center justify-between gap-4">
-        <h2 id="qa-t" className="font-display text-[clamp(1.35rem,1.2rem+0.6vw,1.6rem)] font-[650] tracking-[-0.02em]">
+        <h2 id="qa-t" className="font-display text-heading font-semibold">
           Check yourself
         </h2>
         <button type="button" role="switch" aria-checked={quiz} onClick={flip} className="group flex min-h-11 items-center gap-2.5 text-sm">

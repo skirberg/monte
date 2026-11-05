@@ -31,7 +31,7 @@ function FirstTen({ p }: { p: StudyProgress }) {
   return (
     <section aria-labelledby="ft-t" className="grid content-start gap-4 rounded-[18px] bg-sand p-6">
       <div className="grid gap-1">
-        <h2 id="ft-t" className="font-display text-xl font-[650] tracking-[-0.02em]">
+        <h2 id="ft-t" className="font-display text-xl font-semibold">
           Your first ten minutes
         </h2>
         <p className="text-sm text-ink-muted">Three short steps. No sign-up.</p>
@@ -76,12 +76,12 @@ export function Today() {
           <FirstTen p={p} />
         ) : (
           <section aria-labelledby="hp-t" className="grid content-start gap-4 rounded-[18px] bg-sand p-6">
-            <h2 id="hp-t" className="font-display text-xl font-[650] tracking-[-0.02em]">
+            <h2 id="hp-t" className="font-display text-xl font-semibold">
               Practice
             </h2>
             <div className="grid gap-1">
               <p className="text-sm text-ink-muted">Due today</p>
-              <p className="font-mono text-[56px] font-medium leading-none tracking-[-0.04em] tabular-nums">{due}</p>
+              <p className="font-mono text-figure font-medium leading-none tracking-tight tabular-nums">{due}</p>
               <p className="text-sm text-ink-muted">{due ? "Questions you missed, back for another try." : "Nothing due. Misses from any drill show up here."}</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
@@ -116,7 +116,7 @@ export function Today() {
                   <Link
                     href={study.topic(t.id)}
                     className={cn(
-                      "grid min-h-11 items-center gap-3 px-3 py-2 text-[15px] transition-colors hover:bg-sand",
+                      "grid min-h-11 items-center gap-3 px-3 py-2 text-base transition-colors hover:bg-sand",
                       fresh ? "grid-cols-[1.75rem_minmax(0,1fr)]" : "grid-cols-[1.75rem_minmax(0,1fr)_4rem_4.75rem]",
                     )}
                   >

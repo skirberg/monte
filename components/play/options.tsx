@@ -188,12 +188,12 @@ export function Options() {
 
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line" aria-live="polite">
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Black-Scholes</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] tabular">${bs.toFixed(2)}</dd>
+            <dt className="text-sm font-medium text-ink-muted">Black-Scholes</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight tabular">${bs.toFixed(2)}</dd>
           </div>
           <div className="bg-paper p-5">
-            <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted">Monte Carlo{last ? ` · ${last.n.toLocaleString()} paths` : ""}</dt>
-            <dd className="mt-1 font-mono text-4xl font-medium tracking-[-0.04em] text-clay-ink tabular">{last ? `$${last.m.toFixed(2)}` : "–"}</dd>
+            <dt className="text-sm font-medium text-ink-muted">Monte Carlo{last ? ` · ${last.n.toLocaleString()} paths` : ""}</dt>
+            <dd className="mt-1 font-mono text-4xl font-medium tracking-tight text-clay-ink tabular">{last ? `$${last.m.toFixed(2)}` : "–"}</dd>
             {last && <dd className="mt-1 font-mono text-xs text-ink-muted tabular">± ${(1.96 * last.se).toFixed(3)} (95%)</dd>}
           </div>
         </dl>

@@ -43,7 +43,7 @@ export default async function ToolPage({ params }: Props) {
             <div key={task} className="grid gap-2 py-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-x-6">
               <span className="text-sm font-semibold">{task}</span>
               <div className="grid min-w-0 gap-1.5">
-                <pre className="whitespace-pre-wrap rounded-xl border border-line bg-sand px-3 py-2 font-mono text-[13px] leading-relaxed [overflow-wrap:anywhere]">
+                <pre className="whitespace-pre-wrap rounded-xl border border-line bg-sand px-3 py-2 font-mono text-sm leading-relaxed [overflow-wrap:anywhere]">
                   <code>{code}</code>
                 </pre>
                 {note && <span className="text-sm text-ink-muted">{note}</span>}

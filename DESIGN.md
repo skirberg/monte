@@ -56,6 +56,34 @@ One vocabulary, in this order, everywhere: **Learn · Practice · Solve · Decid
 | Reads (body) | Geologica | Covers Greek, so σ μ x̄ p̂ render in the same face as the sentence |
 | Measures (numbers, timers, scores) | Azeret Mono, tabular | Plain zero (0 never reads as 8), scoreboard feel; Greek falls back to Geologica |
 
+### Type scale (November 2026)
+
+One scale, defined once in `app/globals.css` (`@theme`), and nothing else. `npm run type-check` (part of `npm run check`) fails on any raw size, weight, letter-spacing, line height or caps label. Modeled on IBM Carbon (a fixed set for reading and UI plus a fluid set for headings, three weights, no raw sizes in components) and Material 3 (named roles, no near-duplicate sizes).
+
+| Step | Size | Use |
+|---|---|---|
+| `text-xs` | 12 px | Captions, chart notes, stat-tile labels |
+| `text-sm` | 14 px | Labels, secondary UI, most controls |
+| `text-base` | 16 px | Body |
+| `text-lg` | 18 px | Lead body, important answers |
+| `text-xl` / `text-2xl` | 20 / 24 px | Card and block titles |
+| `text-3xl` / `text-4xl` | 30 / 36 px | Stat-tile figures, small display |
+| `text-lead` | 18 to 22 px, fluid | Section intros |
+| `text-heading` | 22 to 36 px, fluid | Section headings |
+| `text-headline` | 32 to 56 px, fluid | Section headlines |
+| `text-title` | 36 to 70 px, fluid | Page titles (Decide, Play games, Study, story sections) |
+| `text-display` | 44 to 88 px, fluid | Landing headlines (Home, Decide, Play, Story, How it's built) |
+| `text-figure` | 40 to 88 px, fluid | The big number on a result |
+| `text-hero` | 64 to 160 px, fluid | The one giant number on a page |
+| `text-symbol` | 0.92 em | x̄, p̂ and inline code beside running text |
+
+Fluid steps grow smoothly from a 390 px phone to a 1440 px desktop and carry their own line height, so no heading sets one. Every fluid step uses rem bounds with a rem term in the middle and a maximum at most 2.5 times its minimum, so browser zoom and the reader's font-size setting still enlarge text to 200% (WCAG 1.4.4; Chrome's text-scaling guidance and MDN on clamp). Never size text in vw alone, and never block pinch zoom.
+
+- **Weights:** three. `font-normal` (400) to read, `font-medium` (500) for UI, `font-semibold` (650) for headings and figures.
+- **Letter-spacing:** display type carries -0.02em through `font-display`; big mono figures use `tracking-tight` (-0.025em). Nothing else.
+- **Labels:** one style, `label` in `components/study/ui.tsx`: sentence case, the sans face, 14 px medium, muted. Never small caps or letter-spaced.
+- **Exception:** text inside SVG charts uses `fontSize` in the chart's own drawing units, which scale with the chart.
+
 ## Color (OKLCH, light "day court" / dark "night session")
 
 | Token | Light | Dark | Use |

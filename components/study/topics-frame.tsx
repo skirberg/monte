@@ -44,7 +44,7 @@ function TopicList({ active, onPick }: { active?: string; onPick?: () => void })
               href={study.topic(t.id)}
               onClick={onPick}
               aria-current={t.id === active ? "true" : undefined}
-              className="flex min-h-11 items-center gap-3 px-3 py-2 text-[15px] transition-colors hover:bg-sand aria-[current=true]:bg-ink aria-[current=true]:text-paper"
+              className="flex min-h-11 items-center gap-3 px-3 py-2 text-base transition-colors hover:bg-sand aria-[current=true]:bg-ink aria-[current=true]:text-paper"
             >
               <span className={cn("w-6 font-mono text-xs tabular-nums", t.id === active ? "text-paper/75" : "text-ink-muted")}>{t.n}</span>
               <span>{t.short}</span>
@@ -81,7 +81,7 @@ export function TopicsFrame({ children }: { children: React.ReactNode }) {
       <aside aria-label="Topics" className="min-w-0 print:hidden">
         <details open={open} onToggle={(e) => setOpen(e.currentTarget.open)} className="group lg:hidden">
           <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 rounded-[18px] border border-line px-4 [&::-webkit-details-marker]:hidden">
-            <span className="font-mono text-xs uppercase tracking-[0.06em]">{n ? `Topic ${n} of ${TOPICS.length}` : "Topics"}</span>
+            <span className="text-sm font-medium">{n ? `Topic ${n} of ${TOPICS.length}` : "Topics"}</span>
             <span className="flex items-center gap-1 text-sm text-ink-muted">
               All topics <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden />
             </span>

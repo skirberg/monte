@@ -332,7 +332,7 @@ export function Goal() {
         ]}
         after={
           <>
-            <p className="font-display text-xl font-[650] !text-ink">What this leaves out</p>
+            <p className="font-display text-xl font-semibold !text-ink">What this leaves out</p>
             <p>
               These are made-up assumptions, and past returns don&rsquo;t promise future ones. Real markets have worse crashes than this model draws, and good and bad years tend
               to bunch together. There are no fees, taxes or inflation here, and every month&rsquo;s saving goes in without fail.
