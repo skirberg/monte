@@ -14,6 +14,8 @@ const walk = (d) => {
   }
 };
 for (const d of ["app", "components", "lib"]) walk(join(root, d));
+// Image generators (share cards, cheat sheets): only the caps rule applies, since they style text inline.
+const IMAGE_SCRIPTS = readdirSync(join(root, "scripts")).filter((f) => /^make-.*\.tsx$/.test(f)).map((f) => join(root, "scripts", f));
 
 // Utility prefix (variants like md: or [&_b]:) followed by the forbidden core.
 const V = String.raw`(?:^|[\s"'\x60{(])(?:[\w\[\]&>*@:.\-]*:)?`;
@@ -39,6 +41,14 @@ for (const f of files) {
         bad++;
         console.log(`${rel}:${i + 1}  ${m[0].trim()}  ${why}`);
       }
+    }
+  });
+}
+for (const f of IMAGE_SCRIPTS) {
+  readFileSync(f, "utf8").split("\n").forEach((line, i) => {
+    if (/textTransform:\s*["']uppercase["']|\.toUpperCase\(\)/.test(line) && !/^\s*(\/\/|\*)/.test(line)) {
+      bad++;
+      console.log(`${relative(root, f)}:${i + 1}  caps label in a generated image: labels are sentence case`);
     }
   });
 }

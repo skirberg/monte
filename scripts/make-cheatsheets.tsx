@@ -117,7 +117,7 @@ const LABEL_W = 268; // the left column every section shares, so the page reads 
  */
 const WM = 34;
 const MARK_PX = Math.round((WM * 32) / 20.8), MARK_GAP = Math.round((WM * 8) / 20.8);
-const META: Style = { fontFamily: MONO, fontSize: 20, color: MUTED, letterSpacing: 2.5, textTransform: "uppercase" };
+const META: Style = { fontFamily: MONO, fontSize: 20, color: MUTED };
 
 function Header({ right }: { right: string }) {
   return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", height: MARK_PX } },
@@ -142,11 +142,11 @@ const RULE = 3;
 /** Mono labels: about 0.6 em a character plus the tracking. */
 const monoEm = (size: number) => (size * 0.6 + 0.5) / size;
 /**
- * The left column. Fixed words ("Remember") are set in capitals; formula names keep their case,
- * because in statistics n is not N and λ is not Λ.
+ * The left column. Every label keeps its case: sentence case, never capitals (DESIGN.md, Type scale),
+ * and in statistics n is not N and λ is not Λ.
  */
 const Label = (text: string, size: number, color = CLAY_INK, style?: Style, caps = false) =>
-  h(Text, { text: caps ? text.toUpperCase() : text, size, lh: 1.3, family: MONO, color, style: { width: LABEL_W, flexShrink: 0, paddingRight: 30, letterSpacing: caps ? 2 : 0.5, ...style } });
+  h(Text, { text, size, lh: 1.3, family: MONO, color, style: { width: LABEL_W, flexShrink: 0, paddingRight: 30, letterSpacing: 0.5, ...style } });
 
 const Page = (...children: React.ReactNode[]) =>
   h("div", { style: { width: "100%", height: "100%", display: "flex", flexDirection: "column", background: PAPER, padding: `${TOP}px ${SIDE}px ${BOTTOM}px` } }, ...children);
@@ -189,7 +189,7 @@ function topicSheet(t: StudyTopic, s: number) {
   const total = String(TOPICS.length).padStart(2, "0");
 
   const card = h("div", { style: { display: "flex", flexDirection: "column", background: SAND, borderRadius: 36, padding: `${z.cardPad}px ${z.cardPad}px ${z.cardPad - z.rowGap}px` } },
-    h("div", { style: { display: "flex", fontFamily: MONO, fontSize: z.label, color: MUTED, letterSpacing: 2, textTransform: "uppercase", marginBottom: z.rowGap * 0.5 } }, "Formulas"),
+    h("div", { style: { display: "flex", fontFamily: MONO, fontSize: z.label, color: MUTED, marginBottom: z.rowGap * 0.5 } }, "Formulas"),
     ...rows.map((r, i) =>
       h("div", { key: i, style: { display: "flex", paddingTop: z.rowGap, paddingBottom: z.rowGap, borderTop: i ? `2px solid ${LINE}` : "none" } },
         Label(r.name, z.label, CLAY_INK, { paddingTop: (z.formula * 1.22 - z.label * 1.3) / 2 }),

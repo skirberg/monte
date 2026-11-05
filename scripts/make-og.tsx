@@ -55,7 +55,7 @@ async function main() {
       h("div", { style: { display: "flex", flexDirection: "column", fontFamily: "Bricolage", fontSize: 88, lineHeight: 0.95, letterSpacing: -4, color: INK } },
         h("span", null, "Drop enough grains."),
         h("span", { style: { color: MUTED } }, "The shape appears.")),
-      h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED, letterSpacing: 2, textTransform: "uppercase" } }, "Statistics, one idea at a time")),
+      h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED } }, "Statistics, one idea at a time")),
     h("div", { style: { display: "flex", flex: 1, alignItems: "center", justifyContent: "center", background: SAND, borderRadius: 36, marginLeft: 24 } },
       h("img", { src: uri(pileSvg()), width: 420, height: 480 })));
   const res = new ImageResponse(card, {
@@ -87,10 +87,10 @@ async function main() {
           h("img", { src: uri(MARK), width: 60, height: 60 }),
           h("span", { style: { fontFamily: "Bricolage", fontSize: 38, color: INK, letterSpacing: -1.5 } }, "Monte")),
         h("div", { style: { display: "flex", flexDirection: "column", gap: 22 } },
-          h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: "#a63d02", letterSpacing: 2, textTransform: "uppercase" } }, `Play ${String(i + 1).padStart(2, "0")} · ${g.topicName}`),
+          h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: "#a63d02" } }, `Play ${String(i + 1).padStart(2, "0")} · ${g.topicName}`),
           h("span", { style: { fontFamily: "Bricolage", fontSize: g.name.length > 18 ? 74 : 86, lineHeight: 0.98, letterSpacing: -2.5, color: INK } }, g.name),
           h("span", { style: { fontFamily: "Bricolage", fontSize: 30, lineHeight: 1.25, color: MUTED } }, g.line)),
-        h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED, letterSpacing: 2, textTransform: "uppercase" } }, "monte.markets")),
+        h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED } }, "monte.markets")),
       h("div", { style: { display: "flex", flex: 1, alignItems: "center", justifyContent: "center", background: SAND, borderRadius: 36, marginLeft: 32 } },
         h("img", { src: uri(art), width: 440, height: 352 })));
     const r = new ImageResponse(gcard, { width: 1200, height: 630, fonts });
