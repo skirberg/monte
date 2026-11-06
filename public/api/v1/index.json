@@ -4,8 +4,8 @@
   "version": 1,
   "site": "https://monte.markets",
   "license": "Free to use with a link to monte.markets.",
-  "updated": "2026-10-24",
-  "contentHash": "a32ebc40f7674964",
+  "updated": "2026-11-06",
+  "contentHash": "f5f1e3f1184eec3e",
   "endpoints": [
     {
       "path": "/api/v1/topics.json",

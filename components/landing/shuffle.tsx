@@ -15,10 +15,10 @@ import { study } from "@/lib/study/routes";
 const LABEL: Record<Kind, string> = Object.fromEntries(KINDS.map((k) => [k.id, k.label])) as Record<Kind, string>;
 /** Where each idea is taught. "Not enough information" goes to the module that drills the decision itself. */
 const LEARN: Record<Kind, { href: string; name: string }> = {
-  one: { href: "/study/learn/topics/normal/", name: "The normal curve" },
-  mean: { href: "/study/learn/topics/clt/", name: "Sampling and the CLT" },
-  ci: { href: "/study/learn/topics/ci/", name: "Confidence intervals" },
-  none: { href: "/study/learn/start/", name: "Same number, three questions" },
+  one: { href: "/learn/normal/", name: "The normal curve" },
+  mean: { href: "/learn/clt/", name: "Sampling and the CLT" },
+  ci: { href: "/learn/ci/", name: "Confidence intervals" },
+  none: { href: "/learn/start/", name: "Same number, three questions" },
 };
 
 function dayNumber(d = new Date()) {

@@ -1,16 +1,16 @@
 {
   "site": "https://monte.markets",
   "license": "Free to use with a link to monte.markets.",
-  "updated": "2026-10-24",
+  "updated": "2026-11-06",
   "count": 78,
   "terms": [
     {
       "term": "Population",
       "meaning": "Every unit you care about.",
-      "example": "All customers of a bank, not just the ones you surveyed.",
+      "example": "Every customer of a bank, not just those you surveyed.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Sample",
@@ -18,7 +18,7 @@
       "example": "500 customers picked at random.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Parameter",
@@ -26,31 +26,31 @@
       "example": "The true average balance μ of all customers.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Statistic",
       "meaning": "A number computed from a sample. It changes from sample to sample.",
-      "example": "x̄, the average balance of the 500 you sampled.",
+      "example": "x̄, the average balance of your 500.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Simple random sample",
       "meaning": "Every possible sample of size n has the same chance of being picked.",
-      "example": "Drawing 50 names from a hat that holds every name.",
+      "example": "50 names drawn from a hat holding every name.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Stratified sample",
-      "meaning": "Split the population into groups, then sample randomly inside each group.",
-      "example": "Sample 20 students from each year so every year shows up.",
+      "meaning": "Split the population into groups, then sample at random inside each.",
+      "example": "20 customers from each region, so every region shows up.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Qualitative variable",
@@ -58,7 +58,7 @@
       "example": "Shirt size S, M, L.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Quantitative variable",
@@ -66,15 +66,15 @@
       "example": "Monthly sales in dollars.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Discrete vs continuous",
-      "meaning": "Discrete values are counted; continuous values are measured and can fall anywhere in between.",
+      "meaning": "Discrete values are counted; continuous ones are measured and can fall anywhere.",
       "example": "Number of children vs height.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Levels of measurement",
@@ -82,7 +82,7 @@
       "example": "Temperature in °C is interval; income is ratio.",
       "topic": "data",
       "topicName": "Data and sampling",
-      "topicUrl": "https://monte.markets/study/learn/topics/data/"
+      "topicUrl": "https://monte.markets/learn/data/"
     },
     {
       "term": "Mean",
@@ -90,7 +90,7 @@
       "example": "2, 4, 9: mean 5.",
       "topic": "center",
       "topicName": "Where is the middle",
-      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+      "topicUrl": "https://monte.markets/learn/center/"
     },
     {
       "term": "Median",
@@ -98,7 +98,7 @@
       "example": "2, 4, 90: median 4, mean 32.",
       "topic": "center",
       "topicName": "Where is the middle",
-      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+      "topicUrl": "https://monte.markets/learn/center/"
     },
     {
       "term": "Mode",
@@ -106,7 +106,7 @@
       "example": "Shoe sizes 8, 9, 9, 10: mode 9.",
       "topic": "center",
       "topicName": "Where is the middle",
-      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+      "topicUrl": "https://monte.markets/learn/center/"
     },
     {
       "term": "Skew",
@@ -114,7 +114,7 @@
       "example": "Incomes skew right, so mean > median.",
       "topic": "center",
       "topicName": "Where is the middle",
-      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+      "topicUrl": "https://monte.markets/learn/center/"
     },
     {
       "term": "Outlier",
@@ -122,7 +122,7 @@
       "example": "One $5M house on a street of $400k homes.",
       "topic": "center",
       "topicName": "Where is the middle",
-      "topicUrl": "https://monte.markets/study/learn/topics/center/"
+      "topicUrl": "https://monte.markets/learn/center/"
     },
     {
       "term": "Range",
@@ -130,15 +130,15 @@
       "example": "3 to 11: range 8.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Variance",
       "meaning": "The average squared distance from the mean (divide by n − 1 for a sample).",
-      "example": "Units are squared, which is why we take the root.",
+      "example": "Units are squared, so we take the root.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Standard deviation",
@@ -146,7 +146,7 @@
       "example": "Returns average 8% with SD 6%.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Coefficient of variation",
@@ -154,7 +154,7 @@
       "example": "SD 6 on mean 8 is CV 75%.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "z score",
@@ -162,7 +162,7 @@
       "example": "z = 2 means two SDs above average.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Empirical rule",
@@ -170,7 +170,7 @@
       "example": "Mean 100, SD 15: 95% between 70 and 130.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Interquartile range",
@@ -178,7 +178,7 @@
       "example": "Ignores the extremes on both ends.",
       "topic": "spread",
       "topicName": "How spread out is it",
-      "topicUrl": "https://monte.markets/study/learn/topics/spread/"
+      "topicUrl": "https://monte.markets/learn/spread/"
     },
     {
       "term": "Sample space",
@@ -186,7 +186,7 @@
       "example": "A die: 1, 2, 3, 4, 5, 6.",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Event",
@@ -194,7 +194,7 @@
       "example": "Rolling an even number.",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Complement",
@@ -202,7 +202,7 @@
       "example": "P(at least one) = 1 − P(none).",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Mutually exclusive",
@@ -210,7 +210,7 @@
       "example": "Rolling a 2 and a 5 on one roll.",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Independent",
@@ -218,7 +218,7 @@
       "example": "Two separate coin flips.",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Conditional probability",
@@ -226,15 +226,15 @@
       "example": "P(bag arrives | flight on time).",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Bayes' rule",
       "meaning": "Flip a conditional around: from P(B | A) to P(A | B).",
-      "example": "From test accuracy to the chance you actually have the condition.",
+      "example": "From test accuracy to the chance you really have it.",
       "topic": "prob",
       "topicName": "Probability rules",
-      "topicUrl": "https://monte.markets/study/learn/topics/prob/"
+      "topicUrl": "https://monte.markets/learn/prob/"
     },
     {
       "term": "Random variable",
@@ -242,7 +242,7 @@
       "example": "Profit next month.",
       "topic": "rv",
       "topicName": "Random variables and expected value",
-      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+      "topicUrl": "https://monte.markets/learn/rv/"
     },
     {
       "term": "Expected value",
@@ -250,7 +250,7 @@
       "example": "A die averages 3.5, though you never roll 3.5.",
       "topic": "rv",
       "topicName": "Random variables and expected value",
-      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+      "topicUrl": "https://monte.markets/learn/rv/"
     },
     {
       "term": "Probability distribution",
@@ -258,7 +258,7 @@
       "example": "Visits 0, 1, 2 with chances 0.5, 0.3, 0.2.",
       "topic": "rv",
       "topicName": "Random variables and expected value",
-      "topicUrl": "https://monte.markets/study/learn/topics/rv/"
+      "topicUrl": "https://monte.markets/learn/rv/"
     },
     {
       "term": "Covariance",
@@ -266,7 +266,7 @@
       "example": "Positive when both rise together.",
       "topic": "two",
       "topicName": "Two variables: covariance, correlation, portfolios",
-      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+      "topicUrl": "https://monte.markets/learn/two/"
     },
     {
       "term": "Correlation",
@@ -274,23 +274,23 @@
       "example": "r = 0.8: a strong upward pattern.",
       "topic": "two",
       "topicName": "Two variables: covariance, correlation, portfolios",
-      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+      "topicUrl": "https://monte.markets/learn/two/"
     },
     {
       "term": "Diversification",
-      "meaning": "Mixing assets that do not move together lowers total risk.",
+      "meaning": "Mixing assets that don't move together lowers total risk.",
       "example": "Low correlation means a lower portfolio SD.",
       "topic": "two",
       "topicName": "Two variables: covariance, correlation, portfolios",
-      "topicUrl": "https://monte.markets/study/learn/topics/two/"
+      "topicUrl": "https://monte.markets/learn/two/"
     },
     {
       "term": "Factorial",
-      "meaning": "n! = n × (n − 1) × … × 1, the number of ways to order n things.",
+      "meaning": "n! = n × (n − 1) × … × 1: ways to order n things.",
       "example": "4! = 24.",
       "topic": "count",
       "topicName": "Counting and the binomial",
-      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+      "topicUrl": "https://monte.markets/learn/count/"
     },
     {
       "term": "Combination",
@@ -298,7 +298,7 @@
       "example": "C(5, 2) = 10 pairs.",
       "topic": "count",
       "topicName": "Counting and the binomial",
-      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+      "topicUrl": "https://monte.markets/learn/count/"
     },
     {
       "term": "Permutation",
@@ -306,7 +306,7 @@
       "example": "P(5, 2) = 20 ordered pairs.",
       "topic": "count",
       "topicName": "Counting and the binomial",
-      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+      "topicUrl": "https://monte.markets/learn/count/"
     },
     {
       "term": "Binomial distribution",
@@ -314,23 +314,23 @@
       "example": "Heads in 10 flips.",
       "topic": "count",
       "topicName": "Counting and the binomial",
-      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+      "topicUrl": "https://monte.markets/learn/count/"
     },
     {
       "term": "Hypergeometric distribution",
-      "meaning": "Count of successes when you draw without replacement from a small group.",
+      "meaning": "Successes when you draw without replacement from a small group.",
       "example": "Defective parts in 4 picked from a box of 10.",
       "topic": "count",
       "topicName": "Counting and the binomial",
-      "topicUrl": "https://monte.markets/study/learn/topics/count/"
+      "topicUrl": "https://monte.markets/learn/count/"
     },
     {
       "term": "Poisson distribution",
-      "meaning": "Counts of events in a fixed window when they arrive at a steady rate λ.",
+      "meaning": "Events in a fixed window when they arrive at a steady rate λ.",
       "example": "Calls per hour at a help desk.",
       "topic": "poisson",
       "topicName": "Poisson: counts per unit",
-      "topicUrl": "https://monte.markets/study/learn/topics/poisson/"
+      "topicUrl": "https://monte.markets/learn/poisson/"
     },
     {
       "term": "Rate λ",
@@ -338,7 +338,7 @@
       "example": "3 per hour is λ = 6 over 2 hours.",
       "topic": "poisson",
       "topicName": "Poisson: counts per unit",
-      "topicUrl": "https://monte.markets/study/learn/topics/poisson/"
+      "topicUrl": "https://monte.markets/learn/poisson/"
     },
     {
       "term": "Normal distribution",
@@ -346,7 +346,7 @@
       "example": "Heights, measurement errors, many averages.",
       "topic": "normal",
       "topicName": "The normal curve and z",
-      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+      "topicUrl": "https://monte.markets/learn/normal/"
     },
     {
       "term": "Standard normal",
@@ -354,7 +354,7 @@
       "example": "Z ~ N(0, 1).",
       "topic": "normal",
       "topicName": "The normal curve and z",
-      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+      "topicUrl": "https://monte.markets/learn/normal/"
     },
     {
       "term": "Percentile",
@@ -362,7 +362,7 @@
       "example": "The 90th percentile has 90% below it.",
       "topic": "normal",
       "topicName": "The normal curve and z",
-      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+      "topicUrl": "https://monte.markets/learn/normal/"
     },
     {
       "term": "Uniform distribution",
@@ -370,7 +370,7 @@
       "example": "A wait between 0 and 20 minutes.",
       "topic": "normal",
       "topicName": "The normal curve and z",
-      "topicUrl": "https://monte.markets/study/learn/topics/normal/"
+      "topicUrl": "https://monte.markets/learn/normal/"
     },
     {
       "term": "Sampling distribution",
@@ -378,7 +378,7 @@
       "example": "All the x̄'s you could get with n = 36.",
       "topic": "clt",
       "topicName": "Sampling distributions and the CLT",
-      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+      "topicUrl": "https://monte.markets/learn/clt/"
     },
     {
       "term": "Standard error",
@@ -386,7 +386,7 @@
       "example": "σ / √n for a sample mean.",
       "topic": "clt",
       "topicName": "Sampling distributions and the CLT",
-      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+      "topicUrl": "https://monte.markets/learn/clt/"
     },
     {
       "term": "Central Limit Theorem",
@@ -394,7 +394,7 @@
       "example": "Skewed incomes, but averages of 50 form a bell.",
       "topic": "clt",
       "topicName": "Sampling distributions and the CLT",
-      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+      "topicUrl": "https://monte.markets/learn/clt/"
     },
     {
       "term": "Unbiased estimator",
@@ -402,15 +402,15 @@
       "example": "x̄ for μ, and s² with n − 1 for σ².",
       "topic": "clt",
       "topicName": "Sampling distributions and the CLT",
-      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+      "topicUrl": "https://monte.markets/learn/clt/"
     },
     {
       "term": "Efficient estimator",
       "meaning": "The unbiased estimator with the smallest spread.",
-      "example": "x̄ beats the median for estimating μ.",
+      "example": "For normal data, x̄ beats the median for estimating μ.",
       "topic": "clt",
       "topicName": "Sampling distributions and the CLT",
-      "topicUrl": "https://monte.markets/study/learn/topics/clt/"
+      "topicUrl": "https://monte.markets/learn/clt/"
     },
     {
       "term": "Point estimate",
@@ -418,15 +418,15 @@
       "example": "x̄ = 42.5.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "Confidence interval",
-      "meaning": "Estimate plus or minus a margin. Built this way, 95% of intervals catch the truth.",
+      "meaning": "Estimate plus or minus a margin. Built this way, 95% catch the truth.",
       "example": "42.5 ± 2.6.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "Margin of error",
@@ -434,7 +434,7 @@
       "example": "± 3 points in a poll.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "Confidence level",
@@ -442,15 +442,15 @@
       "example": "95%: about 95 of 100 intervals.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "t distribution",
-      "meaning": "Like the normal but with fatter tails. Used when σ is unknown and you use s.",
+      "meaning": "Like the normal, with fatter tails. Used when σ is unknown and you use s.",
       "example": "t with 15 df for n = 16.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "Degrees of freedom",
@@ -458,7 +458,7 @@
       "example": "n = 20 gives 19 df.",
       "topic": "ci",
       "topicName": "Confidence intervals and sample size",
-      "topicUrl": "https://monte.markets/study/learn/topics/ci/"
+      "topicUrl": "https://monte.markets/learn/ci/"
     },
     {
       "term": "Null hypothesis H₀",
@@ -466,7 +466,7 @@
       "example": "μ = 250 ml.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Alternative hypothesis H₁",
@@ -474,7 +474,7 @@
       "example": "μ ≠ 250, or μ < 250.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Test statistic",
@@ -482,7 +482,7 @@
       "example": "z = −2.5.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "p-value",
@@ -490,7 +490,7 @@
       "example": "p = 0.012: rare under H₀.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Significance level α",
@@ -498,7 +498,7 @@
       "example": "α = 0.05.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Type I error",
@@ -506,7 +506,7 @@
       "example": "Calling a fair machine broken.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Type II error",
@@ -514,7 +514,7 @@
       "example": "Missing that the machine pours short.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Power",
@@ -522,7 +522,7 @@
       "example": "Bigger samples have more power.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "One-sided vs two-sided",
@@ -530,7 +530,7 @@
       "example": "H₁: μ < 500 vs H₁: μ ≠ 500.",
       "topic": "test",
       "topicName": "Hypothesis tests",
-      "topicUrl": "https://monte.markets/study/learn/topics/test/"
+      "topicUrl": "https://monte.markets/learn/test/"
     },
     {
       "term": "Regression line",
@@ -538,7 +538,7 @@
       "example": "ŷ = 2 + 0.5x.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Slope",
@@ -546,7 +546,7 @@
       "example": "0.5 more sales per ad dollar.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Intercept",
@@ -554,7 +554,7 @@
       "example": "Sales with zero advertising.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Residual",
@@ -562,15 +562,15 @@
       "example": "Actual 10, predicted 8: residual 2.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Least squares",
-      "meaning": "Pick the line that makes the sum of squared residuals as small as possible.",
+      "meaning": "Pick the line with the smallest sum of squared residuals.",
       "example": "SSE is minimized.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "R²",
@@ -578,15 +578,15 @@
       "example": "R² = 0.81: 81% explained.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Extrapolation",
       "meaning": "Predicting outside the range of x you observed. Risky.",
-      "example": "Using ad spend of 50 when the data stop at 12.",
+      "example": "Ad spend of 50 when the data stop at 12.",
       "topic": "reg",
       "topicName": "Simple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/reg/"
+      "topicUrl": "https://monte.markets/learn/reg/"
     },
     {
       "term": "Multiple regression",
@@ -594,7 +594,7 @@
       "example": "Price from size, age and location.",
       "topic": "mreg",
       "topicName": "Multiple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+      "topicUrl": "https://monte.markets/learn/mreg/"
     },
     {
       "term": "Adjusted R²",
@@ -602,7 +602,7 @@
       "example": "Falls when you add a useless variable.",
       "topic": "mreg",
       "topicName": "Multiple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+      "topicUrl": "https://monte.markets/learn/mreg/"
     },
     {
       "term": "Dummy variable",
@@ -610,7 +610,7 @@
       "example": "North = 1, else 0.",
       "topic": "mreg",
       "topicName": "Multiple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+      "topicUrl": "https://monte.markets/learn/mreg/"
     },
     {
       "term": "Multicollinearity",
@@ -618,7 +618,7 @@
       "example": "VIF above 5 or 10 is a warning.",
       "topic": "mreg",
       "topicName": "Multiple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+      "topicUrl": "https://monte.markets/learn/mreg/"
     },
     {
       "term": "F test",
@@ -626,7 +626,7 @@
       "example": "F = MSR / MSE.",
       "topic": "mreg",
       "topicName": "Multiple regression",
-      "topicUrl": "https://monte.markets/study/learn/topics/mreg/"
+      "topicUrl": "https://monte.markets/learn/mreg/"
     }
   ]
 }

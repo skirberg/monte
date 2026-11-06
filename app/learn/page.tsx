@@ -6,7 +6,7 @@ import { TopicIndex } from "@/components/study/topic-index";
 import { PageHead, lead } from "@/components/study/ui";
 import { TOPICS } from "@/lib/study/data";
 
-export const metadata: Metadata = pageMeta("/study/learn/", "Learn", "Fourteen statistics topics, each with one plain sentence, a real example, a lab to drag and questions to check yourself.");
+export const metadata: Metadata = pageMeta("/learn/", "Learn", "Fourteen statistics topics, each with one plain sentence, a real example, a lab to drag and questions to check yourself.");
 
 export default function LearnPage() {
   return (

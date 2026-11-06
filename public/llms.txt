@@ -2,35 +2,35 @@
 
 > Monte (https://monte.markets) is a free site for learning business statistics, one idea at a time. Fourteen topics from data and sampling to multiple regression, each with a plain explanation, a worked example, an interactive lab and timed drills. Games teach the same ideas with real data, and every formula is on one sheet with a worked example.
 
-The lesson content is also published as static JSON (no key needed). Free to use with a link to monte.markets. Updated 2026-10-24.
+The lesson content is also published as static JSON (no key needed). Free to use with a link to monte.markets. Updated 2026-11-06.
 
 ## Start here
 
 - [Home](https://monte.markets/): what the site is and where to begin
 - [Study](https://monte.markets/study/): learn, practice and solve, with progress kept in the browser
-- [All topics](https://monte.markets/study/learn/): the fourteen topics in teaching order
-- [Formula sheet](https://monte.markets/study/learn/formulas/): every formula with a worked example
-- [Glossary](https://monte.markets/study/learn/terms/): terms in plain words, each with an example
+- [All topics](https://monte.markets/learn/): the fourteen topics in teaching order
+- [Formula sheet](https://monte.markets/learn/formulas/): every formula with a worked example
+- [Glossary](https://monte.markets/learn/terms/): terms in plain words, each with an example
 - [Play](https://monte.markets/play/): games that each hide one statistics idea
 - [Why statistics](https://monte.markets/story/): the case for learning it
 - [How it's built](https://monte.markets/built/): the stack, the data sources and the math
 
 ## Topics
 
-- [Data and sampling](https://monte.markets/study/learn/topics/data/): Statistics is using data to make a decision. You rarely get to check everyone, so you check a slice (a sample) and use it to say something about the whole group (the population).
-- [Where is the middle](https://monte.markets/study/learn/topics/center/): Mean is the average. Median is the middle once sorted. Mode is the most common.
-- [How spread out is it](https://monte.markets/study/learn/topics/spread/): Range is the biggest value minus the smallest. Standard deviation is how far a typical value sits from the average.
-- [Probability rules](https://monte.markets/study/learn/topics/prob/): List everything that can happen. Or means add and subtract the overlap.
-- [Random variables and expected value](https://monte.markets/study/learn/topics/rv/): A random variable is a number whose value depends on chance.
-- [Two variables: covariance, correlation, portfolios](https://monte.markets/study/learn/topics/two/): Covariance asks whether two things move together. Correlation is covariance scaled to run from −1 to +1.
-- [Counting and the binomial](https://monte.markets/study/learn/topics/count/): When you repeat a yes-or-no trial n times with the same chance p each time, the number of yeses is binomial.
-- [Poisson: counts per unit](https://monte.markets/study/learn/topics/poisson/): Poisson counts how many events land in a fixed window (a minute, an hour, a page) when they arrive at a steady average rate λ.
-- [The normal curve and z](https://monte.markets/study/learn/topics/normal/): The normal is the bell. Any normal becomes the standard one by measuring in SDs from the mean: z = (y − μ) / σ.
-- [Sampling distributions and the CLT](https://monte.markets/study/learn/topics/clt/): Take a sample and compute its mean. Take another and compute again.
-- [Confidence intervals and sample size](https://monte.markets/study/learn/topics/ci/): A point estimate is one number. A confidence interval is that number plus and minus a margin: estimate ± critical value × standard error.
-- [Hypothesis tests](https://monte.markets/study/learn/topics/test/): A hypothesis test asks one question: would this sample be surprising if nothing were going on?
-- [Simple regression](https://monte.markets/study/learn/topics/reg/): Regression fits the straight line that makes the squared vertical misses as small as possible.
-- [Multiple regression](https://monte.markets/study/learn/topics/mreg/): The same idea with several x's: fit a plane instead of a line.
+- [Data and sampling](https://monte.markets/learn/data/): Statistics is using data to make a decision. You can't check everyone, so you check a slice (the sample) and let it speak for the whole group (the population).
+- [Where is the middle](https://monte.markets/learn/center/): Mean is the average. Median is the middle once sorted. Mode is the most common.
+- [How spread out is it](https://monte.markets/learn/spread/): Range is biggest minus smallest. Standard deviation is the typical distance from the average; in finance, risk.
+- [Probability rules](https://monte.markets/learn/prob/): Or: add, then subtract the overlap. And: multiply. Given: count only inside what you were told.
+- [Random variables and expected value](https://monte.markets/learn/rv/): A random variable is a number that depends on chance. Its expected value is the long-run average, weighted by probability.
+- [Two variables: covariance, correlation, portfolios](https://monte.markets/learn/two/): Covariance asks whether two things move together. Correlation rescales it from −1 to +1.
+- [Counting and the binomial](https://monte.markets/learn/count/): Repeat a yes-or-no try n independent times with the same chance p: the count of yeses is binomial, mean np, variance np(1 − p).
+- [Poisson: counts per unit](https://monte.markets/learn/poisson/): Poisson counts events in a fixed window when they arrive independently at a steady average rate λ.
+- [The normal curve and z](https://monte.markets/learn/normal/): The normal is the bell. Measure in SDs from the mean, z = (y − μ) / σ, and any normal becomes the standard one.
+- [Sampling distributions and the CLT](https://monte.markets/learn/clt/): Sample means have their own distribution. The Central Limit Theorem says it is near normal for big n, centered on μ, with spread σ / √n (the standard error).
+- [Confidence intervals and sample size](https://monte.markets/learn/ci/): A confidence interval is your estimate plus or minus a margin: estimate ± critical value × standard error.
+- [Hypothesis tests](https://monte.markets/learn/test/): A hypothesis test asks: would this data be surprising if nothing were going on?
+- [Simple regression](https://monte.markets/learn/reg/): Regression fits the line with the smallest squared misses. Slope: how much y moves per unit of x.
+- [Multiple regression](https://monte.markets/learn/mreg/): Several x's. Each coefficient is one x's effect holding the others fixed.
 
 ## Open data
 

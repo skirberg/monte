@@ -2,7 +2,7 @@ import { TOPIC_IDS, TOOLS, isTopicId } from "./data";
 
 /**
  * Every study page is a real route under /study/. The paths spell out what the old hash routes
- * said (#learn/topics/normal is now /study/learn/topics/normal/), so analytics paths stay the same.
+ * said (#learn/topics/normal is now /learn/normal/). Learn lives at the top level, so its links stay short.
  */
 export const SOLVER_IDS = ["tree", "draws", "events", "trials", "poisson", "normal", "samp", "ci", "test", "bday", "data"] as const;
 export type SolverId = (typeof SOLVER_IDS)[number];
@@ -10,14 +10,14 @@ export const isSolverId = (id: unknown): id is SolverId => SOLVER_IDS.includes(i
 
 export const study = {
   today: "/study/",
-  learn: "/study/learn/",
-  topic: (id: string) => `/study/learn/topics/${id}/`,
-  lesson: (id: string, slug: string) => `/study/learn/topics/${id}/${slug}/`,
-  formulas: "/study/learn/formulas/",
-  terms: "/study/learn/terms/",
-  frameworks: "/study/learn/frameworks/",
+  learn: "/learn/",
+  topic: (id: string) => `/learn/${id}/`,
+  lesson: (id: string, slug: string) => `/learn/${id}/${slug}/`,
+  formulas: "/learn/formulas/",
+  terms: "/learn/terms/",
+  frameworks: "/learn/frameworks/",
   /** "Same number, three questions": one value, an average, or a range for an unknown mean. */
-  start: "/study/learn/start/",
+  start: "/learn/start/",
   drill: "/study/practice/drill/",
   /** Opens the drill page and starts a set right away. */
   drillStart: (go: "start" | "mock" | "due" | "daily") => `/study/practice/drill/?go=${go}`,
@@ -75,6 +75,7 @@ export type StudySection = (typeof STUDY_SECTIONS)[number]["page"];
 
 /** Which section a pathname belongs to, or null outside /study/. */
 export function sectionFor(pathname: string | null): StudySection | null {
+  if (pathname?.startsWith("/learn")) return "learn";
   if (!pathname?.startsWith("/study")) return null;
   const seg = pathname.replace(/^\/study\/?/, "").split("/")[0];
   return (STUDY_SECTIONS.find((s) => s.page === seg)?.page ?? "home") as StudySection;

@@ -64,6 +64,7 @@ export function navKeyFor(pathname: string | null): SiteNavKey | null {
   if (!pathname) return null;
   if (pathname.startsWith("/decide")) return "decide";
   if (pathname.startsWith("/play")) return "play";
+  if (pathname.startsWith("/learn")) return "learn";
   if (!pathname.startsWith("/study")) return null;
   const seg = pathname.replace(/^\/study\/?/, "").split("/")[0];
   if (seg === "learn" || seg === "tools" || seg === "sources") return "learn";

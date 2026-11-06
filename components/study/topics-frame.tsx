@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, type TopicId } from "@/lib/study/data";
@@ -63,9 +62,8 @@ function TopicList({ active, onPick }: { active?: string; onPick?: () => void })
 }
 
 /** Topic pages: the list of fourteen beside the lesson on wide screens, folded above it on phones. */
-export function TopicsFrame({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() ?? "";
-  const active = pathname.match(/\/topics\/([a-z]+)/)?.[1];
+export function TopicsFrame({ children, topic }: { children: React.ReactNode; topic?: string }) {
+  const active = topic;
   const n = TOPICS.find((t) => t.id === active)?.n;
   const query = useLearnQuery();
   const [open, setOpen] = React.useState(false);
