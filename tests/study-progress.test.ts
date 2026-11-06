@@ -99,7 +99,7 @@ describe("first flashcard deal", () => {
 
 describe("first-ten-minutes drill link", () => {
   it("asks for 5 untimed questions on one topic", () => {
-    expect(study.drillTopic("data", 5, true)).toBe("/study/practice/drill/?topic=data&n=5&timer=off");
-    expect(study.drillTopic("data")).toBe("/study/practice/drill/?topic=data");
+    expect(study.drillTopic("data", 5, true)).toBe("/practice/drill/?topic=data&n=5&timer=off");
+    expect(study.drillTopic("data")).toBe("/practice/drill/?topic=data");
   });
 });

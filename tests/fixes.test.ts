@@ -91,11 +91,11 @@ describe("restoring onto a browser that has progress", () => {
 
 describe("share tags", () => {
   it("every page gets its own share title", () => {
-    const m = pageMeta("/study/learn/terms/", "Terms", "Every key word.");
+    const m = pageMeta("/learn/terms/", "Terms", "Every key word.");
     expect(m.openGraph.title).toBe("Terms · Monte");
-    expect(m.openGraph.url).toBe("/study/learn/terms/");
+    expect(m.openGraph.url).toBe("/learn/terms/");
     expect(m.twitter.title).toBe("Terms · Monte");
-    expect(m.alternates.canonical).toBe("/study/learn/terms/");
+    expect(m.alternates.canonical).toBe("/learn/terms/");
     expect(pageShare("/x/", "X", "d").openGraph.images[0].url).toBe("/og.png");
   });
 });
