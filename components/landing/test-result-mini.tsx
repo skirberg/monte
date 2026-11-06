@@ -160,7 +160,7 @@ export function TestResultMini() {
 
         <a
           href={decideHref("bayes")}
-          className="mt-auto inline-flex h-12 items-center gap-2 self-start rounded-full bg-ink px-6 font-medium text-paper transition-colors hover:bg-ink/85"
+          className="btn btn-primary mt-auto self-start"
         >
           Open the full tool <ArrowRight className="size-4" />
         </a>

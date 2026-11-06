@@ -34,11 +34,22 @@ const RULES = [
 // shadcn keyboard-shortcut hints keep their wide spacing.
 const ALLOW = [[/components\/ui\//, /tracking-widest/]];
 
+// Buttons (DESIGN.md, "Buttons"): a pill-sized class string built by hand instead of btn btn-primary / btn-secondary.
+const handPill = (s) =>
+  /\brounded-full\b/.test(s) && /(?:^|\s)(?:min-)?h-1[12](?:\s|$)/.test(s) &&
+  ((/\bbg-ink\b/.test(s) && /\btext-paper\b/.test(s)) || /\bborder-line-strong\b/.test(s));
+
 let bad = 0;
 for (const f of files) {
   const rel = relative(root, f);
   readFileSync(f, "utf8").split("\n").forEach((line, i) => {
     if (/^\s*(\/\/|\*|\/\*)/.test(line)) return; // comments
+    if (!/components\/ui\//.test(rel))
+      for (const [, s] of line.matchAll(/["`]([^"`]*)["`]/g))
+        if (handPill(s)) {
+          bad++;
+          console.log(`${rel}:${i + 1}  ${s.trim().slice(0, 60)}  hand-built button: use btn btn-primary or btn btn-secondary (add btn-sm for the small size)`);
+        }
     for (const [re, why] of RULES) {
       for (const m of line.matchAll(re)) {
         if (ALLOW.some(([p, r]) => p.test(rel) && r.test(m[0]))) continue;

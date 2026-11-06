@@ -16,6 +16,9 @@
   --line: oklch(0.87 0.016 70);
   --line-strong: oklch(0.62 0.02 60);
   --clay: oklch(0.6 0.165 45);
+  --btn: oklch(0.29 0.012 50);
+  --btn-hover: oklch(0.35 0.012 50);
+  --ink-lip: oklch(0.1 0.01 50);
   --clay-ink: oklch(0.5 0.15 42);
   --clay-tint: oklch(0.935 0.032 55);
   --danger: oklch(0.5 0.19 22);
@@ -56,6 +59,9 @@
   --line: oklch(0.32 0.012 55);
   --line-strong: oklch(0.5 0.015 60);
   --clay: oklch(0.72 0.15 48);
+  --btn: var(--ink);
+  --btn-hover: oklch(0.88 0.012 72);
+  --ink-lip: oklch(0.64 0.016 68);
   --clay-ink: oklch(0.78 0.13 50);
   --clay-tint: oklch(0.29 0.05 45);
   --danger: oklch(0.7 0.17 22);
@@ -217,6 +223,76 @@
   }
 }
 
+/* ---------------------------------------------------------------
+   Buttons. The only two the site uses (DESIGN.md, "Buttons"); scripts/type-check.mjs
+   fails on a hand-built pill. Tactile, like a learning app's (Brilliant, Duolingo):
+   a solid pill standing on a 3px edge of its own darker color; pressing pushes it
+   down onto the edge. Ink means the action, so the main button is ink, never clay.
+     btn btn-primary            the one action that matters on a screen
+     btn btn-secondary          everything else that is a button, not a link
+     btn-sm                     the smaller size, for actions inside a tool
+   --------------------------------------------------------------- */
+@layer components {
+  .btn {
+    --lip: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 3rem;
+    padding-inline: 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    white-space: nowrap;
+    box-shadow: 0 3px 0 0 var(--lip);
+    translate: 0 0;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out, box-shadow 90ms ease-out, translate 90ms ease-out;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .btn-sm {
+    height: 2.75rem;
+    padding-inline: 1.25rem;
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+  .btn-primary {
+    --lip: var(--ink-lip);
+    background: var(--btn);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--btn-hover);
+  }
+  .btn-secondary {
+    --lip: var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover {
+    background: var(--sand);
+  }
+  .btn:active:not(:disabled):not([aria-disabled="true"]) {
+    translate: 0 3px;
+    box-shadow: 0 0 0 0 var(--lip);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover {
+    background: var(--btn);
+  }
+  .btn-secondary:disabled:hover {
+    background: var(--paper);
+  }
+}
+
 @utility font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
@@ -252,16 +328,16 @@
  * Uses the `scale` property, so it never fights translate or transform utilities, and keeps the color fades.
  */
 @media (prefers-reduced-motion: no-preference) {
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  a.rounded-full {
+  button:not(:disabled):not(.btn),
+  [role="button"]:not([aria-disabled="true"]):not(.btn),
+  a.rounded-full:not(.btn) {
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, scale, translate, rotate, transform;
     transition-timing-function: ease-out;
     transition-duration: 120ms;
   }
-  button:not(:disabled):active,
-  [role="button"]:not([aria-disabled="true"]):active,
-  a.rounded-full:active {
+  button:not(:disabled):not(.btn):active,
+  [role="button"]:not([aria-disabled="true"]):not(.btn):active,
+  a.rounded-full:not(.btn):active {
     scale: 0.97;
   }
 }

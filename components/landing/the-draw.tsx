@@ -82,13 +82,13 @@ function Preview({ t, stat }: { t: Topic; stat?: Stat }) {
       <div className="mt-auto flex flex-wrap gap-2">
         <a
           href={studyHref(`#learn/topics/${t.id}`)}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-paper transition-colors hover:bg-ink/85"
+          className="btn btn-primary btn-sm"
         >
           Learn it <ArrowRight className="size-4" />
         </a>
         <a
           href={studyHref(`#practice/drill/topic/${t.id}`)}
-          className="inline-flex h-11 items-center rounded-full border border-line-strong px-5 text-sm font-medium transition-colors hover:border-ink hover:bg-sand"
+          className="btn btn-secondary btn-sm"
         >
           Drill it, 8 questions
         </a>

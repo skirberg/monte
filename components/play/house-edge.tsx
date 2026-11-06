@@ -169,13 +169,13 @@ export function HouseEdge() {
             <Path points={path} />
           </div>
           <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={() => play(1)} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+            <button type="button" onClick={() => play(1)} className="btn btn-primary">
               Spin once
             </button>
-            <button type="button" onClick={() => play(100)} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+            <button type="button" onClick={() => play(100)} className="btn btn-secondary">
               Spin 100
             </button>
-            <button type="button" onClick={() => play(1000)} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+            <button type="button" onClick={() => play(1000)} className="btn btn-secondary">
               Spin 1,000
             </button>
             <button type="button" onClick={() => reset()} className="inline-flex h-12 items-center rounded-full px-4 text-ink-muted hover:bg-sand">
@@ -207,7 +207,7 @@ export function HouseEdge() {
             One person can get lucky. Simulate {PLAYERS.toLocaleString()} players each betting {money(STAKE)} a spin for {PLAYER_SPINS.toLocaleString()} spins and
             see who the wheel pays.
           </p>
-          <button type="button" onClick={runCrowd} className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85">
+          <button type="button" onClick={runCrowd} className="btn btn-primary btn-sm">
             {crowd ? "Run them again" : "Run 1,000 players"}
           </button>
         </div>

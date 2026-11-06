@@ -475,7 +475,7 @@ export default function Story() {
             <p className="mt-4 max-w-[44ch] text-lg text-ink-muted md:mt-5">Read it in a sentence, drag it in a lab, then drill it with fresh numbers.</p>
             <a
               href={studyHref("#learn/topics/data")}
-              className="mt-7 inline-flex h-12 items-center md:mt-9 gap-2 rounded-full bg-ink px-7 font-medium text-paper transition-colors hover:bg-ink/85"
+              className="btn btn-primary mt-7 md:mt-9"
             >
               Start with topic 1 <ArrowRight className="size-4" />
             </a>

@@ -20,10 +20,10 @@ export default function NotFound() {
         <p className="mt-6 max-w-[44ch] text-xl text-ink-muted">That page landed outside the line. Replay the point from somewhere that exists.</p>
         <div className="mt-9 flex flex-wrap gap-3">
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/" className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+          <a href="/" className="btn btn-primary">
             Home
           </a>
-          <a href={studyHref("#learn/topics/data")} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+          <a href={studyHref("#learn/topics/data")} className="btn btn-secondary">
             Start studying
           </a>
         </div>

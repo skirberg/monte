@@ -28,7 +28,7 @@ export class SafePart extends React.Component<Props, { failed: boolean; tries: n
         <p className="text-sm text-ink-muted">The rest of the page is fine. Your saved progress is safe.</p>
         <button
           type="button"
-          className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85"
+          className="btn btn-primary btn-sm"
           onClick={() => this.setState((s) => ({ failed: false, tries: s.tries + 1 }))}
         >
           Try again

@@ -245,7 +245,7 @@ function BackupCard() {
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          className="inline-flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-medium hover:border-ink"
+          className="btn btn-secondary btn-sm"
           onClick={async () => {
             try {
               await navigator.clipboard.writeText(exportProgress());
@@ -259,7 +259,7 @@ function BackupCard() {
         </button>
         <button
           type="button"
-          className="inline-flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-medium hover:border-ink"
+          className="btn btn-secondary btn-sm"
           onClick={() => {
             const a = document.createElement("a");
             a.href = URL.createObjectURL(new Blob([exportProgress()], { type: "text/plain" }));
@@ -284,7 +284,7 @@ function BackupCard() {
       >
         <label className="sr-only" htmlFor="restore-code">Paste a progress code</label>
         <input id="restore-code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Paste a code to restore" className="h-11 min-w-0 rounded-xl border border-line-strong bg-paper px-3 text-base" />
-        <button type="submit" className="h-11 rounded-full bg-ink px-4 text-sm font-medium text-paper">Restore</button>
+        <button type="submit" className="btn btn-primary btn-sm">Restore</button>
       </form>
       <p className="text-xs text-ink-muted" aria-live="polite">{msg}</p>
     </section>

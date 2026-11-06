@@ -150,17 +150,17 @@ export function MontyHall() {
           {phase === "decide" && (
             <>
               {/* The picked door disables itself, so focus moves here instead of dropping to the page. */}
-              <button type="button" onClick={() => decide(false)} autoFocus className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+              <button type="button" onClick={() => decide(false)} autoFocus className="btn btn-secondary">
                 Stay with door {pick! + 1}
               </button>
               {/* Same weight as Stay, so the page does not hint at the answer. */}
-              <button type="button" onClick={() => decide(true)} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+              <button type="button" onClick={() => decide(true)} className="btn btn-secondary">
                 Switch to door {[0, 1, 2].find((d) => d !== pick && d !== opened)! + 1}
               </button>
             </>
           )}
           {phase === "reveal" && (
-            <button type="button" onClick={again} autoFocus className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+            <button type="button" onClick={again} autoFocus className="btn btn-primary">
               Play again
             </button>
           )}
@@ -182,7 +182,7 @@ export function MontyHall() {
           </h2>
           <Bar label="Stay" t={sim.stay} />
           <Bar label="Switch" t={sim.swap} />
-          <button type="button" onClick={runSim} className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85">
+          <button type="button" onClick={runSim} className="btn btn-primary btn-sm">
             Run 1,000 more each way
           </button>
         </section>

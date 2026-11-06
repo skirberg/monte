@@ -248,7 +248,7 @@ export function Goal() {
               type="button"
               onClick={() => { run(); xp(); }}
               disabled={!ready}
-              className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85 disabled:opacity-50 disabled:hover:bg-ink"
+              className="btn btn-primary"
             >
               {res && !res.finals ? `Playing… ${Math.round((res.done / PATHS) * 100)}%` : `Play ${PATHS.toLocaleString()} new futures`}
             </button>

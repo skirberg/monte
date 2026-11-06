@@ -18,7 +18,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const h2 = "font-display text-headline font-semibold leading-none";
 const link = "inline-flex min-h-11 items-center gap-2 font-medium text-clay-ink underline-offset-4 hover:underline";
-const primary = "inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 font-medium text-paper transition-colors hover:bg-ink/85";
+const primary = "btn btn-primary";
 
 function SectionHead({ title, id }: { title: React.ReactNode; id?: string }) {
   return (

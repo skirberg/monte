@@ -282,7 +282,7 @@ export function MonteCarlo() {
             ))}
           </ol>
           {opts.length < 3 && (
-            <button type="button" onClick={addThird} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-4 text-sm hover:border-ink">
+            <button type="button" onClick={addThird} className="btn btn-secondary btn-sm">
               <Plus className="size-4" /> Add a third option
             </button>
           )}
@@ -316,7 +316,7 @@ export function MonteCarlo() {
               type="button"
               onClick={() => { run(); xp(); }}
               disabled={!ready}
-              className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85 disabled:opacity-50 disabled:hover:bg-ink"
+              className="btn btn-primary"
             >
               {res && !res.sorted ? `Drawing… ${Math.round((res.done / DRAWS) * 100)}%` : `Draw ${DRAWS.toLocaleString()} new futures`}
             </button>

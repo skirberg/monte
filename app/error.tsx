@@ -23,11 +23,11 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
         </h1>
         <p className="mt-6 max-w-[44ch] text-xl text-ink-muted">This page tripped on the net. Your saved progress is safe. Try the point again.</p>
         <div className="mt-9 flex flex-wrap gap-3">
-          <button type="button" onClick={reset} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+          <button type="button" onClick={reset} className="btn btn-primary">
             Try again
           </button>
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/" className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand">
+          <a href="/" className="btn btn-secondary">
             Home
           </a>
         </div>

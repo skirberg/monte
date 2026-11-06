@@ -107,10 +107,10 @@ export function AbTest() {
           {one.length ? <PChart ps={one} /> : <div className="grid aspect-[7/3] place-items-center text-sm text-ink-muted">Run one test to see its p-value move day by day</div>}
         </div>
         <div className="flex flex-wrap gap-3">
-          <button type="button" onClick={runOne} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+          <button type="button" onClick={runOne} className="btn btn-primary">
             {one.length ? "Run another test" : "Run one test"}
           </button>
-          <button type="button" onClick={runMany} disabled={!!busy} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand disabled:opacity-60">
+          <button type="button" onClick={runMany} disabled={!!busy} className="btn btn-secondary">
             {busy ? `Running… ${Math.round(busy * 100)}%` : `Run ${RUNS.toLocaleString()} tests`}
           </button>
         </div>

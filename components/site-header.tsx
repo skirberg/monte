@@ -133,7 +133,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
             {!study && (
               <a
                 href={studyHref("#learn/topics/data")}
-                className="ml-1 hidden h-11 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-paper transition-colors hover:bg-ink/85 sm:flex md:hidden xl:flex"
+                className="btn btn-primary btn-sm ml-1 hidden sm:flex md:hidden xl:flex"
               >
                 Start studying <ArrowRight className="size-4" />
               </a>

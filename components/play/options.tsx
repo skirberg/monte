@@ -198,10 +198,10 @@ export function Options() {
           </div>
         </dl>
         <div className="flex flex-wrap gap-3">
-          <button type="button" onClick={() => simulate(1)} disabled={est.n >= MAX} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85 disabled:opacity-50">
+          <button type="button" onClick={() => simulate(1)} disabled={est.n >= MAX} className="btn btn-primary">
             Add {BATCH.toLocaleString()} paths
           </button>
-          <button type="button" onClick={() => simulate(MAX / BATCH)} disabled={est.n >= MAX} className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand disabled:opacity-50">
+          <button type="button" onClick={() => simulate(MAX / BATCH)} disabled={est.n >= MAX} className="btn btn-secondary">
             Go to {MAX.toLocaleString()}
           </button>
         </div>

@@ -516,7 +516,7 @@ export function HeroBoard({ className }: { className?: string }) {
           <button
             type="button"
             onClick={drop100}
-            className="inline-flex h-11 items-center gap-1.5 rounded-full border border-line-strong px-4 text-sm font-medium transition-colors hover:border-ink hover:bg-paper"
+            className="btn btn-secondary btn-sm"
             aria-label="Drop 100 grains"
           >
             <Plus className="size-4" aria-hidden />

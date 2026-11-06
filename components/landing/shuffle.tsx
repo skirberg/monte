@@ -112,7 +112,7 @@ export function Shuffle() {
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
                 <a
                   href={learn.href}
-                  className="inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 font-medium text-paper transition-colors hover:bg-ink/85"
+                  className="btn btn-primary"
                 >
                   Learn it: {learn.name} <ArrowRight className="size-4" aria-hidden />
                 </a>

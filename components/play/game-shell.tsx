@@ -70,7 +70,7 @@ export function GameShell({
         <nav aria-label="Next steps" className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <a
             href={playHref(next.slug)}
-            className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium transition-colors hover:border-ink hover:bg-sand"
+            className="btn btn-secondary group"
           >
             Next game: {next.name} <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
           </a>

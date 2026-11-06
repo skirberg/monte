@@ -121,6 +121,18 @@ DESKTOP (12 columns)                              PHONE (4 columns)
 
 The hero headline is one sentence beside the board. Section headings are one size (text-headline), plain nouns or a real question, never a two-beat slogan. No closing band: the header carries the start button.
 
+## Buttons (November 2026)
+
+Two buttons, one size step, defined once in `app/globals.css` and nowhere else; `npm run type-check` fails on a pill built by hand.
+
+| Class | Use |
+|---|---|
+| `btn btn-primary` | the one action that matters on a screen: ink pill, paper text |
+| `btn btn-secondary` | every other button: paper pill, line-strong border |
+| `btn-sm` | add for actions inside a tool or game (44px tall instead of 48px) |
+
+Learned from Brilliant (brilliant.org, checked Nov 6 2026): in a learning app the buttons are tactile. Each pill stands on a 3px edge of its own darker color (`--ink-lip`, `--line-strong`); pressing pushes it down onto the edge, so a tap feels like setting down a grain. The main button stays ink, never clay: clay means the number. Disabled buttons lose the edge and drop to half opacity. Text links (`or try 5 questions`) stay links, not buttons.
+
 ## Color (OKLCH, light "day court" / dark "night session")
 
 | Token | Light | Dark | Use |

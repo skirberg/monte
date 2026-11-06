@@ -201,7 +201,7 @@ export function GuessR() {
                     type="button"
                     onClick={nextRound}
                     autoFocus
-                    className="inline-flex h-11 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85"
+                    className="btn btn-primary btn-sm"
                   >
                     {i + 1 === ROUNDS ? "See your score" : "Next plot"}
                   </button>
@@ -210,7 +210,7 @@ export function GuessR() {
                 <button
                   type="button"
                   onClick={call}
-                  className="inline-flex h-12 items-center rounded-full bg-ink px-7 font-medium text-paper hover:bg-ink/85"
+                  className="btn btn-primary"
                 >
                   Make the call
                 </button>
@@ -232,7 +232,7 @@ export function GuessR() {
             <button
               type="button"
               onClick={restart}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85"
+              className="btn btn-primary btn-sm"
             >
               <RotateCcw className="size-4" /> Play again
             </button>

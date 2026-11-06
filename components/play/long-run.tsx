@@ -215,7 +215,7 @@ export function LongRun() {
               className="h-11 w-full accent-[var(--clay)]"
             />
           </div>
-          <button type="button" onClick={simulate} className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+          <button type="button" onClick={simulate} className="btn btn-primary">
             {fan ? "Simulate again" : "Run the simulation"}
           </button>
         </div>

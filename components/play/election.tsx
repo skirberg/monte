@@ -348,7 +348,7 @@ export function Election() {
               {refill === "used" ? (
                 <p className="text-sm text-ink-muted">You already refilled today. Keep playing for the Brier score, and come back tomorrow for chips.</p>
               ) : (
-                <button type="button" onClick={askRefill} className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85">
+                <button type="button" onClick={askRefill} className="btn btn-primary btn-sm">
                   Refill to {START_CHIPS.toLocaleString()} chips
                 </button>
               )}
@@ -412,7 +412,7 @@ export function Election() {
                 type="button"
                 onClick={lockIn}
                 disabled={!polls.length}
-                className="inline-flex h-12 w-full items-center justify-center rounded-full bg-ink px-5 font-medium text-paper hover:bg-ink/85 disabled:opacity-50 disabled:hover:bg-ink"
+                className="btn btn-primary w-full justify-center"
               >
                 Lock in {sideText(p)}
               </button>
@@ -440,7 +440,7 @@ export function Election() {
                   {polls.length > 1 && "That margin is smaller than any single poll's. "}
                   {verdict(right, allClear, polls.length, locked)}
                 </p>
-                <button type="button" onClick={nextElection} autoFocus className="inline-flex h-11 items-center rounded-full bg-ink px-6 font-medium text-paper hover:bg-ink/85">
+                <button type="button" onClick={nextElection} autoFocus className="btn btn-primary btn-sm">
                   Next election
                 </button>
               </div>
@@ -607,7 +607,7 @@ function ThousandElections() {
           </p>
         </div>
         <Toggle label="People per poll" value={n} onChange={(v) => changed(() => setN(v))} options={SIZES.map((s) => [s, s.toLocaleString()] as [Size, string])} />
-        <button type="button" onClick={run} disabled={!!busy} className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-paper hover:bg-ink/85 disabled:opacity-60">
+        <button type="button" onClick={run} disabled={!!busy} className="btn btn-primary btn-sm">
           {busy ? `Running… ${Math.round(busy * 100)}%` : rates ? "Run them again" : `Run ${RUNS.toLocaleString()} elections`}
         </button>
       </div>

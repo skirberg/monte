@@ -159,7 +159,7 @@ export function FakeCoin() {
               setSeq([]);
               setReal(null);
             }}
-            className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium hover:border-ink hover:bg-sand"
+            className="btn btn-secondary"
           >
             <RotateCcw className="size-4" /> Try again
           </button>
