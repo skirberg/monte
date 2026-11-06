@@ -6,7 +6,8 @@ import { track } from "@vercel/analytics";
 import { Check, X } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, TOPIC_IDS, isTopicId, topicById, type TopicId } from "@/lib/study/data";
-import { dailyQuestions, dayKey, generate, isCorrect, pickTopics, shownAnswer, type Question } from "@/lib/study/drill";
+import { dailyQuestions, dayKey, generate, isCorrect, pickTopics, shownAnswer, trapFor, type Question } from "@/lib/study/drill";
+import { feelRight, feelWrong } from "@/lib/feel";
 import { mt, plural } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
 import { getStudyProgress, hasAnyProgress, isWon, mastersTopic, recall, setScore, settleDue, statsFor, store, updateStudyProgress, useStudyProgress, wonCount } from "@/lib/study/progress";
@@ -19,7 +20,7 @@ import { sym } from "@/lib/study/symbols";
 
 type Mode = "ten" | "mock" | "full" | "due" | "topic" | "daily";
 /** `timed` is false for a set run without a clock; `inARow` counts right answers since the last miss. */
-type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; timed: boolean; inARow: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null };
+type Run = { qs: Question[]; i: number; correct: number; missed: Question[]; end: number; timed: boolean; inARow: number; mode: Mode; mock: boolean; answered: boolean; ok: boolean | null; trap?: string | null };
 type Result = { pct: number; correct: number; n: number; answered: number; mastered: boolean; mock: boolean; whole: boolean; missed: Question[]; daily?: { grid: string; first: boolean; firstScore: number; share: string } };
 
 /** Saved choice: "1" runs normal drills without a clock. Mock tests are always timed. */
@@ -196,8 +197,10 @@ export function Drill() {
   const check = () => {
     if (!run || run.answered || !value.trim()) return;
     const q = run.qs[run.i], ok = isCorrect(q, value.trim());
-    const inARow = ok ? run.inARow + 1 : 0;
-    setRun({ ...run, answered: true, ok, inARow, correct: run.correct + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, q] });
+    const inARow = ok ? run.inARow + 1 : 0, trap = ok ? null : trapFor(q, value.trim());
+    setRun({ ...run, answered: true, ok, trap, inARow, correct: run.correct + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, q] });
+    if (ok) feelRight();
+    else feelWrong();
     awardXp(ok ? 10 : 2, "drill");
     if (ok) {
       burstFrom(inRef.current);
@@ -209,7 +212,7 @@ export function Drill() {
   const next = () => {
     if (!run) return;
     if (run.i + 1 >= run.qs.length) return finish(run);
-    setRun({ ...run, i: run.i + 1, answered: false, ok: null });
+    setRun({ ...run, i: run.i + 1, answered: false, ok: null, trap: null });
     setValue("");
     requestAnimationFrame(() => inRef.current?.focus({ preventScroll: true }));
   };
@@ -374,6 +377,7 @@ export function Drill() {
                       {run.ok ? <Check className="size-4" aria-hidden /> : <X className="size-4" aria-hidden />}
                       {run.ok ? "Correct" : "Not quite"}
                     </p>
+                    {run.trap && <p className="max-w-[60ch] font-medium text-ink">{sym(mt(run.trap))}</p>}
                     <p className="text-sm text-ink-muted">
                       Answer <span className="rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono font-semibold text-ink">{sym(mt(shownAnswer(q)))}</span>
                     </p>

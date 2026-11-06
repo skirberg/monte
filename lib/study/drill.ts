@@ -10,6 +10,8 @@ export type Question = {
   text?: boolean;
   /** Whole-number answers (sample sizes, counts) must match after rounding. */
   exact?: boolean;
+  /** The usual wrong answers and what each one means, so a miss is explained, not just corrected. */
+  traps?: [value: number, means: string][];
   mod: TopicId;
 };
 type Gen = () => Omit<Question, "mod">;
@@ -31,6 +33,9 @@ const G: Record<TopicId, Gen> = {
       q: `Find the ${kind} of ${a.join(", ")}`,
       a: kind === "mean" ? mean(a) : median(a),
       why: kind === "mean" ? `Sum ${sum(a)} ÷ ${n}` : `Sorted: ${sorted(a).join(", ")}${n % 2 ? ", the middle value" : ", the average of the two middle values"}`,
+      traps: kind === "mean"
+        ? [[median(a), "That is the median, the middle value. The mean adds every value and divides by how many there are."]]
+        : [[mean(a), "That is the mean. The median is the middle value once the list is sorted."], [a[Math.floor(n / 2)], "That is the middle of the list as written. Sort it first."]],
     };
   },
   spread: () => {
@@ -48,6 +53,10 @@ const G: Record<TopicId, Gen> = {
         q: `${t === "var" ? "Sample variance" : "Sample standard deviation"} of ${b.join(", ")}`,
         a: t === "var" ? s2 : Math.sqrt(s2),
         why: `Mean ${fmt(mean(b))}, add the squared gaps, divide by n − 1 = 3${t === "sd" ? ", then take the square root" : ""}`,
+        traps: [
+          [t === "var" ? (s2 * 3) / 4 : Math.sqrt((s2 * 3) / 4), "You divided by n = 4. A sample divides by n − 1 = 3, because the sample mean sits closer to its own points than the true mean does."],
+          [t === "var" ? Math.sqrt(s2) : s2, t === "var" ? "That is the standard deviation. Variance is before the square root." : "That is the variance. Take its square root to get back to the data's units."],
+        ],
       };
     }
     if (t === "emp") {
@@ -65,16 +74,17 @@ const G: Record<TopicId, Gen> = {
         q: `Mean ${m}, SD ${s}, bell shaped. What percent of values are above ${m + c * s}? Type the percent, like 16.`,
         a: { 1: 16, 2: 2.5 }[c],
         why: c === 1 ? "32% sit outside 1 SD, half on top" : "5% sit outside 2 SD, half on top",
+        traps: [[{ 1: 32, 2: 5 }[c], "That is both tails together. Above means one side only: half of it."], [{ 1: 84, 2: 97.5 }[c], "That is the share below. The question asks above."]],
       };
     }
     const m = pick([100, 150, 200]), s = pick([10, 20, 25]), x = m + pick([-3, -2, -1.5, -1, 1, 1.5, 2, 3]) * s;
-    return { q: `Mean ${m}, SD ${s}. How many SDs from the mean is ${x}? The sign matters.`, a: (x - m) / s, why: `(${x} − ${m}) / ${s}` };
+    return { q: `Mean ${m}, SD ${s}. How many SDs from the mean is ${x}? The sign matters.`, a: (x - m) / s, why: `(${x} − ${m}) / ${s}`, traps: [[(m - x) / s, "Right distance, wrong sign. Below the mean is negative, above is positive."], [x - m, "That is the gap in raw units. Divide by the SD to count it in SDs."]] };
   },
   prob: () => {
     const t = pick(["or", "given", "and", "tree", "comp", "indep"] as const), TR = K.tree;
     if (t === "or") {
       const pa = pick([0.3, 0.4, 0.5]), pb = pick([0.2, 0.3, 0.4]), pab = pick([0.1, 0.15]);
-      return { q: `P(A) = ${pa}, P(B) = ${pb}, P(A and B) = ${pab}. P(A or B)?`, a: pa + pb - pab, why: `${pa} + ${pb} − ${pab}` };
+      return { q: `P(A) = ${pa}, P(B) = ${pb}, P(A and B) = ${pab}. P(A or B)?`, a: pa + pb - pab, why: `${pa} + ${pb} − ${pab}`, traps: [[pa + pb, "You counted the overlap twice. Outcomes in both A and B sit in P(A) and in P(B), so take P(A and B) off once."]] };
     }
     if (t === "given") {
       const A = ri(40, 80), both = ri(10, A - 10);
@@ -82,11 +92,12 @@ const G: Record<TopicId, Gen> = {
         q: `Of 100 customers, ${A} have a credit card and ${both} have a credit card and a loan. P(loan | credit card)? Answer as a decimal.`,
         a: both / A,
         why: `${both} ÷ ${A}; the given is the denominator`,
+        traps: [[both / 100, "That is P(card and loan) out of everyone. Given a credit card, you only count the card holders: divide by them."]],
       };
     }
     if (t === "and") {
       const h = pick([13, 26, 4] as const), lbl = { 13: "hearts", 26: "red cards", 4: "aces" }[h];
-      return { q: `Draw two cards from a pack of 52 without replacement. P(both are ${lbl})?`, a: (h / 52) * ((h - 1) / 51), why: `${h}/52 × ${h - 1}/51` };
+      return { q: `Draw two cards from a pack of 52 without replacement. P(both are ${lbl})?`, a: (h / 52) * ((h - 1) / 51), why: `${h}/52 × ${h - 1}/51`, traps: [[(h / 52) ** 2, "That puts the first card back. Without replacement the second draw has one fewer of them, out of 51."]] };
     }
     if (t === "tree") {
       const pt = pick([0.6, 0.7, 0.75, 0.8]), pm = pick([0.8, 0.9]), pl = pick([0.5, 0.6]), w = pick(["both", "overall", "rev"]);
@@ -98,7 +109,7 @@ const G: Record<TopicId, Gen> = {
     }
     if (t === "comp") {
       const p = pick([0.1, 0.2, 0.3]), n = pick([3, 4, 5]);
-      return { q: `${Math.round(p * 100)}% ${K.comp.what}. Pick ${n} at random. P(at least one ${K.comp.one})?`, a: 1 - (1 - p) ** n, why: `1 − ${(1 - p).toFixed(1)}^${n}` };
+      return { q: `${Math.round(p * 100)}% ${K.comp.what}. Pick ${n} at random. P(at least one ${K.comp.one})?`, a: 1 - (1 - p) ** n, why: `1 − ${(1 - p).toFixed(1)}^${n}`, traps: [[p * n, "Adding the chances counts the overlaps more than once, and goes past 1 for big n. Take 1 minus the chance of none."], [(1 - p) ** n, "That is the chance of none. At least one is 1 minus that."]] };
     }
     const pA = pick([0.3, 0.4, 0.5]), pB = pick([0.2, 0.4, 0.6]), ind = pick([true, false]);
     const pAB = ind ? pA * pB : r2(pA * pB + pick([0.05, 0.1]));
@@ -126,13 +137,13 @@ const G: Record<TopicId, Gen> = {
       };
     }
     if (t === "mean") return { q: `Return Y takes values (probability): ${tbl}. E(Y)?`, a: mu, why: "Σ y P(y)" };
-    if (t === "sd") return { q: `Return Y takes values (probability): ${tbl}. SD(Y)?`, a: Math.sqrt(v), why: `μ = ${fmt(mu)}, variance ${fmt(v)}, then the square root` };
+    if (t === "sd") return { q: `Return Y takes values (probability): ${tbl}. SD(Y)?`, a: Math.sqrt(v), why: `μ = ${fmt(mu)}, variance ${fmt(v)}, then the square root`, traps: [[v, "That is the variance. Take its square root."]] };
     const c = pick([5, 10, 20]);
-    return { q: `E(Y) = ${fmt(mu)} and SD(Y) = ${fmt(Math.sqrt(v))}. SD of (Y + ${c})?`, a: Math.sqrt(v), why: "Adding a constant shifts the mean, not the spread" };
+    return { q: `E(Y) = ${fmt(mu)} and SD(Y) = ${fmt(Math.sqrt(v))}. SD of (Y + ${c})?`, a: Math.sqrt(v), why: "Adding a constant shifts the mean, not the spread", traps: [[Math.sqrt(v) + c, "Adding a constant moves every value the same amount, so the gaps between them do not change. The SD stays put."]] };
   },
   two: () => {
     const t = pick(["rho", "pm", "pv"] as const), s1 = pick([8, 10, 12]), s2 = pick([12, 15, 20]), cov = pick([20, 40, 60, -30]);
-    if (t === "rho") return { q: `σx = ${s1}, σy = ${s2}, Cov = ${cov}. Correlation?`, a: cov / (s1 * s2), why: `${cov} / (${s1} × ${s2})` };
+    if (t === "rho") return { q: `σx = ${s1}, σy = ${s2}, Cov = ${cov}. Correlation?`, a: cov / (s1 * s2), why: `${cov} / (${s1} × ${s2})`, traps: [[cov / (s1 * s1 * s2 * s2), "You divided by the variances. Correlation divides by the two SDs."]] };
     const w = pick([0.3, 0.4, 0.5, 0.6]), e1 = pick([6, 8, 10]), e2 = pick([12, 14, 16]), w2 = (1 - w).toFixed(1);
     if (t === "pm") return { q: `E(X) = ${e1}%, E(Y) = ${e2}%. Expected return of ${w}X + ${w2}Y?`, a: w * e1 + (1 - w) * e2, why: `${w} × ${e1} + ${w2} × ${e2}` };
     const vv = w * w * s1 * s1 + (1 - w) ** 2 * s2 * s2 + 2 * w * (1 - w) * cov;
@@ -375,6 +386,16 @@ export function isCorrect(q: Question, raw: string) {
   const twoSig = 0.5 * 10 ** (Math.floor(Math.log10(Math.abs(a))) - 1), four = Math.round(a * 10000) / 10000;
   if (four !== 0 && Math.abs(v - four) < 1e-12) return true;
   return Math.abs(v - a) <= Math.max(Math.abs(a) * 0.02, twoSig) * (1 + 1e-9);
+}
+
+/** What a wrong answer most likely means, when it matches one of the question's usual mistakes. */
+export function trapFor(q: Question, raw: string): string | null {
+  if (q.text || !q.traps || isCorrect(q, raw)) return null;
+  for (const [value, means] of q.traps) {
+    if (Math.abs(value - (q.a as number)) < 1e-9) continue;
+    if (isCorrect({ ...q, a: value, traps: undefined }, raw)) return means;
+  }
+  return null;
 }
 
 /** The topic for each question in a set: shuffled, and every chosen topic gets a turn before any repeats. */

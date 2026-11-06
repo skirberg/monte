@@ -9,7 +9,7 @@ import { studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
 import { SITE_NAME, SITE_URL, abs, pageMeta } from "@/lib/seo";
 import { TopicLab } from "@/components/study/labs";
-import { Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
+import { GuessFirst, Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
 import { Box, Fold, Html, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
@@ -51,9 +51,15 @@ export default async function TopicPage({ params }: Props) {
         </p>
         <h1 className={h1}>{t.name}</h1>
         <TopicPath id={t.id} />
+      </header>
+
+      {/* Guess first, then the lesson (DESIGN.md, "Lessons"). */}
+      <GuessFirst id={t.id} />
+
+      <div>
         <Html as="p" html={t.line} className={lead} />
         <Listen id={t.id} />
-      </header>
+      </div>
 
       {t.why && (
         <section aria-labelledby="why-t" className="grid gap-3 rounded-[18px] border border-line bg-paper p-6">

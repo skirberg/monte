@@ -9,6 +9,8 @@ import { isWon, statsFor, store, updateStudyProgress, useStudyProgress } from "@
 import { awardXp } from "@/lib/study/events";
 import { Html, btn, linkBtn } from "@/components/study/ui";
 import { useHydrated, useStoredString } from "@/lib/hooks";
+import { GUESS } from "@/lib/study/guess";
+import { feelRight, feelWrong } from "@/lib/feel";
 
 /** Read it, practice it, master it: the three steps to own a topic. Checks fill in as you go. */
 export function TopicPath({ id }: { id: TopicId }) {
@@ -224,4 +226,64 @@ export function ReadMarker({ id }: { id: TopicId }) {
     };
   }, [id, read]);
   return <span ref={ref} hidden />;
+}
+
+/**
+ * Guess first (lib/study/guess.ts): one question before the lesson explains anything. Every choice
+ * answers back. The pick is remembered, so coming back shows what you chose.
+ */
+export function GuessFirst({ id }: { id: TopicId }) {
+  const g = GUESS[id];
+  const key = `monte-guess-${id}`;
+  const saved = useStoredString(key);
+  const [mine, setMine] = React.useState<string | null>(null);
+  const pick = mine ?? saved ?? "";
+  const setPick = (v: string) => {
+    setMine(v);
+    try {
+      localStorage.setItem(key, v);
+    } catch {}
+  };
+  if (!g) return null;
+  const chosen = pick === "" ? null : g.options[Number(pick)];
+  return (
+    <section aria-labelledby="guess-t" className="grid gap-4 rounded-[18px] bg-sand p-5 md:p-6">
+      <h2 id="guess-t" className="text-pretty font-display text-lead font-semibold leading-tight">
+        {g.q}
+      </h2>
+      <div role="group" aria-label="Your guess" className="grid gap-2 sm:grid-cols-3">
+        {g.options.map((o, i) => {
+          const me = String(i) === pick;
+          return (
+            <button
+              key={o.text}
+              type="button"
+              aria-pressed={me}
+              onClick={() => {
+                if (o.right) feelRight();
+                else feelWrong();
+                setPick(String(i));
+              }}
+              className={cn(
+                "min-h-12 rounded-[14px] border bg-paper px-4 py-3 text-left font-medium transition-colors",
+                me ? (o.right ? "border-success" : "border-danger") : "border-line-strong hover:border-ink",
+                chosen && !me && o.right && "border-success",
+              )}
+            >
+              {o.text}
+            </button>
+          );
+        })}
+      </div>
+      <p role="status" className="min-h-6 max-w-[62ch] text-base empty:hidden">
+        {chosen ? (
+          <>
+            <b className={chosen.right ? "text-success" : "text-danger"}>{chosen.right ? "Yes. " : "Not quite. "}</b>
+            {chosen.why.replace(/^Right\. /, "")}
+          </>
+        ) : null}
+      </p>
+      {!chosen && <p className="text-sm text-ink-muted">Guess before you read. A wrong guess is how the lesson sticks.</p>}
+    </section>
+  );
 }

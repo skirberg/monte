@@ -133,6 +133,16 @@ Two buttons, one size step, defined once in `app/globals.css` and nowhere else; 
 
 Learned from Brilliant (brilliant.org, checked Nov 6 2026): in a learning app the buttons are tactile. Each pill stands on a 3px edge of its own darker color (`--ink-lip`, `--line-strong`); pressing pushes it down onto the edge, so a tap feels like setting down a grain. The main button stays ink, never clay: clay means the number. Disabled buttons lose the edge and drop to half opacity. Text links (`or try 5 questions`) stay links, not buttons.
 
+## Lessons and feel (November 2026)
+
+Learned from Brilliant (study: Studio, Monte, 6 Design, "Brilliant Study (Nov 6)").
+
+- **Guess first.** Every topic opens with one question before the lesson explains anything (`lib/study/guess.ts`, `GuessFirst`). Each question is built on the topic's trap, and every choice answers back, so a wrong guess teaches too.
+- **Answer the wrong answer.** Drill questions carry their usual mistakes (`traps` in `lib/study/drill.ts`): dividing by n instead of n − 1, both tails instead of one, the overlap counted twice, the variance for the SD. A miss that matches one says what it means, above the right answer.
+- **The path.** Learn shows the fourteen topics as stops on a line: mastered stops filled in clay, the next one lit in ink with its idea and a Start button.
+- **Placement.** A new visitor can answer four of the guess questions, easiest to hardest. The first miss is where they start; the first-ten-minutes steps and the path follow it.
+- **Feel.** A right answer clicks (two short rising tones, a 12 ms tap on phones); a wrong one is a soft low knock (a double tap). Tones are made in the browser, no audio files (`lib/feel.ts`). Fun mode only, never in Focus, never with reduced motion.
+
 ## Color (OKLCH, light "day court" / dark "night session")
 
 | Token | Light | Dark | Use |

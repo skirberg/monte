@@ -1,16 +1,18 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { cn } from "cn";
 import { TOPICS, TOOLS } from "@/lib/study/data";
 import { study } from "@/lib/study/routes";
 import { hasAnyProgress, isWon, statsFor, useStudyProgress, wonCount, type StudyProgress } from "@/lib/study/progress";
 import { Fold, btn, linkBtn } from "@/components/study/ui";
+import { GUESS } from "@/lib/study/guess";
+import { feelRight, feelWrong } from "@/lib/feel";
+import { useStoredString } from "@/lib/hooks";
+import type { TopicId } from "@/lib/study/data";
 
-const FIRST = TOPICS[0];
-// Topic 1 has no lab of its own, so the lab step goes to the first topic that has one.
-const LAB_TOPIC = FIRST.labs.length ? FIRST : (TOPICS.find((t) => t.labs.length) ?? FIRST);
 
 /** Done once a first full set is answered: five questions anywhere, a mock test or a Daily. */
 const finishedFirstSet = (p: StudyProgress) =>
@@ -18,8 +20,11 @@ const finishedFirstSet = (p: StudyProgress) =>
 
 /** A new visitor's start: three small steps instead of fourteen empty meters. Stays until the steps are done. */
 function FirstTen({ p }: { p: StudyProgress }) {
+  const placed = useStoredString(START_KEY);
+  const FIRST = TOPICS.find((t) => t.id === placed) ?? TOPICS[0];
+  const LAB_TOPIC = FIRST.labs.length ? FIRST : (TOPICS.slice(FIRST.n - 1).find((t) => t.labs.length) ?? FIRST);
   const steps = [
-    { href: study.topic(FIRST.id), title: `Read topic 1: ${FIRST.name}`, sub: "One plain idea and a real example. About 4 minutes.", done: !!p.read?.[FIRST.id] },
+    { href: study.topic(FIRST.id), title: `Read topic ${FIRST.n}: ${FIRST.name}`, sub: "One plain idea and a real example. About 4 minutes.", done: !!p.read?.[FIRST.id] },
     {
       href: `${study.topic(LAB_TOPIC.id)}#lab`,
       title: LAB_TOPIC === FIRST ? "Try its lab" : `Try a lab: ${LAB_TOPIC.short}`,
@@ -61,6 +66,113 @@ function FirstTen({ p }: { p: StudyProgress }) {
   );
 }
 
+// Placement (DESIGN.md, "Lessons"): four of the guess-first questions, easiest to hardest. Your start is the
+// first one you miss; get all four and you start after the last. Learned from Brilliant's first run, which asks
+// questions "to map your current knowledge" before building a plan.
+const PLACE: TopicId[] = ["center", "prob", "clt", "test"];
+const START_KEY = "monte-start";
+
+function Placement() {
+  const [step, setStep] = React.useState(-1);
+  const [pick, setPick] = React.useState<number | null>(null);
+  const [missed, setMissed] = React.useState<TopicId | null>(null);
+  const done = step >= PLACE.length;
+  const startId: TopicId = done ? (missed ?? TOPICS[TOPICS.findIndex((t) => t.id === PLACE[PLACE.length - 1]) + 1].id) : "data";
+  const start = TOPICS.find((t) => t.id === startId)!;
+
+  React.useEffect(() => {
+    if (!done) return;
+    try {
+      localStorage.setItem(START_KEY, startId);
+      // Same-tab listeners (the first-ten-minutes box) only hear storage events another tab fires.
+      window.dispatchEvent(new StorageEvent("storage", { key: START_KEY }));
+    } catch {}
+  }, [done, startId]);
+
+  if (step < 0)
+    return (
+      <section aria-labelledby="pl-t" className="flex flex-wrap items-center justify-between gap-4 rounded-[18px] border border-line p-5">
+        <div className="grid gap-0.5">
+          <h2 id="pl-t" className="font-semibold">Know some statistics already?</h2>
+          <p className="text-sm text-ink-muted">Four quick questions find where you should start.</p>
+        </div>
+        <button type="button" className={btn.ghost} onClick={() => setStep(0)}>
+          Find my start
+        </button>
+      </section>
+    );
+
+  if (done)
+    return (
+      <section aria-labelledby="pl-t" className="grid gap-3 rounded-[18px] border border-line p-5">
+        <h2 id="pl-t" className="font-display text-xl font-semibold">
+          Start at topic {start.n}: {start.name}
+        </h2>
+        <p className="text-sm text-ink-muted">
+          {start.n === 1 ? "Topic 1 it is. Everything builds from here." : `Topics 1 to ${start.n - 1} are there to skim whenever you want them.`}
+        </p>
+        <Link href={study.topic(start.id)} className={cn(btn.primary, "justify-self-start")}>
+          Start topic {start.n} <ArrowRight aria-hidden />
+        </Link>
+      </section>
+    );
+
+  const id = PLACE[step], g = GUESS[id], chosen = pick === null ? null : g.options[pick];
+  return (
+    <section aria-labelledby="pl-t" className="grid gap-4 rounded-[18px] border border-line p-5">
+      <p className="text-sm text-ink-muted">
+        Question {step + 1} of {PLACE.length}
+      </p>
+      <h2 id="pl-t" className="text-pretty font-display text-lead font-semibold leading-tight">
+        {g.q}
+      </h2>
+      <div role="group" aria-label="Your answer" className="grid gap-2">
+        {g.options.map((o, i) => (
+          <button
+            key={o.text}
+            type="button"
+            disabled={pick !== null}
+            aria-pressed={pick === i}
+            onClick={() => {
+              setPick(i);
+              if (o.right) feelRight();
+              else {
+                feelWrong();
+                setMissed((m) => m ?? id);
+              }
+            }}
+            className={cn(
+              "min-h-12 rounded-[14px] border bg-paper px-4 py-3 text-left font-medium transition-colors disabled:cursor-default",
+              pick === i ? (o.right ? "border-success" : "border-danger") : pick !== null && o.right ? "border-success" : "border-line-strong enabled:hover:border-ink",
+            )}
+          >
+            {o.text}
+          </button>
+        ))}
+      </div>
+      {chosen && (
+        <>
+          <p role="status" className="max-w-[62ch]">
+            <b className={chosen.right ? "text-success" : "text-danger"}>{chosen.right ? "Yes. " : "Not quite. "}</b>
+            {chosen.why.replace(/^Right\. /, "")}
+          </p>
+          <button
+            type="button"
+            className={cn(btn.primary, "justify-self-start")}
+            onClick={() => {
+              setPick(null);
+              // A miss ends it: that topic is your start.
+              setStep(!chosen.right ? PLACE.length : step + 1);
+            }}
+          >
+            {!chosen.right || step + 1 >= PLACE.length ? "See where to start" : "Next question"}
+          </button>
+        </>
+      )}
+    </section>
+  );
+}
+
 /** Today, the study home: one job. A first visit gets a three-step path; a returning visitor gets their next set. Lists wait in folds. */
 export function Today() {
   const p = useStudyProgress();
@@ -73,7 +185,10 @@ export function Today() {
     <div className="grid gap-8 py-block">
       <div className="max-w-[640px]">
         {newcomer ? (
-          <FirstTen p={p} />
+          <div className="grid gap-4">
+            <FirstTen p={p} />
+            <Placement />
+          </div>
         ) : (
           <section aria-labelledby="hp-t" className="grid content-start gap-4 rounded-[18px] bg-sand p-6">
             <h2 id="hp-t" className="font-display text-xl font-semibold">

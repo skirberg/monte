@@ -19,6 +19,10 @@ export function TopicIndex() {
   const last = useStoredString("sigmaTopic");
   const lastTopic = isTopicId(last) ? topicById(last) : undefined;
   const shown = TOPICS.filter((t) => topicMatches(t.id, query));
+  // Up next: the first topic not yet mastered, from where placement said to start (if it ran).
+  const placed = useStoredString("monte-start");
+  const from = Math.max(0, TOPICS.findIndex((t) => t.id === placed));
+  const nextId = (TOPICS.slice(from).find((t) => !isWon(p, t.id)) ?? TOPICS.find((t) => !isWon(p, t.id)))?.id;
 
   return (
     <div className="grid gap-6 pb-8">
@@ -33,29 +37,53 @@ export function TopicIndex() {
           <ArrowRight className="size-5 flex-none transition-transform group-hover:translate-x-0.5" aria-hidden />
         </Link>
       )}
-      <ol className="grid border-t border-line sm:grid-cols-2 sm:gap-3 sm:border-t-0 lg:grid-cols-3">
-        {shown.map((t) => {
-          const d = statsFor(p, t.id), won = isWon(p, t.id);
+      {/* The path (DESIGN.md, "Lessons"): fourteen stops in order, mastered ones filled in clay, the next one lit. */}
+      <ol aria-label="Your path through the topics" className="relative grid">
+        {shown.map((t, k) => {
+          const d = statsFor(p, t.id), won = isWon(p, t.id), isNext = t.id === nextId;
           const status = won ? "Mastered" : d.asked ? `Best ${Math.round(d.best * 100)}%` : p.read?.[t.id] ? "Read" : "";
+          const last = k === shown.length - 1;
           return (
-            <li key={t.id} className="border-b border-line sm:border-b-0">
-              {/* Phones: a row with the number, the name and where you stand. Wider: a card with the one-line idea. */}
+            <li key={t.id} className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4">
+              {/* The line between stops: clay up to the last mastered one. */}
+              {!last && (
+                <span aria-hidden className={cn("absolute left-[1.375rem] top-11 bottom-0 w-0.5 -translate-x-1/2", won ? "bg-clay" : "bg-line")} />
+              )}
+              <span
+                aria-hidden
+                className={cn(
+                  "relative z-10 mt-1.5 grid size-11 place-items-center rounded-full border-2 font-mono text-sm tabular-nums",
+                  won && "border-clay bg-clay text-paper",
+                  isNext && "border-ink bg-ink text-paper shadow-[0_0_0_6px_var(--clay-tint)]",
+                  !won && !isNext && "border-line-strong bg-paper text-ink-muted",
+                )}
+              >
+                {won ? <Check className="size-5" strokeWidth={3} /> : t.n}
+              </span>
               <Link
                 href={study.topic(t.id)}
-                className="grid h-full min-h-12 grid-cols-[1.75rem_minmax(0,1fr)_auto] items-center gap-x-3 py-2.5 transition-colors hover:bg-sand sm:grid-cols-1 sm:content-start sm:items-start sm:gap-2 sm:rounded-[18px] sm:border sm:border-line sm:p-5 sm:hover:border-ink"
+                aria-current={isNext ? "step" : undefined}
+                className={cn(
+                  "group mb-3 grid gap-1 rounded-[18px] px-4 py-3 transition-colors hover:bg-sand",
+                  isNext && "bg-sand py-4 hover:bg-sand-2",
+                )}
               >
-                <span className="font-mono text-xs tabular-nums text-ink-muted sm:hidden">{t.n}</span>
-                <span className="order-3 flex items-center justify-between gap-3 sm:order-none">
-                  <span className={cn(eyebrow, "hidden sm:inline")}>Topic {t.n}</span>
-                  {status && (
-                    <span className={cn(eyebrow, "flex items-center gap-1", won && "text-clay-ink")}>
-                      {(won || status === "Read") && <Check className="size-3.5" aria-hidden />}
-                      {status}
-                    </span>
+                <span className="flex flex-wrap items-baseline justify-between gap-x-3">
+                  <span className="font-display text-lg font-semibold leading-snug">{t.short}</span>
+                  {isNext ? (
+                    <span className="text-sm font-medium text-clay-ink">Up next</span>
+                  ) : (
+                    status && <span className={cn("text-sm text-ink-muted", won && "text-clay-ink")}>{status}</span>
                   )}
                 </span>
-                <span className="font-display text-base font-semibold leading-snug sm:text-lg">{t.short}</span>
-                <span className="hidden text-sm text-ink-muted sm:line-clamp-3">{plainText(t.line)}</span>
+                {isNext && (
+                  <>
+                    <span className="max-w-[60ch] text-sm text-ink-muted">{plainText(t.line)}</span>
+                    <span className="btn btn-primary btn-sm mt-2 justify-self-start">
+                      {d.asked || p.read?.[t.id] ? "Keep going" : "Start"} <ArrowRight className="size-4" aria-hidden />
+                    </span>
+                  </>
+                )}
               </Link>
             </li>
           );

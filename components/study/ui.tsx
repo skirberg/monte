@@ -7,11 +7,11 @@ import { symHtml } from "@/lib/study/symbols";
 // The study app's small kit, in Tailwind: pill buttons, chips, segmented links, boxes, the clay
 // value mark and the trusted-HTML span. Clay means the number. Ink means the action.
 
-const btnBase =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-5 text-base font-medium transition-[background-color,border-color,transform] duration-150 ease-settle active:translate-y-px disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0";
+// Buttons come from the site's one button system (app/globals.css, DESIGN.md "Buttons").
+const svg = "[&_svg]:size-4 [&_svg]:shrink-0";
 export const btn = {
-  primary: cn(btnBase, "border-ink bg-ink text-paper hover:bg-[color-mix(in_oklch,var(--ink)_86%,var(--clay))]"),
-  ghost: cn(btnBase, "border-line-strong bg-transparent text-ink hover:border-ink hover:bg-sand"),
+  primary: cn("btn btn-primary", svg),
+  ghost: cn("btn btn-secondary", svg),
   /** Pressed state: ink fill (Listen while it plays). */
   on: "aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper",
 };
