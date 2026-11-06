@@ -137,6 +137,7 @@ Learned from Brilliant (brilliant.org, checked Nov 6 2026): in a learning app th
 
 Learned from Brilliant (study: Studio, Monte, 6 Design, "Brilliant Study (Nov 6)").
 
+- **Lessons.** Each topic is split into five small lessons, one idea each, 70 in all (`lib/study/lessons-a.ts`, `-b`, `-c`; player in `components/study/lesson-player.tsx`; pages at /study/learn/topics/<topic>/<lesson>/). Every lesson is four steps: a question before any explanation, the rule in a sentence or two, a second question to use it, the one thing to keep. Every choice answers back. Steps stack as you go and a bar on top fills per step. The last lesson of a topic hands you to its drill. `tests/lessons.test.ts` checks five per topic, a question first, exactly one right answer each, no dashes.
 - **Guess first.** Every topic opens with one question before the lesson explains anything (`lib/study/guess.ts`, `GuessFirst`). Each question is built on the topic's trap, and every choice answers back, so a wrong guess teaches too.
 - **Answer the wrong answer.** Drill questions carry their usual mistakes (`traps` in `lib/study/drill.ts`): dividing by n instead of n − 1, both tails instead of one, the overlap counted twice, the variance for the SD. A miss that matches one says what it means, above the right answer.
 - **The path.** Learn shows the fourteen topics as stops on a line: mastered stops filled in clay, the next one lit in ink with its idea and a Start button.

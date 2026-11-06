@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Check, Play, Square } from "lucide-react";
+import { ArrowRight, Check, Play, Square } from "lucide-react";
 import { cn } from "cn";
 import { topicById, type StudyTopic, type TopicId } from "@/lib/study/data";
 import { stripTags } from "@/lib/study/math";
-import { isWon, statsFor, store, updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
+import { isWon, lessonsDone, statsFor, store, updateStudyProgress, useStudyProgress } from "@/lib/study/progress";
+import { lessonsFor } from "@/lib/study/lessons";
+import { study } from "@/lib/study/routes";
+import Link from "next/link";
 import { awardXp } from "@/lib/study/events";
 import { Html, btn, linkBtn } from "@/components/study/ui";
 import { useHydrated, useStoredString } from "@/lib/hooks";
@@ -16,8 +19,9 @@ import { feelRight, feelWrong } from "@/lib/feel";
 export function TopicPath({ id }: { id: TopicId }) {
   const p = useStudyProgress();
   const d = statsFor(p, id);
+  const ls = lessonsFor(id), nDone = lessonsDone(p, id, ls.map((l) => l.slug));
   const steps = [
-    { on: !!p.read?.[id], label: "Read", sub: "Reach the end of the page" },
+    { on: ls.length ? nDone === ls.length : !!p.read?.[id], label: "Learn", sub: ls.length ? `${nDone} of ${ls.length} lessons` : "Reach the end of the page" },
     { on: d.asked >= 4, label: "Practice", sub: d.asked ? `Best ${Math.round(d.best * 100)}%` : "Answer a few questions" },
     { on: isWon(p, id), label: "Master", sub: "80% on a drill of 8 or more" },
   ];
@@ -284,6 +288,60 @@ export function GuessFirst({ id }: { id: TopicId }) {
         ) : null}
       </p>
       {!chosen && <p className="text-sm text-ink-muted">Guess before you read. A wrong guess is how the lesson sticks.</p>}
+    </section>
+  );
+}
+
+
+/** The topic's lessons as a short path: done ones checked, the next one lit with a Start button. */
+export function TopicLessons({ id }: { id: TopicId }) {
+  const p = useStudyProgress();
+  const ls = lessonsFor(id);
+  if (!ls.length) return null;
+  const nextI = ls.findIndex((l) => !p.lessons?.[`${id}/${l.slug}`]);
+  return (
+    <section aria-labelledby="lessons-t" className="grid gap-3">
+      <h2 id="lessons-t" className="font-display text-xl font-semibold">
+        {ls.length} lessons, about 3 minutes each
+      </h2>
+      <ol className="grid gap-2">
+        {ls.map((l, i) => {
+          const done = !!p.lessons?.[`${id}/${l.slug}`], next = i === nextI;
+          return (
+            <li key={l.slug}>
+              <Link
+                href={study.lesson(id, l.slug)}
+                aria-current={next ? "step" : undefined}
+                className={cn(
+                  "grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-3 rounded-[14px] border px-3 py-2.5 transition-colors",
+                  next ? "border-ink bg-sand hover:bg-sand-2" : "border-line hover:border-ink",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "grid size-9 place-items-center rounded-full border-2 font-mono text-sm tabular-nums",
+                    done ? "border-clay bg-clay text-paper" : next ? "border-ink bg-ink text-paper" : "border-line-strong text-ink-muted",
+                  )}
+                >
+                  {done ? <Check className="size-4" strokeWidth={3} /> : i + 1}
+                </span>
+                <span className="font-semibold">
+                  {l.title}
+                  {done && <span className="sr-only"> (done)</span>}
+                </span>
+                {next ? (
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-clay-ink">
+                    {i === 0 ? "Start" : "Next"} <ArrowRight className="size-4" aria-hidden />
+                  </span>
+                ) : (
+                  <span />
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }

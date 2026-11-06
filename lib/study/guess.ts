@@ -8,7 +8,7 @@ import type { TopicId } from "./data";
  */
 export type Guess = { q: string; options: { text: string; right?: boolean; why: string }[] };
 
-export const GUESS: Record<TopicId, Guess> = {
+const WRITTEN: Record<TopicId, Guess> = {
   data: {
     q: "An app asks its users how happy they are, and 10,000 answer. Is that enough to know how happy all its users are?",
     options: [
@@ -122,3 +122,13 @@ export const GUESS: Record<TopicId, Guess> = {
     ],
   },
 };
+
+/** The same turn as lesson questions (lib/study/lesson-kit.ts), so the right answer isn't always in one place. */
+function turn(g: Guess): Guess {
+  let h = 0;
+  for (const ch of g.q) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const k = (h + 1) % g.options.length;
+  return { q: g.q, options: [...g.options.slice(k), ...g.options.slice(0, k)] };
+}
+
+export const GUESS = Object.fromEntries(Object.entries(WRITTEN).map(([id, g]) => [id, turn(g)])) as Record<TopicId, Guess>;

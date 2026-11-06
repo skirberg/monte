@@ -26,6 +26,8 @@ export type StudyProgress = {
   cardXp?: Record<string, string>;
   /** Topics read to the end of the page. */
   read?: Partial<Record<TopicId, 1>>;
+  /** Lessons finished, keyed topic/lesson (lib/study/lessons.ts). */
+  lessons?: Record<string, 1>;
   /** Monte Daily: the first try on each local date, score and share grid. */
   daily?: Record<string, { c: number; g: string }>;
 };
@@ -94,6 +96,8 @@ export const isWon = (p: StudyProgress, id: TopicId) => {
   return d.best >= 0.8 && d.asked >= 8;
 };
 export const wonCount = (p: StudyProgress) => TOPICS.filter((t) => isWon(p, t.id)).length;
+/** How many of a topic's lessons are finished. */
+export const lessonsDone = (p: StudyProgress, id: TopicId, slugs: string[]) => slugs.filter((s) => p.lessons?.[`${id}/${s}`]).length;
 
 /** The "Topic mastered" badge: a single-topic drill of 8 or more questions at 80% or better. */
 /**

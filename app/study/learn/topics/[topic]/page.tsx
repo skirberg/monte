@@ -9,7 +9,7 @@ import { studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
 import { SITE_NAME, SITE_URL, abs, pageMeta } from "@/lib/seo";
 import { TopicLab } from "@/components/study/labs";
-import { GuessFirst, Listen, QuizList, ReadMarker, TopicPath, WatchHere } from "@/components/study/topic-parts";
+import { GuessFirst, Listen, QuizList, ReadMarker, TopicLessons, TopicPath, WatchHere } from "@/components/study/topic-parts";
 import { Box, Fold, Html, btn, eyebrow, h1, label, lead } from "@/components/study/ui";
 import { sym } from "@/lib/study/symbols";
 
@@ -53,7 +53,9 @@ export default async function TopicPage({ params }: Props) {
         <TopicPath id={t.id} />
       </header>
 
-      {/* Guess first, then the lesson (DESIGN.md, "Lessons"). */}
+      {/* The lessons first, then a guess and the whole topic on one page for reference (DESIGN.md, "Lessons"). */}
+      <TopicLessons id={t.id} />
+
       <GuessFirst id={t.id} />
 
       <div>

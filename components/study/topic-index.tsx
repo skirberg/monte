@@ -7,7 +7,8 @@ import { TOPICS, isTopicId, topicById } from "@/lib/study/data";
 import { plainText } from "@/lib/study/math";
 import { study } from "@/lib/study/routes";
 import { topicMatches } from "@/lib/study/search";
-import { isWon, statsFor, useStudyProgress } from "@/lib/study/progress";
+import { isWon, lessonsDone, statsFor, useStudyProgress } from "@/lib/study/progress";
+import { lessonsFor } from "@/lib/study/lessons";
 import { useStoredString } from "@/lib/hooks";
 import { useLearnQuery } from "@/components/study/learn-bar";
 import { eyebrow } from "@/components/study/ui";
@@ -41,7 +42,9 @@ export function TopicIndex() {
       <ol aria-label="Your path through the topics" className="relative grid">
         {shown.map((t, k) => {
           const d = statsFor(p, t.id), won = isWon(p, t.id), isNext = t.id === nextId;
-          const status = won ? "Mastered" : d.asked ? `Best ${Math.round(d.best * 100)}%` : p.read?.[t.id] ? "Read" : "";
+          const ls = lessonsFor(t.id), nDone = lessonsDone(p, t.id, ls.map((l) => l.slug));
+          const nextLesson = ls.find((l) => !p.lessons?.[`${t.id}/${l.slug}`]);
+          const status = won ? "Mastered" : d.asked ? `Best ${Math.round(d.best * 100)}%` : nDone ? `${nDone} of ${ls.length} lessons` : p.read?.[t.id] ? "Read" : "";
           const last = k === shown.length - 1;
           return (
             <li key={t.id} className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4">
@@ -61,7 +64,7 @@ export function TopicIndex() {
                 {won ? <Check className="size-5" strokeWidth={3} /> : t.n}
               </span>
               <Link
-                href={study.topic(t.id)}
+                href={isNext && nextLesson ? study.lesson(t.id, nextLesson.slug) : study.topic(t.id)}
                 aria-current={isNext ? "step" : undefined}
                 className={cn(
                   "group mb-3 grid gap-1 rounded-[18px] px-4 py-3 transition-colors hover:bg-sand",
@@ -80,7 +83,7 @@ export function TopicIndex() {
                   <>
                     <span className="max-w-[60ch] text-sm text-ink-muted">{plainText(t.line)}</span>
                     <span className="btn btn-primary btn-sm mt-2 justify-self-start">
-                      {d.asked || p.read?.[t.id] ? "Keep going" : "Start"} <ArrowRight className="size-4" aria-hidden />
+                      {nextLesson ? (nDone ? `Lesson ${nDone + 1}: ${nextLesson.title}` : `Start: ${nextLesson.title}`) : "Drill it"} <ArrowRight className="size-4" aria-hidden />
                     </span>
                   </>
                 )}

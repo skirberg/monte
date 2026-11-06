@@ -12,6 +12,7 @@ export const study = {
   today: "/study/",
   learn: "/study/learn/",
   topic: (id: string) => `/study/learn/topics/${id}/`,
+  lesson: (id: string, slug: string) => `/study/learn/topics/${id}/${slug}/`,
   formulas: "/study/learn/formulas/",
   terms: "/study/learn/terms/",
   frameworks: "/study/learn/frameworks/",
