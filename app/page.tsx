@@ -107,8 +107,7 @@ export default function Home() {
             The biggest poll ever taken called the wrong winner.
           </h2>
           <div className="col-span-4 md:col-span-12 lg:col-span-4">
-            <p className="text-lg text-ink-muted">1936: 2.4 million answers, and the wrong people asked. Size never fixes who you ask.</p>
-            <a href="/story/" className={`${link} mt-3`}>
+            <a href="/story/" className={link}>
               Read 14 true stories like it <ArrowRight className="size-4" aria-hidden />
             </a>
           </div>
