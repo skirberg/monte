@@ -84,6 +84,46 @@ Fluid steps grow smoothly from a 390 px phone to a 1440 px desktop and carry the
 - **Labels:** one style, `label` in `components/study/ui.tsx`: sentence case, the sans face, 14 px medium, muted. Never small caps or letter-spaced.
 - **Exception:** text inside SVG charts uses `fontSize` in the chart's own drawing units, which scale with the chart.
 
+## Layout (November 2026)
+
+Until Nov 5 Monte had no layout system: 155 different spacing classes, every section padded by hand, nine page widths. The type scale had no partner. This is the partner, defined once in `app/globals.css` (second `@theme`) and `components/layout/section.tsx`.
+
+| Token | Value | Use |
+|---|---|---|
+| `max-w-page` | 75rem (1200 px) | the one page column |
+| `max-w-content` | 61.25rem (980 px) | a wide working area inside the page, such as a solver |
+| `px-gutter`, `gap-x-gutter` | 16 px phone to 24 px desktop | side margin and the gap between grid columns |
+| `mb-block`, `pt-block` | 32 to 56 px | heading to its content; the first section under the header |
+| `pt-section`, `py-section` | 64 to 112 px | between sections |
+
+- **Grid:** `grid` from `components/layout/section.tsx`: 4 columns on phones, 12 from 768 px. Content takes whole columns (`col-span-*`), never a hand-set width.
+- **Sections:** every home band is a `<Section>`. Paper sections pad only their top, so neighbours never stack double space; a sand section sits on its own ground and pads both sides; the last one pads its bottom. Inside a block, stack with the Tailwind scale (`mt-2`, `mt-6`), nothing in between.
+- **Every page** uses the same page column, gutter and rhythm: home, study, Decide and its tools, Play and each game, the story, How it's built, the header, footer, error and 404 pages. `npm run type-check` fails on a hand-set page width, page margin or section spacing.
+- **Inside components** (the cups, the test result tool, the solver panels) spacing still uses the Tailwind scale; their insides have not been put on the 12 columns.
+
+### Home wireframe
+
+```
+DESKTOP (12 columns)                              PHONE (4 columns)
++------------------------+------------------------+   +------------------+
+| Drop enough grains.    |  grain board           |   | Drop enough      |
+| (col 1-6, top)         |  (col 7-12, both rows) |   | grains.          |
+|                        |                        |   +------------------+
+|                        |                        |   | grain board      |
+| The shape appears.     |                        |   +------------------+
+| [Start the first idea] or try 5 questions       |   | The shape        |
+| Statistics, one idea at a time.                 |   | appears.         |
++------------------------+------------------------+   | [Start ...]      |
+  section: Find the grain. (cups)                     | Statistics, ...  |
+  section: Fourteen topics. (wide screens only)       +------------------+
+  sand section: Is this test result real?             Find the grain.
+  section: The biggest poll ever taken ...            Is this test ...
+  section: games (wide, Fun mode only)                The biggest poll
+  last section: Ten minutes a day. [Start]            Ten minutes a day.
+```
+
+The hero tells the line in reading order: the first half sits level with where the grains drop, the second half level with where they pile into the bell. On phones the board sits between the two halves.
+
 ## Color (OKLCH, light "day court" / dark "night session")
 
 | Token | Light | Dark | Use |

@@ -12,7 +12,7 @@ export function SourceList({ limit, moreHref }: { limit?: number; moreHref?: str
   const shown = limit && !all ? rows.slice(0, limit) : rows;
   return (
     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
-      <div role="group" aria-label="Filter sources" className="-mx-4 flex gap-2 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:px-0 [&::-webkit-scrollbar]:hidden">
+      <div role="group" aria-label="Filter sources" className="-mx-gutter flex gap-2 overflow-x-auto overscroll-x-contain px-gutter [scrollbar-width:none] md:mx-0 md:flex-wrap md:px-0 [&::-webkit-scrollbar]:hidden">
         {["All", ...DATA.sources.cats].map((c) => (
           <button key={c} type="button" aria-pressed={c === cat} className={chip} onClick={() => setCat(c)}>
             {c}

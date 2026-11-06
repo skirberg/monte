@@ -70,7 +70,7 @@ export function Today() {
   const newcomer = !finishedFirstSet(p);
   const due = p.due.length, won = wonCount(p);
   return (
-    <div className="grid gap-8 pb-8 pt-8 md:pt-12">
+    <div className="grid gap-8 py-block">
       <div className="max-w-[640px]">
         {newcomer ? (
           <FirstTen p={p} />

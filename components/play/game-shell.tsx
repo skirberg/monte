@@ -38,7 +38,7 @@ export function GameShell({
         }}
       />
       <SiteHeader mode="play" />
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 pt-6 outline-none md:px-6 md:pt-10">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-page px-gutter pb-section pt-block outline-none">
         <a
           href={playHref()}
           className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink"
@@ -46,7 +46,7 @@ export function GameShell({
           <ArrowLeft className="size-3.5" /> Play <span className="text-clay-ink">·</span> {String(i + 1).padStart(2, "0")} of{" "}
           {String(GAMES.length).padStart(2, "0")}
         </a>
-        <header className="mb-8 mt-3 max-w-3xl space-y-3 md:mb-12">
+        <header className="mb-block mt-3 max-w-3xl space-y-3">
           <h1
             className="rise font-display text-title font-semibold leading-none"
             style={{ fontVariationSettings: "'wdth' 80" }}

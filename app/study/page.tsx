@@ -26,7 +26,7 @@ export default function StudyPage() {
         }}
       />
       <OldHashRedirect />
-      <section aria-labelledby="hero-t" className="grid gap-3 pt-8 md:pt-16">
+      <section aria-labelledby="hero-t" className="grid gap-3 pt-block">
         <h1
           id="hero-t"
           className="max-w-[22ch] font-display text-title font-semibold leading-none [font-variation-settings:'wdth'_82]"

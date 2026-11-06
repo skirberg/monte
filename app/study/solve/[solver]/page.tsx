@@ -36,7 +36,7 @@ export default async function SolvePage({ params }: Props) {
         </PageHead>
       </div>
       <SolveNav items={NAV.map((s) => ({ href: study.solve(s.id), label: s.name }))} current={study.solve(id)} />
-      <div className="max-w-[980px] pb-8 pt-5">
+      <div className="max-w-content pb-8 pt-5">
         <SafePart name="solver">
           <SolverPanel id={id} />
         </SafePart>

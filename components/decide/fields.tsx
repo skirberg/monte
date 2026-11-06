@@ -158,7 +158,7 @@ export function Presets({ label, items, value, onChange }: { label: string; item
     <div
       role="radiogroup"
       aria-label={label}
-      className="-mx-4 flex gap-2 overflow-x-auto overscroll-x-contain px-4 [contain:inline-size] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 sm:[contain:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-gutter flex gap-2 overflow-x-auto overscroll-x-contain px-gutter [contain:inline-size] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 sm:[contain:none] [&::-webkit-scrollbar]:hidden"
     >
       {items.map((p, i) => (
         <button
@@ -259,7 +259,7 @@ export function ResultBar({ lead, rest }: { lead: string | null; rest: string | 
   return (
     <>
       <LiveSummary text={sentence} />
-      <div className="sticky top-14 z-30 -mx-4 border-b border-line bg-paper/90 px-4 py-2.5 backdrop-blur-md md:top-16 md:-mx-6 md:px-6 lg:hidden">
+      <div className="sticky top-14 z-30 -mx-gutter border-b border-line bg-paper/90 px-gutter py-2.5 backdrop-blur-md md:top-16 lg:hidden">
         <p className={cn("text-base leading-snug transition-colors", pending && "text-ink-muted")}>
           {shown ? (
             <>

@@ -7,7 +7,7 @@ export function StudyShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SiteHeader mode="study" />
-      <div className="mx-auto w-full max-w-[1200px] px-4 pb-[calc(76px+env(safe-area-inset-bottom,0px))] md:px-6 lg:pb-0">
+      <div className="mx-auto w-full max-w-page px-gutter pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pb-0">
         <main id="main" tabIndex={-1} className="min-h-[70vh] outline-none">
           {children}
         </main>

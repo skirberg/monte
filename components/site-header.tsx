@@ -105,7 +105,7 @@ export function SiteHeader({ mode }: { mode: "landing" | "study" | "play" }) {
         className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-md print:hidden"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 md:h-16 md:px-6">
+        <div className="mx-auto flex h-14 max-w-page items-center gap-2 px-gutter md:h-16">
           <Link href="/" className="mr-2 flex min-h-11 items-center rounded-md" aria-label="Monte home">
             <Wordmark />
           </Link>

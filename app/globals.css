@@ -157,6 +157,21 @@
   --tracking-tight: -0.025em;
 }
 
+/* ---------------------------------------------------------------
+   Layout. One page width, one gutter, one rhythm between sections and one
+   between a heading and its content (DESIGN.md, "Layout"). Fluid like the
+   type: each grows smoothly from a 390 px phone to a 1440 px desktop.
+   Use them as px-gutter, gap-x-gutter, py-section, mb-block, max-w-page;
+   sections come from components/layout/section.tsx, not hand-set padding.
+   --------------------------------------------------------------- */
+@theme {
+  --container-page: 75rem;
+  --container-content: 61.25rem;
+  --spacing-gutter: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+  --spacing-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  --spacing-section: clamp(4rem, 2.5rem + 5vw, 7rem);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/60;

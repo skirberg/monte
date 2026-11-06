@@ -13,10 +13,9 @@ export default function PlayHub() {
   return (
     <Motion>
       <SiteHeader mode="play" />
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 pt-8 outline-none md:px-6 md:pt-14">
-        <header className="mb-10 grid gap-4 md:mb-14 md:grid-cols-12">
-          <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">{GAMES.length} games</p>
-          <div className="space-y-4 md:col-span-9">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-page px-gutter pb-section pt-block outline-none">
+        <header className="mb-block">
+          <div className="space-y-4">
             <h1
               className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}

@@ -100,7 +100,7 @@ const rowGrid = "grid items-center gap-1 py-2 sm:grid-cols-[14rem_1fr] sm:gap-4"
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="grid gap-4 border-t border-line pt-8 md:grid-cols-12 md:pt-10">
+    <section className="grid gap-4 border-t border-line pt-block md:grid-cols-12 md:gap-x-gutter">
       <h2 className="text-sm font-semibold text-ink md:col-span-3 md:pt-1.5">{title}</h2>
       <div className="space-y-4 md:col-span-9">{children}</div>
     </section>
@@ -140,10 +140,9 @@ export default function Built() {
   return (
     <Motion>
       <SiteHeader mode="landing" />
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] space-y-12 px-4 pb-20 pt-8 outline-none md:px-6 md:pt-14">
-        <header className="grid gap-4 md:grid-cols-12">
-          <p className="text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">How it&rsquo;s built</p>
-          <div className="space-y-4 md:col-span-9">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-page space-y-block px-gutter pb-section pt-block outline-none">
+        <header>
+          <div className="space-y-4">
             <h1 className="rise font-display text-display font-semibold leading-none" style={{ fontVariationSettings: "'wdth' 78" }}>
               How it&rsquo;s built
             </h1>

@@ -26,6 +26,10 @@ const RULES = [
   [new RegExp(V + String.raw`tracking-(?:\[[^\]]+\]|tighter|wide|wider)(?![\w-])`, "g"), "raw letter-spacing: display type carries it in font-display; figures use tracking-tight"],
   [new RegExp(V + String.raw`leading-\[[^\]]+\]`, "g"), "raw line height: fluid steps carry their own; otherwise leading-none, -tight, -snug, -normal or -relaxed"],
   [new RegExp(V + String.raw`uppercase(?![\w-])`, "g"), "caps label: labels are sentence case (use the label style in components/study/ui.tsx)"],
+  // Layout (DESIGN.md, "Layout"): one page width, one gutter, one section rhythm.
+  [new RegExp(V + String.raw`max-w-\[(?:1[0-9]{3}|9[0-9]{2})px\]`, "g"), "hand-set page width: use max-w-page"],
+  [/mx-auto[^"'\x60]*\b(?:sm|md|lg):px-\d+/g, "hand-set page margin on a page column: use px-gutter"],
+  [new RegExp(V + String.raw`(?:md|lg):p[ytb]-(?:1[4-9]|2\d|3\d)(?![\w-])`, "g"), "hand-set section spacing: use pt-section, py-section, pb-section or pt-block (or <Section>)"],
 ];
 // shadcn keyboard-shortcut hints keep their wide spacing.
 const ALLOW = [[/components\/ui\//, /tracking-widest/]];

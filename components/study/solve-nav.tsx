@@ -15,7 +15,7 @@ export function SolveNav({ items, current }: { items: { href: string; label: str
     <nav
       ref={ref}
       aria-label="Solvers"
-      className="sticky top-[calc(env(safe-area-inset-top,0px)+56px)] z-10 -mx-4 flex gap-2 overflow-x-auto border-b border-line bg-paper/92 px-4 py-2.5 backdrop-blur-md [scrollbar-width:none] md:-mx-6 md:px-6 lg:top-16 print:hidden [&::-webkit-scrollbar]:hidden"
+      className="sticky top-[calc(env(safe-area-inset-top,0px)+56px)] z-10 -mx-gutter flex gap-2 overflow-x-auto border-b border-line bg-paper/92 px-gutter py-2.5 backdrop-blur-md [scrollbar-width:none] lg:top-16 print:hidden [&::-webkit-scrollbar]:hidden"
     >
       {items.map((it) => (
         <Link key={it.href} href={it.href} scroll={false} aria-current={it.href === current ? "page" : undefined} className={chip}>

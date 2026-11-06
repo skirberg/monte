@@ -13,7 +13,7 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
   return (
     <>
       <SiteHeader mode="landing" />
-      <main id="main" tabIndex={-1} className="mx-auto flex min-h-[60vh] w-full max-w-[1200px] flex-col justify-center px-4 py-20 outline-none md:px-6">
+      <main id="main" tabIndex={-1} className="mx-auto flex min-h-[60vh] w-full max-w-page flex-col justify-center px-gutter py-section outline-none">
         <p className="text-sm font-medium text-ink-muted">Error · let</p>
         <h1
           className="mt-4 font-display text-hero font-semibold leading-none"

@@ -29,8 +29,8 @@ export function ToolPage({ id, children }: { id: string; children: ReactNode }) 
         }}
       />
       <SiteHeader mode="landing" />
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 outline-none md:px-6">
-        <header className="grid gap-2 pb-6 pt-4 md:grid-cols-12 md:gap-4 md:pb-12 md:pt-12">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-page px-gutter pb-section outline-none">
+        <header className="grid gap-2 pb-block pt-block md:grid-cols-12 md:gap-x-gutter">
           <nav aria-label="Breadcrumb" className="text-sm md:col-span-3 md:pt-3">
             <ol className="flex flex-wrap items-center gap-x-1.5 text-ink-muted md:flex-col md:items-start md:gap-y-1">
               <li>
@@ -59,7 +59,7 @@ export function ToolPage({ id, children }: { id: string; children: ReactNode }) 
           </div>
         </header>
 
-        <section aria-labelledby="tool-h" className="border-t border-line pt-6 md:pt-12">
+        <section aria-labelledby="tool-h" className="border-t border-line pt-block">
           <h2 id="tool-h" className="sr-only">
             Try it with your own numbers
           </h2>

@@ -300,7 +300,7 @@ function StoryItem({ s }: { s: Story }) {
           )}
         </p>
 
-        <div className="col-start-2 row-start-2 pb-3 pt-1 md:col-start-3 md:row-start-1 md:pb-16 md:pt-0.5 lg:grid lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:gap-12 lg:pb-24">
+        <div className="col-start-2 row-start-2 pb-3 pt-1 md:col-start-3 md:row-start-1 md:pb-section md:pt-0.5 lg:grid lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:gap-12">
           <Reveal>
             <h3
               id={`s-${s.id}`}
@@ -371,9 +371,8 @@ export default function Story() {
       <SiteHeader mode="landing" />
       <main id="main" tabIndex={-1} className="outline-none">
         {/* ---------- opening ---------- */}
-        <header className="mx-auto grid w-full max-w-[1200px] gap-4 px-4 pb-6 pt-8 md:grid-cols-12 md:px-6 md:pb-20 md:pt-14">
-          <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">Why statistics</p>
-          <div className="md:col-span-9">
+        <header className="mx-auto w-full max-w-page px-gutter pb-section pt-block">
+          <div>
             <h1
               className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}
@@ -407,10 +406,10 @@ export default function Story() {
         </header>
 
         {/* ---------- the chapters ---------- */}
-        <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
+        <div className="mx-auto w-full max-w-page px-gutter">
           {CHAPTERS.map((c) => (
-            <section key={c.id} id={c.id} aria-labelledby={`c-${c.id}`} className="scroll-mt-20 border-t border-line pt-8 md:scroll-mt-24 md:pt-20">
-              <Reveal className={`${storyGrid} mb-6 md:mb-16`}>
+            <section key={c.id} id={c.id} aria-labelledby={`c-${c.id}`} className="scroll-mt-20 border-t border-line pt-section md:scroll-mt-24">
+              <Reveal className={`${storyGrid} mb-block`}>
                 <p className="col-span-2 text-sm font-medium text-clay-ink md:col-span-1 md:pt-3 md:text-right">{c.years}</p>
                 <div className="col-span-2 mt-2 md:col-span-1 md:col-start-3 md:mt-0">
                   <h2
@@ -433,11 +432,10 @@ export default function Story() {
         </div>
 
         {/* ---------- where you already use it ---------- */}
-        <section aria-labelledby="everyday-uses" className="bg-ink py-10 text-paper md:py-28">
-          <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
-            <Reveal className="mb-8 grid gap-4 md:mb-12 md:grid-cols-12">
-              <p className="text-sm font-medium text-paper/70 md:col-span-3 md:pt-3">Today</p>
-              <div className="space-y-4 md:col-span-9">
+        <section aria-labelledby="everyday-uses" className="bg-ink py-section text-paper">
+          <div className="mx-auto w-full max-w-page px-gutter">
+            <Reveal className="mb-block">
+              <div className="space-y-4">
                 <h2
                   id="everyday-uses"
                   className="font-display text-title font-semibold leading-none"
@@ -466,7 +464,7 @@ export default function Story() {
         </section>
 
         {/* ---------- close ---------- */}
-        <section className="mx-auto w-full max-w-[1200px] px-4 py-10 md:px-6 md:py-28">
+        <section className="mx-auto w-full max-w-page px-gutter py-section">
           <Reveal className="flex flex-col items-center text-center">
             <h2
               className="max-w-[16ch] font-display text-title font-semibold leading-none"
@@ -485,8 +483,8 @@ export default function Story() {
         </section>
 
         {/* ---------- sources ---------- */}
-        <section aria-labelledby="story-sources" className="mx-auto w-full max-w-[1200px] px-4 pb-14 md:px-6 md:pb-20">
-          <div className="grid gap-3 border-t border-line pt-6 md:grid-cols-12 md:gap-4 md:pt-10">
+        <section aria-labelledby="story-sources" className="mx-auto w-full max-w-page px-gutter pb-section">
+          <div className="grid gap-3 border-t border-line pt-block md:grid-cols-12 md:gap-x-gutter">
             <div className="md:col-span-3">
               <h2 id="story-sources" className="font-display text-2xl font-semibold">
                 Sources

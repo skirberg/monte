@@ -34,11 +34,10 @@ export default function Decide() {
         }}
       />
       <SiteHeader mode="landing" />
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1200px] px-4 pb-20 outline-none md:px-6">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-page px-gutter pb-section outline-none">
         {/* ---------- opening: one sentence ---------- */}
-        <header className="grid gap-3 pb-8 pt-8 md:grid-cols-12 md:gap-4 md:pb-14 md:pt-14">
-          <p className="rise text-sm font-medium text-clay-ink md:col-span-3 md:pt-4">Decide</p>
-          <div className="md:col-span-9">
+        <header className="pb-block pt-block">
+          <div>
             <h1
               className="rise font-display text-display font-semibold leading-none"
               style={{ fontVariationSettings: "'wdth' 78" }}
@@ -53,11 +52,11 @@ export default function Decide() {
         </header>
 
         {/* ---------- the decisions: rows on a phone, cards on wide screens ---------- */}
-        <div className="space-y-8 md:space-y-14">
+        <div className="space-y-block">
           {GROUPS.map((g) => {
             const slug = `nav-${g.name.split(" ")[0].toLowerCase()}`;
             return (
-              <section key={g.name} aria-labelledby={slug} className="grid gap-2 md:grid-cols-12 md:gap-4 md:border-t md:border-ink md:pt-5">
+              <section key={g.name} aria-labelledby={slug} className="grid gap-2 md:grid-cols-12 md:gap-x-gutter md:border-t md:border-ink md:pt-5">
                 <div className="md:col-span-3">
                   <h2 id={slug} className="text-sm font-medium text-ink-muted md:font-display md:text-2xl md:font-semibold md:text-ink">
                     {g.name}

@@ -60,7 +60,7 @@ const COLUMNS: { title: string; className?: string; links: [string, string][] }[
 export function SiteFooter() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 py-6 md:px-6 lg:py-12">
+      <div className="mx-auto grid w-full max-w-page gap-10 px-gutter py-block">
         {/* Phones and tablets have the tab bar and its More sheet, so the sitemap columns show on wide screens only. */}
         <nav aria-label="Footer" className="hidden lg:grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:[html[data-mode=focus]_&]:grid-cols-4">
           {COLUMNS.map((col) => (
