@@ -1,6 +1,6 @@
 // Smoke test for the static export. Serves out/, drives headless Chrome over the DevTools protocol,
 // and fails on what a passing build does not catch: a hero film that never starts, display type
-// tracked so tight the glyphs collide, a closing mark that never finishes, page errors, sideways
+// tracked so tight the glyphs collide, page errors, sideways
 // scrolling on phones, and share links that point at a different host.
 //
 //   npm run build && npm run smoke                     checks out/ on a local server
@@ -159,9 +159,6 @@ try {
   const iconStatus = await Promise.all(["/favicon.ico", ...icons.map((h) => new URL(h).pathname)].map((p) => fetch(ORIGIN + p, { method: "HEAD" }).then((r) => `${p} ${r.status}`).catch(() => `${p} failed`)));
   const hasFavicon = icons.some((h) => /icon\.svg|favicon\.ico/.test(h));
   check(hasFavicon && iconStatus.every((s) => s.endsWith(" 200")), "favicon, app icons and manifest are linked and served", iconStatus.filter((s) => !s.endsWith(" 200")).join("; ") || (hasFavicon ? "" : "no favicon link"));
-  await evaluate(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); h?.closest('section')?.querySelector('svg')?.scrollIntoView({ block: 'center' }); return true; })()`);
-  const closingDone = await waitFor(`(() => { const h = [...document.querySelectorAll('main h2')].find((x) => /Ten minutes/.test(x.textContent)); const c = [...(h?.closest('section')?.querySelector('svg')?.querySelectorAll('circle') ?? [])]; const g = c[3]; return c.length === 4 && getComputedStyle(g).opacity === '1' && getComputedStyle(g).transform === 'none'; })()`, 8000);
-  check(closingDone, "closing mark finishes (grain under the last cup)");
 
   console.log("\nAnalytics (page views and custom events queued for Vercel)");
   const queued = "(window.vaq ?? []).filter((c) => c[0] === 'pageview').map((c) => c[1].path)";

@@ -12,8 +12,9 @@ import { GAMES } from "@/lib/site-data";
 const PAPER = "#faf6f1", SAND = "#f3ece1", INK = "#1b1511", MUTED = "#625952", CLAY = "#cd5811";
 const h = React.createElement;
 
-async function font(family: string, weight: number) {
-  const css = await (await fetch(`https://fonts.googleapis.com/css2?family=${family}:wght@${weight}`)).text();
+async function font(family: string, weight: number, width?: number) {
+  const axes = width ? `wdth,wght@${width},${weight}` : `wght@${weight}`;
+  const css = await (await fetch(`https://fonts.googleapis.com/css2?family=${family}:${axes}`)).text();
   const url = css.match(/src: url\((.+?)\) format\('(opentype|truetype)'\)/)?.[1];
   if (!url) throw new Error(`No TTF for ${family}`);
   return (await fetch(url)).arrayBuffer();
@@ -46,16 +47,22 @@ function pileSvg() {
 const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${[6.5, 16, 25.5].map((x) => `<circle cx="${x}" cy="16" r="4.2" fill="none" stroke="${INK}" stroke-width="2.6"/>`).join("")}<circle cx="25.5" cy="16" r="1.9" fill="${CLAY}"/></svg>`;
 
 async function main() {
-  const [display, mono] = await Promise.all([font("Bricolage+Grotesque", 700), font("Azeret+Mono", 500)]);
+  // The hero's face: Bricolage at its condensed width, as the site sets it; Geologica for the one line, as the site's body.
+  const [display, condensed, body, mono] = await Promise.all([
+    font("Bricolage+Grotesque", 700),
+    font("Bricolage+Grotesque", 700, 75),
+    font("Geologica", 400),
+    font("Azeret+Mono", 500),
+  ]);
   const card = h("div", { style: { width: "100%", height: "100%", display: "flex", background: PAPER, padding: 64 } },
     h("div", { style: { display: "flex", flexDirection: "column", justifyContent: "space-between", width: 640 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 14 } },
         h("img", { src: uri(MARK), width: 72, height: 72 }),
         h("span", { style: { fontFamily: "Bricolage", fontSize: 46, color: INK, letterSpacing: -2 } }, "Monte")),
-      h("div", { style: { display: "flex", flexDirection: "column", fontFamily: "Bricolage", fontSize: 88, lineHeight: 0.95, letterSpacing: -4, color: INK } },
+      h("div", { style: { display: "flex", flexDirection: "column", fontFamily: "Condensed", fontSize: 94, lineHeight: 0.94, letterSpacing: -2, color: INK } },
         h("span", null, "Drop enough grains."),
-        h("span", { style: { color: MUTED } }, "The shape appears.")),
-      h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED } }, "Statistics, one idea at a time")),
+        h("span", null, "The shape appears.")),
+      h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED } }, "monte.markets")),
     h("div", { style: { display: "flex", flex: 1, alignItems: "center", justifyContent: "center", background: SAND, borderRadius: 36, marginLeft: 24 } },
       h("img", { src: uri(pileSvg()), width: 420, height: 480 })));
   const res = new ImageResponse(card, {
@@ -63,20 +70,23 @@ async function main() {
     height: 630,
     fonts: [
       { name: "Bricolage", data: display, weight: 700, style: "normal" },
+      { name: "Condensed", data: condensed, weight: 700, style: "normal" },
       { name: "Azeret", data: mono, weight: 500, style: "normal" },
     ],
   });
   writeFileSync("public/og.png", Buffer.from(await res.arrayBuffer()));
   console.log("wrote public/og.png");
 
-  // One card per game: its number and topic, its name, its one line, and its art on the sand panel.
+  // One card per game: its name, its one line, and its art on the sand panel.
   const fonts = [
     { name: "Bricolage", data: display, weight: 700 as const, style: "normal" as const },
+    { name: "Condensed", data: condensed, weight: 700 as const, style: "normal" as const },
+    { name: "Geologica", data: body, weight: 400 as const, style: "normal" as const },
     { name: "Azeret", data: mono, weight: 500 as const, style: "normal" as const },
   ];
   const TOKENS: Record<string, string> = { "--clay": CLAY, "--ink": INK, "--paper": PAPER, "--sand": SAND, "--sand-2": "#ebe2d5", "--line": "#dbd3c9", "--line-strong": "#9a8f85", "--ink-muted": MUTED, "--clay-ink": "#a63d02" };
   mkdirSync("public/og", { recursive: true });
-  for (const [i, g] of GAMES.entries()) {
+  for (const g of GAMES) {
     const art = renderToStaticMarkup(React.createElement(GameArt, { slug: g.slug }))
       .replace(/var\((--[\w-]+)\)/g, (_, v) => TOKENS[v] ?? INK)
       .replace(/ class="[^"]*"/, "")
@@ -87,9 +97,8 @@ async function main() {
           h("img", { src: uri(MARK), width: 60, height: 60 }),
           h("span", { style: { fontFamily: "Bricolage", fontSize: 38, color: INK, letterSpacing: -1.5 } }, "Monte")),
         h("div", { style: { display: "flex", flexDirection: "column", gap: 22 } },
-          h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: "#a63d02" } }, `Play ${String(i + 1).padStart(2, "0")} · ${g.topicName}`),
-          h("span", { style: { fontFamily: "Bricolage", fontSize: g.name.length > 18 ? 74 : 86, lineHeight: 0.98, letterSpacing: -2.5, color: INK } }, g.name),
-          h("span", { style: { fontFamily: "Bricolage", fontSize: 30, lineHeight: 1.25, color: MUTED } }, g.line)),
+          h("span", { style: { fontFamily: "Condensed", fontSize: g.name.length > 18 ? 88 : 104, lineHeight: 0.94, letterSpacing: -2, color: INK } }, g.name),
+          h("span", { style: { fontFamily: "Geologica", fontSize: 30, lineHeight: 1.3, color: MUTED } }, g.line)),
         h("span", { style: { fontFamily: "Azeret", fontSize: 20, color: MUTED } }, "monte.markets")),
       h("div", { style: { display: "flex", flex: 1, alignItems: "center", justifyContent: "center", background: SAND, borderRadius: 36, marginLeft: 32 } },
         h("img", { src: uri(art), width: 440, height: 352 })));

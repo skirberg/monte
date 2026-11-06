@@ -23,7 +23,7 @@ Register: a coach at practice. Short, plain, direct, a little dry.
 - Jokes: one dry line per page at most, never in feedback on a wrong answer
 
 Three lines in the voice:
-- Hero: "Drop enough grains. The shape appears." Under it: "Statistics, one idea at a time."
+- Hero: "Drop enough grains. The shape appears." No tagline under it.
 - Error: "Not quite. Here is the work."
 - Confirmation (study app drills, which keep the tennis): "Match won. 8 of 10, under the clock." On public pages the same moment reads "Mastered."
 
@@ -107,22 +107,19 @@ Until Nov 5 Monte had no layout system: 155 different spacing classes, every sec
 DESKTOP (12 columns)                              PHONE (4 columns)
 +------------------------+------------------------+   +------------------+
 | Drop enough grains.    |  grain board           |   | Drop enough      |
-| (col 1-6, top)         |  (col 7-12, both rows) |   | grains.          |
-|                        |                        |   +------------------+
-|                        |                        |   | grain board      |
-| The shape appears.     |                        |   +------------------+
-| [Start the first idea] or try 5 questions       |   | The shape        |
-| Statistics, one idea at a time.                 |   | appears.         |
-+------------------------+------------------------+   | [Start ...]      |
-  section: Find the grain. (cups)                     | Statistics, ...  |
-  section: Fourteen topics. (wide screens only)       +------------------+
-  sand section: Is this test result real?             Find the grain.
-  section: The biggest poll ever taken ...            Is this test ...
-  section: games (wide, Fun mode only)                The biggest poll
-  last section: Ten minutes a day. [Start]            Ten minutes a day.
+| The shape appears.     |  (col 7-12)            |   | grains. The      |
+| (col 1-6, centred)     |                        |   | shape appears.   |
+| [Start the first idea] or try 5 questions       |   | [Start ...]      |
++------------------------+------------------------+   +------------------+
+  section: Find the grain (cups)                      | grain board      |
+  section: Fourteen topics (wide screens only)        +------------------+
+  sand section: Is this test result real?             Find the grain
+  section: The biggest poll ever taken ...  (col 1-8) Is this test ...
+           Read 14 true stories  (col 9-12)           The biggest poll
+  section: Games (wide, Fun mode only)
 ```
 
-The hero tells the line in reading order: the first half sits level with where the grains drop, the second half level with where they pile into the bell. On phones the board sits between the two halves.
+The hero headline is one sentence beside the board. Section headings are one size (text-headline), plain nouns or a real question, never a two-beat slogan. No closing band: the header carries the start button.
 
 ## Color (OKLCH, light "day court" / dark "night session")
 
@@ -148,11 +145,10 @@ Never: gradients, glows, glass, drop shadows that do not mean elevation.
 
 Three cups of the shell game seen from above, with one clay grain (the ball, the data point) under the third. Monte Carlo, Monty Hall's three doors and three-card monte in one picture, built from the system's parts: ink rings and a clay grain. Picked October 2, 2026, after trying dice. In-page mark and wordmark: `components/brand/logo.tsx` (`CUPS` and `CUP_R` are shared with the animated build).
 
-App icon and favicon: the cups in paper on a clay tile with an ink grain (`app/icon.svg`; PNGs from `scripts/make-icons.tsx`; share card from `scripts/make-og.tsx`).
+App icon and favicon: the cups in paper on a clay tile with an ink grain (`app/icon.svg`; PNGs from `scripts/make-icons.tsx`; share cards from `scripts/make-og.tsx`, set in the hero's condensed Bricolage with the one line in Geologica and no label above the title).
 
 Tried and set aside: a lowercase m drawn as two cups; a die showing three climbing to a clay pip; a die's five pips joined into an M, with and without an outline; outlined dice hinting at an M (center pip dropped, faint etched M, outline dipping like M shoulders); a roulette wheel (reads as a gear).
 
-The closing animation on the home page draws the three cups in turn, drops the grain under the middle cup and slides it under the last: a shell game in about two seconds.
 
 ## Motion
 
