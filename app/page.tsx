@@ -6,7 +6,7 @@ import { TheDraw } from "@/components/landing/the-draw";
 import { GameArt } from "@/components/play/game-art";
 import { TestResultMini } from "@/components/landing/test-result-mini";
 import { Shuffle } from "@/components/landing/shuffle";
-import { MarkBuild, Motion, Reveal } from "@/components/landing/motion-bits";
+import { Motion, Reveal } from "@/components/landing/motion-bits";
 import type { Metadata } from "next";
 import { DECIDE_TOOLS, GAMES, TOPICS, decideHref, playHref, studyHref } from "@/lib/site-data";
 import { JsonLd } from "@/components/json-ld";
@@ -43,7 +43,7 @@ export default function Home() {
         }}
       />
       <SiteHeader mode="landing" />
-      <main id="main" tabIndex={-1} className="outline-none">
+      <main id="main" tabIndex={-1} className="pb-section outline-none">
         {/* Wireframe and rules: DESIGN.md, "Layout". Spacing comes only from the layout tokens. */}
 
         {/* hero, told in order: drop the grains, the board, the shape appears, then start */}
@@ -60,7 +60,6 @@ export default function Home() {
                 or try 5 questions, no timer
               </a>
             </div>
-            <p className="mt-6 text-lg text-ink-muted">Statistics, one idea at a time.</p>
           </div>
 
           <div className="rise col-span-4 md:col-span-12 lg:col-span-6 lg:col-start-7" style={{ animationDelay: "100ms" }}>
@@ -72,13 +71,13 @@ export default function Home() {
 
         {/* the front door: find the grain */}
         <Section aria-labelledby="shuffle-t">
-          <SectionHead id="shuffle-t" title="Find the grain." />
+          <SectionHead id="shuffle-t" title="Find the grain" />
           <Shuffle />
         </Section>
 
         {/* wide screens only: the fourteen topics at a glance */}
         <Section aria-label="All fourteen topics" className="hidden lg:block">
-          <SectionHead title={<>Fourteen topics.<br />Master each one.</>} />
+          <SectionHead title="Fourteen topics" />
           <TheDraw />
         </Section>
 
@@ -115,7 +114,7 @@ export default function Home() {
 
         {/* wide screens only, Fun mode: four games */}
         <Section aria-label="Games" className="fun-only hidden lg:block">
-          <SectionHead title={<>{GAMES.length} games.<br />Each hides a real idea.</>} />
+          <SectionHead title="Games" />
           <ol className="grid grid-cols-4 gap-gutter">
             {GAMES.filter((g) => ["monty-hall", "election", "house-edge", "long-run"].includes(g.slug)).map((g, i) => (
               <Reveal as="li" key={g.slug} delay={i * 0.05}>
@@ -133,25 +132,6 @@ export default function Home() {
           </ol>
         </Section>
 
-        {/* close: one band, one button */}
-        <Section last>
-          <Reveal className={`${grid} items-center gap-y-6 border-t border-ink pt-block`}>
-            <div className="col-span-4 flex items-center gap-5 md:col-span-7">
-              <MarkBuild className="size-14 shrink-0 md:size-20" />
-              <div className="space-y-1.5">
-                <h2 className="font-display text-headline font-semibold leading-none" style={{ fontVariationSettings: "'wdth' 80" }}>
-                  Ten minutes a day.
-                </h2>
-                <p className="text-ink-muted">Free, with nothing to sign up for.</p>
-              </div>
-            </div>
-            <div className="col-span-4 md:col-span-5 md:flex md:justify-end">
-              <a href={studyHref("#learn/topics/data")} className={primary}>
-                Start the first idea, 5 min <ArrowRight className="size-4" aria-hidden />
-              </a>
-            </div>
-          </Reveal>
-        </Section>
       </main>
 
       <SiteFooter />
