@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-/** A section's bare address (/study/solve/) has no page of its own: go to its first page. */
+/** A section's bare address (/solve/) has no page of its own: go to its first page. */
 export function GoTo({ href, label }: { href: string; label: string }) {
   const router = useRouter();
   useEffect(() => router.replace(href), [router, href]);

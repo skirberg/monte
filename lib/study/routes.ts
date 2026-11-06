@@ -18,16 +18,16 @@ export const study = {
   frameworks: "/learn/frameworks/",
   /** "Same number, three questions": one value, an average, or a range for an unknown mean. */
   start: "/learn/start/",
-  drill: "/study/practice/drill/",
+  drill: "/practice/drill/",
   /** Opens the drill page and starts a set right away. */
-  drillStart: (go: "start" | "mock" | "due" | "daily") => `/study/practice/drill/?go=${go}`,
+  drillStart: (go: "start" | "mock" | "due" | "daily") => `/practice/drill/?go=${go}`,
   /** A drill on one topic: 8 questions unless `n` says otherwise; `untimed` drops the clock for this set. */
-  drillTopic: (id: string, n?: number, untimed?: boolean) => `/study/practice/drill/?topic=${id}${n ? `&n=${n}` : ""}${untimed ? "&timer=off" : ""}`,
-  math: "/study/practice/math/",
-  cards: "/study/practice/cards/",
-  solve: (id: string = "tree") => `/study/solve/${id}/`,
-  tools: (id: string = "excel") => `/study/tools/${id}/`,
-  sources: "/study/sources/",
+  drillTopic: (id: string, n?: number, untimed?: boolean) => `/practice/drill/?topic=${id}${n ? `&n=${n}` : ""}${untimed ? "&timer=off" : ""}`,
+  math: "/practice/math/",
+  cards: "/practice/cards/",
+  solve: (id: string = "tree") => `/solve/${id}/`,
+  tools: (id: string = "excel") => `/tools/${id}/`,
+  sources: "/sources/",
 } as const;
 
 /**
@@ -73,10 +73,12 @@ export const STUDY_SECTIONS = [
 ] as const;
 export type StudySection = (typeof STUDY_SECTIONS)[number]["page"];
 
-/** Which section a pathname belongs to, or null outside /study/. */
+/** Which study section a pathname belongs to, or null outside the study app. */
 export function sectionFor(pathname: string | null): StudySection | null {
-  if (pathname?.startsWith("/learn")) return "learn";
-  if (!pathname?.startsWith("/study")) return null;
+  if (!pathname) return null;
+  // Study sections live at the top level (/learn/, /practice/, /solve/, /tools/, /sources/); /study/ is Today.
+  const top = pathname.split("/")[1];
+  if (top !== "study") return (STUDY_SECTIONS.find((s) => s.page === top && s.page !== "home")?.page ?? null) as StudySection | null;
   const seg = pathname.replace(/^\/study\/?/, "").split("/")[0];
   return (STUDY_SECTIONS.find((s) => s.page === seg)?.page ?? "home") as StudySection;
 }

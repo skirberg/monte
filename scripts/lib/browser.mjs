@@ -95,9 +95,9 @@ export async function launch() {
 // Every route worth checking.
 export const ROUTES = [
   "/", "/study/", "/learn/", "/learn/data/", "/learn/normal/", "/learn/clt/", "/learn/test/",
-  "/learn/formulas/", "/learn/frameworks/", "/learn/start/", "/learn/terms/", "/study/practice/cards/",
-  "/study/practice/drill/", "/study/practice/math/", "/study/solve/tree/", "/study/solve/normal/", "/study/solve/samp/", "/study/solve/test/", "/study/solve/data/",
-  "/study/tools/excel/", "/study/tools/sql/", "/study/sources/",
+  "/learn/formulas/", "/learn/frameworks/", "/learn/start/", "/learn/terms/", "/practice/cards/",
+  "/practice/drill/", "/practice/math/", "/solve/tree/", "/solve/normal/", "/solve/samp/", "/solve/test/", "/solve/data/",
+  "/tools/excel/", "/tools/sql/", "/sources/",
   "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",
   "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/decide/",
   "/decide/choose/", "/decide/warranty/", "/decide/bet/", "/decide/market/", "/decide/option/", "/decide/bayes/", "/decide/abtest/", "/decide/goal/", "/decide/staffing/",

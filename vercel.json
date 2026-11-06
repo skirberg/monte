@@ -78,6 +78,31 @@
       "source": "/study/learn/:path+/",
       "destination": "/learn/:path+/",
       "permanent": true
+    },
+    {
+      "source": "/study/practice/:path*",
+      "destination": "/practice/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/study/solve/:path*",
+      "destination": "/solve/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/study/tools/:path*",
+      "destination": "/tools/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/study/sources",
+      "destination": "/sources/",
+      "permanent": true
+    },
+    {
+      "source": "/study/sources/",
+      "destination": "/sources/",
+      "permanent": true
     }
   ]
 }

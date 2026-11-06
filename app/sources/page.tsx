@@ -5,7 +5,7 @@ import { SourceList } from "@/components/study/sources";
 import { PageHead, lead } from "@/components/study/ui";
 import { DATA } from "@/lib/study/data";
 
-export const metadata: Metadata = pageMeta("/study/sources/", "Sources", "Free videos, books and apps for statistics, plus R, Python, Excel and Power Query. Every link opened and checked.");
+export const metadata: Metadata = pageMeta("/sources/", "Sources", "Free videos, books and apps for statistics, plus R, Python, Excel and Power Query. Every link opened and checked.");
 
 export default function SourcesPage() {
   return (

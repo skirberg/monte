@@ -17,7 +17,7 @@ import { extname, join, normalize } from "node:path";
 const OUT = join(process.cwd(), "out");
 const CHROME = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const GAMES = ["correlation", "monty-hall", "fake-coin", "serve", "house-edge", "odds", "ab-test", "long-run", "options", "election"];
-const ROUTES = ["/", "/study/", "/learn/", "/learn/normal/", "/learn/formulas/", "/study/practice/drill/", "/study/practice/math/", "/study/practice/cards/", "/study/solve/tree/", "/study/tools/excel/", "/study/sources/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/story/", "/built/"];
+const ROUTES = ["/", "/study/", "/learn/", "/learn/normal/", "/learn/formulas/", "/practice/drill/", "/practice/math/", "/practice/cards/", "/solve/tree/", "/tools/excel/", "/sources/", "/play/", ...GAMES.map((g) => `/play/${g}/`), "/story/", "/built/"];
 // Requests that only resolve on Vercel (analytics) or that browsers make on their own.
 const IGNORE = [/\/_vercel\//, /favicon\.ico/];
 // Tightest tracking a display heading may use before condensed glyphs start to touch.
@@ -163,8 +163,8 @@ try {
   console.log("\nAnalytics (page views and custom events queued for Vercel)");
   const queued = "(window.vaq ?? []).filter((c) => c[0] === 'pageview').map((c) => c[1].path)";
   const events = "(window.vaq ?? []).filter((c) => c[0] === 'event').map((c) => c[1].name + ' ' + JSON.stringify(c[1].data ?? {}))";
-  await load("/study/practice/drill/");
-  check(await waitFor(`${queued}.includes('/study/practice/drill/')`, 4000), "a study section counts as its own page");
+  await load("/practice/drill/");
+  check(await waitFor(`${queued}.includes('/practice/drill/')`, 4000), "a study section counts as its own page");
   await load("/learn/normal/");
   check(await waitFor(`${queued}.includes('/learn/normal/')`, 4000), "a topic page counts as its own page");
   console.log("\nOld study links");
@@ -175,8 +175,8 @@ try {
   await sleep(600);
   check(landed && !(await evaluate(`${queued}.some((p) => /Typed|Search|\\s/.test(p))`)), "an unknown topic falls back to Learn, and typed text never reaches analytics", JSON.stringify(await evaluate(queued)));
   await load("/study/#practice/drill/mock");
-  check(await waitFor("location.pathname === '/study/practice/drill/' && !location.search && !!document.querySelector('[role=timer]')", 6000), "an old mock exam link opens the drill page with the mock running");
-  await load("/study/practice/drill/");
+  check(await waitFor("location.pathname === '/practice/drill/' && !location.search && !!document.querySelector('[role=timer]')", 6000), "an old mock exam link opens the drill page with the mock running");
+  await load("/practice/drill/");
   await waitFor("!!document.querySelector('button[data-start=\"ten\"]')", 3000);
   await evaluate("document.querySelector('button[data-start=\"ten\"]').click(); true");
   check(await waitFor(`${events}.some((e) => e.startsWith('Drill started') && e.includes('ten'))`, 3000), "event: drill started, with its mode");
@@ -192,7 +192,7 @@ try {
   })()`);
   check(await waitFor(`${events}.some((e) => e.startsWith('Drill finished') && e.includes('ten') && /\\d+-\\d+/.test(e))`, 3000), "event: drill finished, with a score band", JSON.stringify(await evaluate(events)));
   check(await waitFor("!!document.getElementById('r-score')", 2000), "a finished drill shows the score");
-  await load("/study/solve/normal/");
+  await load("/solve/normal/");
   await evaluate("document.querySelector('[data-act=\"new\"]').click(); true");
   await waitFor("!document.querySelector('[data-act=\"show\"]')?.hidden", 2000);
   await evaluate("document.querySelector('[data-act=\"show\"]').click(); true");

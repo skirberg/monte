@@ -79,7 +79,7 @@ export function Drill() {
   const router = useRouter();
   const params = useSearchParams();
   const [mix, setMix] = React.useState<Set<TopicId>>(() => new Set(TOPIC_IDS));
-  // Links like /study/practice/drill/?go=mock start a set as the page opens; see `fromLink`.
+  // Links like /practice/drill/?go=mock start a set as the page opens; see `fromLink`.
   const [link] = React.useState(() => fromLink(params));
   const [run, setRun] = React.useState<Run | null>(link?.run ?? null);
   const [result, setResult] = React.useState<Result | null>(null);
