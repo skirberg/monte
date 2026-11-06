@@ -145,7 +145,7 @@ const monoEm = (size: number) => (size * 0.6 + 0.5) / size;
  * The left column. Every label keeps its case: sentence case, never capitals (DESIGN.md, Type scale),
  * and in statistics n is not N and λ is not Λ.
  */
-const Label = (text: string, size: number, color = CLAY_INK, style?: Style, caps = false) =>
+const Label = (text: string, size: number, color = CLAY_INK, style?: Style) =>
   h(Text, { text, size, lh: 1.3, family: MONO, color, style: { width: LABEL_W, flexShrink: 0, paddingRight: 30, letterSpacing: 0.5, ...style } });
 
 const Page = (...children: React.ReactNode[]) =>
@@ -208,10 +208,10 @@ function topicSheet(t: StudyTopic, s: number) {
       h(Text, { text: plain(t.line), size: z.idea, lh: 1.36, family: BODY, color: INK, style: { marginTop: 32 } }),
       h("div", { style: { display: "flex", flexDirection: "column", marginTop: z.gap } }, card),
       h("div", { style: { display: "flex", marginTop: z.gap } },
-        Label("Remember", z.label, CLAY_INK, { width: LABEL_W + z.cardPad, paddingTop: (z.hook * 1.32 - z.label * 1.3) / 2 }, true),
+        Label("Remember", z.label, CLAY_INK, { width: LABEL_W + z.cardPad, paddingTop: (z.hook * 1.32 - z.label * 1.3) / 2 }),
         h(Text, { text: t.hook, size: z.hook, lh: 1.32, family: BODY_SEMI, color: INK, style: { flex: 1 } })),
       h("div", { style: { display: "flex", marginTop: z.gap * 0.7 } },
-        Label("The trap", z.label, MUTED, { width: LABEL_W + z.cardPad, paddingTop: (z.trap * 1.36 - z.label * 1.3) / 2 }, true),
+        Label("The trap", z.label, MUTED, { width: LABEL_W + z.cardPad, paddingTop: (z.trap * 1.36 - z.label * 1.3) / 2 }),
         h(Text, { text: plain(t.trap), size: z.trap, lh: 1.36, family: BODY, color: INK, style: { flex: 1 } }))),
     h(Footer, { right: "Statistics, one idea at a time" }));
 }

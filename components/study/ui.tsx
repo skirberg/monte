@@ -60,11 +60,6 @@ export const input =
   "min-h-11 w-full min-w-0 rounded-xl border border-line-strong bg-paper px-3 text-base text-ink transition-[border-color,box-shadow] duration-150 placeholder:text-ink-muted focus:border-clay focus:shadow-[0_0_0_3px_color-mix(in_oklch,var(--clay)_25%,transparent)] focus:outline-none";
 export const divided = "divide-y divide-line border-y border-line";
 
-/** A number the page is about: mono, tabular, on clay tint. */
-export function Val({ className, ...rest }: React.ComponentProps<"span">) {
-  return <span className={cn("rounded-lg bg-clay-tint px-1.5 py-0.5 font-mono text-symbol font-semibold tabular-nums text-ink", className)} {...rest} />;
-}
-
 /**
  * Study content with a little trusted inline HTML (<mark>, <b>, <sup>). The strings come from
  * lib/study/data.json, which only this repo writes, never from visitors.
