@@ -1,0 +1,38 @@
+"use client";
+
+import * as React from "react";
+import { track } from "@vercel/analytics";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+
+/** A page that crashed outright. Same court as the 404: say what happened, offer a retry and a way home. */
+export default function PageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  React.useEffect(() => {
+    track("Page crashed", { path: location.pathname, error: String(error?.message ?? error).slice(0, 120) });
+  }, [error]);
+  return (
+    <>
+      <SiteHeader mode="landing" />
+      <main id="main" tabIndex={-1} className="mx-auto flex min-h-[60vh] w-full max-w-page flex-col justify-center px-gutter py-section outline-none">
+        <p className="text-sm font-medium text-ink-muted">Error · let</p>
+        <h1
+          className="mt-4 font-display text-hero font-semibold leading-none"
+          style={{ fontVariationSettings: "'wdth' 75" }}
+        >
+          Replay.
+        </h1>
+        <p className="mt-6 max-w-measure-short text-xl text-ink-muted">This page tripped on the net. Your saved progress is safe. Try the point again.</p>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <button type="button" onClick={reset} className="btn btn-primary">
+            Try again
+          </button>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/" className="btn btn-secondary">
+            Home
+          </a>
+        </div>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}

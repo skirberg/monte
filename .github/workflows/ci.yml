@@ -1,0 +1,74 @@
+# Runs the checks that gate a change (AGENTS.md, "Commands") on every pull request and every push to main:
+# the unit tests, TypeScript, ESLint, the design token check, the design scale check and the brand check (every icon, share card and kit file
+# redrawn from its source and compared byte for byte), then the static build with its contrast and smoke
+# checks, then the MCP server's own test, which builds it and calls every tool.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            mcp/package-lock.json
+
+      - name: Install the site
+        run: npm ci
+
+      - name: Install the MCP server
+        run: npm ci
+        working-directory: mcp
+
+      - name: Unit tests
+        run: npm test
+
+      - name: TypeScript (the site and the MCP server)
+        run: npm run typecheck
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Design tokens match their source
+        run: npm run tokens:check
+
+      - name: Design scale
+        run: npm run scale-check
+
+      - name: Brand kit, icons and share cards match their source
+        run: npm run brand:check
+
+      - name: Build the static site
+        run: npm run build
+
+      - name: Contrast
+        run: npm run contrast
+
+      - name: Smoke test the built site
+        run: npm run smoke
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+
+      - name: MCP server
+        run: npm test
+        working-directory: mcp

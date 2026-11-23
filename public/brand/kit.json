@@ -1,0 +1,1074 @@
+{
+ "name": "Monte",
+ "url": "https://monte.markets/brand/",
+ "version": "2026-11-23.09a7ea9",
+ "date": "2026-11-23",
+ "commit": "09a7ea9",
+ "source": "b6cc7d1c23db519f7c85818716513262460702ca781e4bab433d655464859cb7",
+ "fonts": [
+  {
+   "family": "Azeret Mono",
+   "axes": "wght@500",
+   "url": "https://fonts.gstatic.com/s/azeretmono/v21/3XF5ErsiyJsY9O_Gepph-FvtTQgMQUdNekSfrvVh0g.ttf",
+   "sha256": "2c782811e883fe6b9cd0829dd5c53999649acc6fda74d0c1728aca2b436ba0ef"
+  },
+  {
+   "family": "Bricolage Grotesque",
+   "axes": "wdth,wght@75,700",
+   "url": "https://fonts.gstatic.com/s/bricolagegrotesque/v9/3y9U6as8bTXq_nANBjzKo3IeZx8z6up5BeSl5jBNz_19PpbpMXuECpwUxJBOm_OJBCaaD30YfKfjZZoLvfzlyM0.ttf",
+   "sha256": "b5ef8100ac2aa8c22031a2c053df9798a056ec748dad04a986c72a51267923fd"
+  },
+  {
+   "family": "Bricolage Grotesque",
+   "axes": "wght@700",
+   "url": "https://fonts.gstatic.com/s/bricolagegrotesque/v9/3y9U6as8bTXq_nANBjzKo3IeZx8z6up5BeSl5jBNz_19PpbpMXuECpwUxJBOm_OJWiaaD30YfKfjZZoLvfzlyM0.ttf",
+   "sha256": "913ee3631949ee1b4fb2601269412fca5775eb994d4f87be2c366c94ac123dc5"
+  },
+  {
+   "family": "Geologica",
+   "axes": "wght@400",
+   "url": "https://fonts.gstatic.com/s/geologica/v5/oY1o8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckU8H3G11_z-_OZqDx_rQ-M.ttf",
+   "sha256": "773bddac159927dae877ff223f42e34ef9422073387ea047f0c1b8d0c767cf0e"
+  }
+ ],
+ "files": [
+  {
+   "path": "app/apple-touch-icon.png",
+   "url": "/brand/app/apple-touch-icon.png",
+   "width": 180,
+   "height": 180,
+   "bytes": 2402,
+   "sha256": "268885127a2932295807e9d365991672b4bcfd024e0d192d7fece59110549ba6"
+  },
+  {
+   "path": "app/favicon.ico",
+   "url": "/brand/app/favicon.ico",
+   "width": 48,
+   "height": 48,
+   "bytes": 1734,
+   "sha256": "2dbe09e2fb8406334ca1b6517c62e8f92456fa60ebbd2842dc70a43d5bc24460"
+  },
+  {
+   "path": "app/favicon.svg",
+   "url": "/brand/app/favicon.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1640,
+   "sha256": "312611c66f1b91ab8aefcdfd71eb2257d20c8d116358534a396ed8d788317223"
+  },
+  {
+   "path": "app/icon-1024.png",
+   "url": "/brand/app/icon-1024.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 32867,
+   "sha256": "1d2d8dfdfef57d3c8a15bff40c5090e3366ae4fb19a91fe304d20ee61d1959bd"
+  },
+  {
+   "path": "app/icon-192.png",
+   "url": "/brand/app/icon-192.png",
+   "width": 192,
+   "height": 192,
+   "bytes": 2672,
+   "sha256": "d8207cae747efe8a70919b88e08f3e8f0f214a1f85ac65db47200757ef1ff92b"
+  },
+  {
+   "path": "app/icon-512.png",
+   "url": "/brand/app/icon-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 10947,
+   "sha256": "54a6cf40cd68d4858f41c4ee342fca3b285b3df56372448f0c601010e27806e7"
+  },
+  {
+   "path": "app/icon-maskable-512.png",
+   "url": "/brand/app/icon-maskable-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 10017,
+   "sha256": "de8bf4aee1786dd5fa713818654579cda421afa7fd13e63685c254c41037b6b5"
+  },
+  {
+   "path": "colors/colors.md",
+   "url": "/brand/colors/colors.md",
+   "bytes": 3161,
+   "sha256": "21a8acf2b3abaa98a29c47bcb104aa19ff6b1ee18419e3c2a4b3103d9ac54c49"
+  },
+  {
+   "path": "colors/monte.tokens.json",
+   "url": "/brand/colors/monte.tokens.json",
+   "bytes": 12554,
+   "sha256": "709dc3d1434e71f84130908d63091d114becd5e17db86c250d27e857567ab531"
+  },
+  {
+   "path": "colors/tokens.css",
+   "url": "/brand/colors/tokens.css",
+   "bytes": 1245,
+   "sha256": "b4187ebedc8fca63479605261b8dce4b17347a08e57d9a3b7678858f6589e5e4"
+  },
+  {
+   "path": "colors/tokens.json",
+   "url": "/brand/colors/tokens.json",
+   "bytes": 9431,
+   "sha256": "a7d7fed8273868c3b7d87a49ed42e1c6114f55b1ae2b83162e29b4ea6ee304ea"
+  },
+  {
+   "path": "email/signature-logo@2x-transparent.png",
+   "url": "/brand/email/signature-logo@2x-transparent.png",
+   "width": 400,
+   "height": 65,
+   "bytes": 5475,
+   "sha256": "e380607e1376ceab3f6180fcc9a25a034f2c777bec7ef9d6632cc071c64785e7"
+  },
+  {
+   "path": "email/signature-logo@2x.png",
+   "url": "/brand/email/signature-logo@2x.png",
+   "width": 400,
+   "height": 65,
+   "bytes": 5345,
+   "sha256": "20893dca04f8f5c82ced3c5eeabd10331b2665feb66c7bbd99637811d15b690d"
+  },
+  {
+   "path": "kit.zip",
+   "url": "/brand/kit.zip",
+   "bytes": 1323154,
+   "sha256": "e0c5ad44f8fcd577b18973c018221ef7aaa7396c5bccc4ea0399946d07e1e391"
+  },
+  {
+   "path": "logo/monte-logo-black-1024.png",
+   "url": "/brand/logo/monte-logo-black-1024.png",
+   "width": 1024,
+   "height": 167,
+   "bytes": 12031,
+   "sha256": "83bb764c56072113aa92319b3fcbca6582c1ef60cabe1e949e74ff1d8b03bc7f"
+  },
+  {
+   "path": "logo/monte-logo-black-2048.png",
+   "url": "/brand/logo/monte-logo-black-2048.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 27998,
+   "sha256": "0e3d361f5baab797d577ea8aaa626b5006d4e4e8b39069d27b9c83090802e47b"
+  },
+  {
+   "path": "logo/monte-logo-black-512.png",
+   "url": "/brand/logo/monte-logo-black-512.png",
+   "width": 512,
+   "height": 83,
+   "bytes": 5399,
+   "sha256": "efff81578a5fad4b9190b050926c6192132574270c24cd448a47c68d86db52a7"
+  },
+  {
+   "path": "logo/monte-logo-black.svg",
+   "url": "/brand/logo/monte-logo-black.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "f44baae22040425da5519284bdf9cfe8ae9176ce2c666d34f390cc637581fb15"
+  },
+  {
+   "path": "logo/monte-logo-color-1024.png",
+   "url": "/brand/logo/monte-logo-color-1024.png",
+   "width": 1024,
+   "height": 167,
+   "bytes": 15891,
+   "sha256": "4c6a98e2554ba49387037062d1116f6728b5c164668328150bccf95d660cef4c"
+  },
+  {
+   "path": "logo/monte-logo-color-2048.png",
+   "url": "/brand/logo/monte-logo-color-2048.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 37235,
+   "sha256": "708595238119d3bb2de717466d8c6351fb165f1baee08cbb872e1c5f3fb52276"
+  },
+  {
+   "path": "logo/monte-logo-color-512.png",
+   "url": "/brand/logo/monte-logo-color-512.png",
+   "width": 512,
+   "height": 83,
+   "bytes": 7152,
+   "sha256": "8aa100d4fd42ce85d0012086fc69be5eef138889dfc8d1ccc5e5f98f9f046689"
+  },
+  {
+   "path": "logo/monte-logo-color.svg",
+   "url": "/brand/logo/monte-logo-color.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "eba36f27e279eabc5a737ccc0c98705632bec75d007372d6332b97667cfddc10"
+  },
+  {
+   "path": "logo/monte-logo-reversed-1024.png",
+   "url": "/brand/logo/monte-logo-reversed-1024.png",
+   "width": 1024,
+   "height": 167,
+   "bytes": 15979,
+   "sha256": "7334893064d3f3e422e57886bd7e89a3188f7c8c91469196c615635d2538d373"
+  },
+  {
+   "path": "logo/monte-logo-reversed-2048.png",
+   "url": "/brand/logo/monte-logo-reversed-2048.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 37717,
+   "sha256": "b3ac668615736bb517a9c28bf7012a6eac92e3f93d560a77daadc38d80e3be07"
+  },
+  {
+   "path": "logo/monte-logo-reversed-512.png",
+   "url": "/brand/logo/monte-logo-reversed-512.png",
+   "width": 512,
+   "height": 83,
+   "bytes": 7207,
+   "sha256": "710c67e699dd3fe0a687b9607e6b42be361a2c61df25959a1b87806f539fd548"
+  },
+  {
+   "path": "logo/monte-logo-reversed.svg",
+   "url": "/brand/logo/monte-logo-reversed.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "201ca6cebb9b088e0ce3bc327e6d1a07955a989ac094f6bc86db3468a11cb540"
+  },
+  {
+   "path": "logo/monte-logo-white-1024.png",
+   "url": "/brand/logo/monte-logo-white-1024.png",
+   "width": 1024,
+   "height": 167,
+   "bytes": 12372,
+   "sha256": "29b908ee87a857ca2b788fd73f9bd82af2d14c8b60a9d77e5a5beae0ba43e1c5"
+  },
+  {
+   "path": "logo/monte-logo-white-2048.png",
+   "url": "/brand/logo/monte-logo-white-2048.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 29165,
+   "sha256": "31589f61850860e59e2a5dbb898cb4df867fa245cf102ac142ff7af275fb323a"
+  },
+  {
+   "path": "logo/monte-logo-white-512.png",
+   "url": "/brand/logo/monte-logo-white-512.png",
+   "width": 512,
+   "height": 83,
+   "bytes": 5563,
+   "sha256": "84cc0996cfbdc20c473092722a01002dc537ce165c31c6b486b01c9df7c874e8"
+  },
+  {
+   "path": "logo/monte-logo-white.svg",
+   "url": "/brand/logo/monte-logo-white.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "3b5ff62a231ff4b4d8930de86f4ee0da370bee0339e0b5a1c834208af1defb78"
+  },
+  {
+   "path": "mark/monte-mark-black-1024.png",
+   "url": "/brand/mark/monte-mark-black-1024.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 10050,
+   "sha256": "5d31f7595e518f709c9e269e0a49cb9b501aecadac064b6bd190777c81bf3a33"
+  },
+  {
+   "path": "mark/monte-mark-black-128.png",
+   "url": "/brand/mark/monte-mark-black-128.png",
+   "width": 128,
+   "height": 128,
+   "bytes": 856,
+   "sha256": "96976b2a1457f12c847f30cf00fdaed8f5fa1f05d69a24b9d4321d801b791aac"
+  },
+  {
+   "path": "mark/monte-mark-black-256.png",
+   "url": "/brand/mark/monte-mark-black-256.png",
+   "width": 256,
+   "height": 256,
+   "bytes": 1794,
+   "sha256": "683fa8db7f5d230d723c879b47d7360f83e57de435efda3649fa803f2cebf281"
+  },
+  {
+   "path": "mark/monte-mark-black-512.png",
+   "url": "/brand/mark/monte-mark-black-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 3994,
+   "sha256": "7329ac5cdd7799e16ca9af93aa9f954cd19e00ed9660fdd5bd250a981e2f0c05"
+  },
+  {
+   "path": "mark/monte-mark-black-64.png",
+   "url": "/brand/mark/monte-mark-black-64.png",
+   "width": 64,
+   "height": 64,
+   "bytes": 464,
+   "sha256": "4f03557304fba745dc5a6b638e64f0dbf19f45d2e4b8f5151b0cc8f7408964b7"
+  },
+  {
+   "path": "mark/monte-mark-black.svg",
+   "url": "/brand/mark/monte-mark-black.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1504,
+   "sha256": "e55077ee1b8e43300f64b4dfe51a9a670b03bca2b18ec7077dfc1979b30c8287"
+  },
+  {
+   "path": "mark/monte-mark-color-1024.png",
+   "url": "/brand/mark/monte-mark-color-1024.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 13445,
+   "sha256": "e1b313ab63e16129009c5959b2eeaeb85ffc34e81b74f5f0267f5083a0a5fa22"
+  },
+  {
+   "path": "mark/monte-mark-color-128.png",
+   "url": "/brand/mark/monte-mark-color-128.png",
+   "width": 128,
+   "height": 128,
+   "bytes": 1160,
+   "sha256": "b8fa71659bbfefd3681983579945650ec0310153130825828cb91d8544b33878"
+  },
+  {
+   "path": "mark/monte-mark-color-256.png",
+   "url": "/brand/mark/monte-mark-color-256.png",
+   "width": 256,
+   "height": 256,
+   "bytes": 2440,
+   "sha256": "73114d085c8a19a2ae9718514a2642cdefe0e384fdcfe0e7051e8a28955f0696"
+  },
+  {
+   "path": "mark/monte-mark-color-512.png",
+   "url": "/brand/mark/monte-mark-color-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 5561,
+   "sha256": "0da8a7b98559fff9b526f940d42397b9a5d820728b8a5bf368fc8bcbc2cee1a1"
+  },
+  {
+   "path": "mark/monte-mark-color-64.png",
+   "url": "/brand/mark/monte-mark-color-64.png",
+   "width": 64,
+   "height": 64,
+   "bytes": 625,
+   "sha256": "3c7033c9303178c35848957e882bfc030be31a123d7e2c4a8573ab924e05b0e4"
+  },
+  {
+   "path": "mark/monte-mark-color.svg",
+   "url": "/brand/mark/monte-mark-color.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1504,
+   "sha256": "7aa3bf6e69e18688535c103485954763b14193c5be9dadb429d3a451f0d6e75f"
+  },
+  {
+   "path": "mark/monte-mark-tile-1024.png",
+   "url": "/brand/mark/monte-mark-tile-1024.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 22678,
+   "sha256": "5930eed72b63bc61cae4394e0eb86b5f78842bff5af423acdca8e1d280e0317c"
+  },
+  {
+   "path": "mark/monte-mark-tile-128.png",
+   "url": "/brand/mark/monte-mark-tile-128.png",
+   "width": 128,
+   "height": 128,
+   "bytes": 2069,
+   "sha256": "3e928e5118d2547cafd42d8be2c5f083f7eb12ace63866a3b2a24be700aa6db2"
+  },
+  {
+   "path": "mark/monte-mark-tile-256.png",
+   "url": "/brand/mark/monte-mark-tile-256.png",
+   "width": 256,
+   "height": 256,
+   "bytes": 4343,
+   "sha256": "419265ac0f9643ff32d842ee46a15acc1df421eeaccab7e7c83143cdf8cc8a00"
+  },
+  {
+   "path": "mark/monte-mark-tile-512.png",
+   "url": "/brand/mark/monte-mark-tile-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 9808,
+   "sha256": "48abe8ed41be2421cebe13cfab45a0397496dac9e2cd451124bfafd404b9f2fa"
+  },
+  {
+   "path": "mark/monte-mark-tile-64.png",
+   "url": "/brand/mark/monte-mark-tile-64.png",
+   "width": 64,
+   "height": 64,
+   "bytes": 1017,
+   "sha256": "6a48028b71e18b3bd965180309136ab08255debedd059ec37b7277bf0d993630"
+  },
+  {
+   "path": "mark/monte-mark-tile.svg",
+   "url": "/brand/mark/monte-mark-tile.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1640,
+   "sha256": "312611c66f1b91ab8aefcdfd71eb2257d20c8d116358534a396ed8d788317223"
+  },
+  {
+   "path": "mark/monte-mark-white-1024.png",
+   "url": "/brand/mark/monte-mark-white-1024.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 10446,
+   "sha256": "6e4402d21d187c8618590ceadafb0d3a0261453a2db39c95143b744be23bac82"
+  },
+  {
+   "path": "mark/monte-mark-white-128.png",
+   "url": "/brand/mark/monte-mark-white-128.png",
+   "width": 128,
+   "height": 128,
+   "bytes": 884,
+   "sha256": "48b56d96394ec00ae2bb1f4af40171b7b1ea0d9ed3bc3aae8cac291effbd6ad9"
+  },
+  {
+   "path": "mark/monte-mark-white-256.png",
+   "url": "/brand/mark/monte-mark-white-256.png",
+   "width": 256,
+   "height": 256,
+   "bytes": 1855,
+   "sha256": "3b65735801829fd3a5a7e1a3d0d966afeef90f63baebd2c53d0def0e07575525"
+  },
+  {
+   "path": "mark/monte-mark-white-512.png",
+   "url": "/brand/mark/monte-mark-white-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 4194,
+   "sha256": "d9c4caae2f77d422978734ac3bb5cabd5cc6506575121227eeef24d0acd18c2e"
+  },
+  {
+   "path": "mark/monte-mark-white-64.png",
+   "url": "/brand/mark/monte-mark-white-64.png",
+   "width": 64,
+   "height": 64,
+   "bytes": 460,
+   "sha256": "52131bc149e05ba1de4b5434c20d629b708e6f10da7a6809f551beffb218fc7d"
+  },
+  {
+   "path": "mark/monte-mark-white.svg",
+   "url": "/brand/mark/monte-mark-white.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1504,
+   "sha256": "21a7c880d7742cf311b45ce3239c0c49e0c7a332787a3c14fe89f6c035bbf16c"
+  },
+  {
+   "path": "README.txt",
+   "url": "/brand/README.txt",
+   "bytes": 3270,
+   "sha256": "36a26969b1b8b669e494a1f33695b66fbeb3df24d42a6cd9dad6023fd14d3c5c"
+  },
+  {
+   "path": "social/avatar-400.png",
+   "url": "/brand/social/avatar-400.png",
+   "width": 400,
+   "height": 400,
+   "bytes": 6893,
+   "sha256": "efef0c120c4d4b9f8bf564188ca3f60bc27f8212e257c0908d9230afd685ee0d"
+  },
+  {
+   "path": "social/avatar-800.png",
+   "url": "/brand/social/avatar-800.png",
+   "width": 800,
+   "height": 800,
+   "bytes": 20383,
+   "sha256": "1f25018d7c4b45085b8031de8fe540975f95d8699fecdaee6a3bb77cd189d84a"
+  },
+  {
+   "path": "social/github-social-1280x640-dark.png",
+   "url": "/brand/social/github-social-1280x640-dark.png",
+   "width": 1280,
+   "height": 640,
+   "bytes": 82327,
+   "sha256": "c06524a3ee3f0f686cba1e380ff1b77cba70a550939b5d52619da57c4c1331be"
+  },
+  {
+   "path": "social/github-social-1280x640.png",
+   "url": "/brand/social/github-social-1280x640.png",
+   "width": 1280,
+   "height": 640,
+   "bytes": 83340,
+   "sha256": "61e6e0b29ab5407edd8d64028fb40a0523a1c377144f5b25209ebee87475f1d7"
+  },
+  {
+   "path": "social/instagram-1080x1080.png",
+   "url": "/brand/social/instagram-1080x1080.png",
+   "width": 1080,
+   "height": 1080,
+   "bytes": 106127,
+   "sha256": "0de4d4c5a25f37e772cb413d18628e5075234ccf38fa1d3568a3dd8411aa9fc2"
+  },
+  {
+   "path": "social/instagram-1080x1350.png",
+   "url": "/brand/social/instagram-1080x1350.png",
+   "width": 1080,
+   "height": 1350,
+   "bytes": 130243,
+   "sha256": "70c87f365123dfefcd1539d50ab7e5ab966c00e3c342b4a96e5ba23cd3c1a42b"
+  },
+  {
+   "path": "social/linkedin-banner-1584x396-dark.png",
+   "url": "/brand/social/linkedin-banner-1584x396-dark.png",
+   "width": 1584,
+   "height": 396,
+   "bytes": 59565,
+   "sha256": "7ba0dacf57abc9ece3691a9e8f8d49e87c5eab70a36e30b73e069b97bd6420b2"
+  },
+  {
+   "path": "social/linkedin-banner-1584x396.png",
+   "url": "/brand/social/linkedin-banner-1584x396.png",
+   "width": 1584,
+   "height": 396,
+   "bytes": 60264,
+   "sha256": "61ccb0d2bb4123c02853a1f0f11a6aafdee93a5cc65ad385bf123fb905855dbb"
+  },
+  {
+   "path": "social/linkedin-cover-1512x256-dark.png",
+   "url": "/brand/social/linkedin-cover-1512x256-dark.png",
+   "width": 1512,
+   "height": 256,
+   "bytes": 45744,
+   "sha256": "0d9926fc91b0ed72e4a2b6f86452aec5820832566bced4bf52dd8142e28c3f37"
+  },
+  {
+   "path": "social/linkedin-cover-1512x256.png",
+   "url": "/brand/social/linkedin-cover-1512x256.png",
+   "width": 1512,
+   "height": 256,
+   "bytes": 46272,
+   "sha256": "c03accad372f8ba1259e02f78e09eb67228b6af920b2d79ec1f0ca844d2c9630"
+  },
+  {
+   "path": "social/og-1200x630.png",
+   "url": "/brand/social/og-1200x630.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 70730,
+   "sha256": "4d8dcb2bce7c38b35e0ec6b09227df8fb16cd0034c8df6854a38e562d8cc063e"
+  },
+  {
+   "path": "social/story-1080x1920.png",
+   "url": "/brand/social/story-1080x1920.png",
+   "width": 1080,
+   "height": 1920,
+   "bytes": 151590,
+   "sha256": "c8ec9ec0cb14130e0d9e1f7fbc655fae47c4fe7611fef42dd689463cb3bb95cc"
+  },
+  {
+   "path": "social/x-header-1500x500-dark.png",
+   "url": "/brand/social/x-header-1500x500-dark.png",
+   "width": 1500,
+   "height": 500,
+   "bytes": 69939,
+   "sha256": "b6eed29732fee0cc31398d7b07c7c5f8c822eb109d3cf15a4f6fca0cc2b018cd"
+  },
+  {
+   "path": "social/x-header-1500x500.png",
+   "url": "/brand/social/x-header-1500x500.png",
+   "width": 1500,
+   "height": 500,
+   "bytes": 70728,
+   "sha256": "ba45108b4845e489d0d6b0c6334b6e1fa796d253c831c2aaa64e8cbea3e0f320"
+  },
+  {
+   "path": "social/youtube-banner-2560x1440-dark.png",
+   "url": "/brand/social/youtube-banner-2560x1440-dark.png",
+   "width": 2560,
+   "height": 1440,
+   "bytes": 147071,
+   "sha256": "f99f4ece505a9dba9662b1f152fc84848fb464be942f78dbedc9f5f0cd279e22"
+  },
+  {
+   "path": "social/youtube-banner-2560x1440.png",
+   "url": "/brand/social/youtube-banner-2560x1440.png",
+   "width": 2560,
+   "height": 1440,
+   "bytes": 147631,
+   "sha256": "34d2e4657d6ae11cf140d59722d4bcd213d26258a54733a498d485dfb28584c5"
+  }
+ ],
+ "served": [
+  {
+   "path": "app/icon.svg",
+   "url": "/icon.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1640,
+   "sha256": "312611c66f1b91ab8aefcdfd71eb2257d20c8d116358534a396ed8d788317223"
+  },
+  {
+   "path": "public/apple-touch-icon.png",
+   "url": "/apple-touch-icon.png",
+   "width": 180,
+   "height": 180,
+   "bytes": 2402,
+   "sha256": "268885127a2932295807e9d365991672b4bcfd024e0d192d7fece59110549ba6"
+  },
+  {
+   "path": "public/brand/marks/ab-test.svg",
+   "url": "/brand/marks/ab-test.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 545,
+   "sha256": "30ad9d2cce29cfdb575c73d72af4059318e5f3d788c7344a32b800263bdb04b9"
+  },
+  {
+   "path": "public/brand/marks/correlation.svg",
+   "url": "/brand/marks/correlation.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1329,
+   "sha256": "144b0bffcfe7b6c9312dcea7b786f2bc040621d37e825728e33b6739b8c5b70b"
+  },
+  {
+   "path": "public/brand/marks/decide-abtest.svg",
+   "url": "/brand/marks/decide-abtest.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 549,
+   "sha256": "359774b19818ee782c3ad1f5ca3e3ca79590b610bf125e70d9374efae06c6a74"
+  },
+  {
+   "path": "public/brand/marks/decide-bayes.svg",
+   "url": "/brand/marks/decide-bayes.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 3847,
+   "sha256": "31a0744162289d2c8c038c018d5e284b9fab5eeff51d222725f338d90510f324"
+  },
+  {
+   "path": "public/brand/marks/decide-bet.svg",
+   "url": "/brand/marks/decide-bet.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 487,
+   "sha256": "7f67601f8656f441d7d279fd7831806346065cfc771264d090eed97aca9d1c60"
+  },
+  {
+   "path": "public/brand/marks/decide-choose.svg",
+   "url": "/brand/marks/decide-choose.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1070,
+   "sha256": "a057a633ece3bc95ae16f0659be403992d4c8c715729682a65bc9934bad4efcd"
+  },
+  {
+   "path": "public/brand/marks/decide-goal.svg",
+   "url": "/brand/marks/decide-goal.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 728,
+   "sha256": "72a54811274f3b592ac3dc55fce94554cb2c2ee9b1a6c9ab6029bd6a886941dc"
+  },
+  {
+   "path": "public/brand/marks/decide-market.svg",
+   "url": "/brand/marks/decide-market.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 913,
+   "sha256": "715ad94696e80b93339a942c55662624a37c612256624a8ba09c61901995df83"
+  },
+  {
+   "path": "public/brand/marks/decide-option.svg",
+   "url": "/brand/marks/decide-option.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 415,
+   "sha256": "71ed478db05e79675ecfbffe00d3e05f02054d74400feef735fa4028b57fc9dd"
+  },
+  {
+   "path": "public/brand/marks/decide-staffing.svg",
+   "url": "/brand/marks/decide-staffing.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 867,
+   "sha256": "acc33b0b921b4f8a859e35d126aed71fc81082f293dc8bda8bb92d6b099e1676"
+  },
+  {
+   "path": "public/brand/marks/decide-warranty.svg",
+   "url": "/brand/marks/decide-warranty.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 493,
+   "sha256": "aaf63eeff801fae3752017a02e2579dca7cd624d9321a6e4a78220f59f6cc4c0"
+  },
+  {
+   "path": "public/brand/marks/election.svg",
+   "url": "/brand/marks/election.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1190,
+   "sha256": "1a74e37151f340496ce946580a345ca29f0776b0c1c895e28a68b460fd6f25e0"
+  },
+  {
+   "path": "public/brand/marks/fake-coin.svg",
+   "url": "/brand/marks/fake-coin.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1491,
+   "sha256": "65a4ef08cc2b0ff6d74696f560cf468e4372c64ffcab1829999e7a8ae8efff56"
+  },
+  {
+   "path": "public/brand/marks/house-edge.svg",
+   "url": "/brand/marks/house-edge.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 6171,
+   "sha256": "f80b8058c3f50645d2c7709bd9f336fb452da2521f3556cd9b09deba05ffb2e0"
+  },
+  {
+   "path": "public/brand/marks/long-run.svg",
+   "url": "/brand/marks/long-run.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1541,
+   "sha256": "d05623bfdd92ca4fef5278635181089c6024baa361da7a422a250243068ed4cf"
+  },
+  {
+   "path": "public/brand/marks/monty-hall.svg",
+   "url": "/brand/marks/monty-hall.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 703,
+   "sha256": "f3631016309c4aded436ab5bd35d34cbe3c590e973953552c20576f66d4a9915"
+  },
+  {
+   "path": "public/brand/marks/odds.svg",
+   "url": "/brand/marks/odds.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 534,
+   "sha256": "d4519a68f1daac9074aafe2d5fe0c3b68c9d7db4a3dd69ce1e19a120708200e7"
+  },
+  {
+   "path": "public/brand/marks/options.svg",
+   "url": "/brand/marks/options.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 1056,
+   "sha256": "4ade2acf897f0d038b386b1a10dbab06bdcc04de6be45ee42feae2bf83bdf196"
+  },
+  {
+   "path": "public/brand/marks/serve.svg",
+   "url": "/brand/marks/serve.svg",
+   "width": 100,
+   "height": 80,
+   "bytes": 787,
+   "sha256": "1f0cb2598ce9775f1a49bb9ce08bd8c2b5670297fae5f124195606d108342dd1"
+  },
+  {
+   "path": "public/brand/monte-icon.png",
+   "url": "/brand/monte-icon.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 32867,
+   "sha256": "1d2d8dfdfef57d3c8a15bff40c5090e3366ae4fb19a91fe304d20ee61d1959bd"
+  },
+  {
+   "path": "public/brand/monte-icon.svg",
+   "url": "/brand/monte-icon.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1640,
+   "sha256": "312611c66f1b91ab8aefcdfd71eb2257d20c8d116358534a396ed8d788317223"
+  },
+  {
+   "path": "public/brand/monte-logo-dark.png",
+   "url": "/brand/monte-logo-dark.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 44578,
+   "sha256": "3d56eab2ef9aa2a2034ec3f8f3e9dc2008c8c2cab64468790e4bcc0d80350c45"
+  },
+  {
+   "path": "public/brand/monte-logo-dark.svg",
+   "url": "/brand/monte-logo-dark.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "201ca6cebb9b088e0ce3bc327e6d1a07955a989ac094f6bc86db3468a11cb540"
+  },
+  {
+   "path": "public/brand/monte-logo.png",
+   "url": "/brand/monte-logo.png",
+   "width": 2048,
+   "height": 333,
+   "bytes": 44244,
+   "sha256": "36ff7877448ae6be0c44a18a7fa836b9c8524ec6fe3e0b2bab9df8ed7e51fe1e"
+  },
+  {
+   "path": "public/brand/monte-logo.svg",
+   "url": "/brand/monte-logo.svg",
+   "width": 4154,
+   "height": 676,
+   "bytes": 4008,
+   "sha256": "eba36f27e279eabc5a737ccc0c98705632bec75d007372d6332b97667cfddc10"
+  },
+  {
+   "path": "public/brand/monte-mark.png",
+   "url": "/brand/monte-mark.png",
+   "width": 1024,
+   "height": 1024,
+   "bytes": 16126,
+   "sha256": "66540e6581af9281be8ced4c4e008baf3efe0245c54073fe2f2ba7219e183ade"
+  },
+  {
+   "path": "public/brand/monte-mark.svg",
+   "url": "/brand/monte-mark.svg",
+   "width": 512,
+   "height": 512,
+   "bytes": 1504,
+   "sha256": "7aa3bf6e69e18688535c103485954763b14193c5be9dadb429d3a451f0d6e75f"
+  },
+  {
+   "path": "public/favicon.ico",
+   "url": "/favicon.ico",
+   "width": 48,
+   "height": 48,
+   "bytes": 1734,
+   "sha256": "2dbe09e2fb8406334ca1b6517c62e8f92456fa60ebbd2842dc70a43d5bc24460"
+  },
+  {
+   "path": "public/icon-192.png",
+   "url": "/icon-192.png",
+   "width": 192,
+   "height": 192,
+   "bytes": 2672,
+   "sha256": "d8207cae747efe8a70919b88e08f3e8f0f214a1f85ac65db47200757ef1ff92b"
+  },
+  {
+   "path": "public/icon-512.png",
+   "url": "/icon-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 10947,
+   "sha256": "54a6cf40cd68d4858f41c4ee342fca3b285b3df56372448f0c601010e27806e7"
+  },
+  {
+   "path": "public/icon-maskable-512.png",
+   "url": "/icon-maskable-512.png",
+   "width": 512,
+   "height": 512,
+   "bytes": 10017,
+   "sha256": "de8bf4aee1786dd5fa713818654579cda421afa7fd13e63685c254c41037b6b5"
+  },
+  {
+   "path": "public/og.png",
+   "url": "/og.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 70730,
+   "sha256": "4d8dcb2bce7c38b35e0ec6b09227df8fb16cd0034c8df6854a38e562d8cc063e"
+  },
+  {
+   "path": "public/og/ab-test.png",
+   "url": "/og/ab-test.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 56731,
+   "sha256": "9bba7bbea1fc18e50bdfbcce3cb1857706716770753898414eeebec1706cfc90"
+  },
+  {
+   "path": "public/og/brand.png",
+   "url": "/og/brand.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 50032,
+   "sha256": "d70107958dbc1f053421cf2648a5b055b7d2d3642a77906fe247ebd1a4c2d84d"
+  },
+  {
+   "path": "public/og/correlation.png",
+   "url": "/og/correlation.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 64665,
+   "sha256": "7dcabd7b088a8eb982df1c4b72efaaf8331e58620acca2d3ee7595d7f7663f9e"
+  },
+  {
+   "path": "public/og/daily.png",
+   "url": "/og/daily.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 64326,
+   "sha256": "4aae93a7bde266a60c88f4757fdf606505e20a3ff9b9e3c31485c513d1aa3ffb"
+  },
+  {
+   "path": "public/og/decide-abtest.png",
+   "url": "/og/decide-abtest.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 57062,
+   "sha256": "f04bcc2b6a120f8762210a64161a7d2d54d81aaeeac35b4d1f47417593c16b4d"
+  },
+  {
+   "path": "public/og/decide-bayes.png",
+   "url": "/og/decide-bayes.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 65291,
+   "sha256": "c06f59decfa7386959c366cb8708ff5c4f943092a1e210e3438e3ca50b18e8bc"
+  },
+  {
+   "path": "public/og/decide-bet.png",
+   "url": "/og/decide-bet.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 59956,
+   "sha256": "85d6a3a59f4ac816d04423c0218d6dd6acc6a531d311c96f7e6d68bdec415940"
+  },
+  {
+   "path": "public/og/decide-choose.png",
+   "url": "/og/decide-choose.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 60380,
+   "sha256": "d34a189ae46391645b01451533bf4d543af7f58e7ad1d4db9efe0c84cb372db1"
+  },
+  {
+   "path": "public/og/decide-goal.png",
+   "url": "/og/decide-goal.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 60297,
+   "sha256": "4fc07d51060ead3cd87ab1e4e8e2d5a52dc54a22978409ec44d916f807b5d95b"
+  },
+  {
+   "path": "public/og/decide-market.png",
+   "url": "/og/decide-market.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 63292,
+   "sha256": "956da4760c4145d414abf892688c29c7a3e21369e6ea5ab4b0e444aa87b103c7"
+  },
+  {
+   "path": "public/og/decide-option.png",
+   "url": "/og/decide-option.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 56253,
+   "sha256": "5ea4ca6cc75dbec61b32333ba8f65ae9a94b883c7fd9d5c4ca6432f885a10879"
+  },
+  {
+   "path": "public/og/decide-staffing.png",
+   "url": "/og/decide-staffing.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 59036,
+   "sha256": "2a76b8e09415f383e15f62fc04251a52d9431f9a64905a01c5e98c57fb6ee2e5"
+  },
+  {
+   "path": "public/og/decide-warranty.png",
+   "url": "/og/decide-warranty.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 58693,
+   "sha256": "5a91a28e27f3999bfe874a6899a878d941fced21949ffe5ead9aa684ff373b1b"
+  },
+  {
+   "path": "public/og/decide.png",
+   "url": "/og/decide.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 55545,
+   "sha256": "c0187eca3a9b55453a86e19b87ca92def472ec84afa4478237a78e3685eef4b1"
+  },
+  {
+   "path": "public/og/election.png",
+   "url": "/og/election.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 52920,
+   "sha256": "e16ad1e390c810a2ebf9034a8f1b8dce8440adf8ea0001b4873e65711bcd10ce"
+  },
+  {
+   "path": "public/og/fake-coin.png",
+   "url": "/og/fake-coin.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 62168,
+   "sha256": "9480b85d4e5890efc5c7d2c2b0f7d69befb4e7a05a3437c8544ad8c5ff880043"
+  },
+  {
+   "path": "public/og/house-edge.png",
+   "url": "/og/house-edge.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 76271,
+   "sha256": "d50c18a1344de90c7cdf57d2acd5c0f7a6f4976ddb55f99803e912f66d6a743e"
+  },
+  {
+   "path": "public/og/learn.png",
+   "url": "/og/learn.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 55032,
+   "sha256": "b4139d48b19c90488df315035f7db03a420f43326e3c8ab96d848d276c048906"
+  },
+  {
+   "path": "public/og/long-run.png",
+   "url": "/og/long-run.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 67473,
+   "sha256": "c032ab7c1278a15e197bfa4fad464c0725314ab05ee9717328676527e6467678"
+  },
+  {
+   "path": "public/og/monty-hall.png",
+   "url": "/og/monty-hall.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 54466,
+   "sha256": "38eea825d7440e4c67486866bfdb81f8173ce67202fe607fa5e564de432f899b"
+  },
+  {
+   "path": "public/og/odds.png",
+   "url": "/og/odds.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 58346,
+   "sha256": "36efe991af83df4686f7774f992c116572d04e336496503733eae1c643484754"
+  },
+  {
+   "path": "public/og/options.png",
+   "url": "/og/options.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 63925,
+   "sha256": "51c7f9a32aae2a8ef978b2c39ca4261c3be13f5621323e1c906707a2d787cc43"
+  },
+  {
+   "path": "public/og/practice.png",
+   "url": "/og/practice.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 56643,
+   "sha256": "5a233b06d882cbaf9fc9a08d9ac35fa820d4a2862f2d6d408acd2586caaa1b47"
+  },
+  {
+   "path": "public/og/serve.png",
+   "url": "/og/serve.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 57224,
+   "sha256": "5ed4d01b3f360f5e45284bc33dc3e7236944e5566cb6b057116f7d70518fe387"
+  },
+  {
+   "path": "public/og/shuffle.png",
+   "url": "/og/shuffle.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 56190,
+   "sha256": "8d231cde6e2e0e2c960f32fdf27c616e478de62d647ea54f481a2540e839b183"
+  },
+  {
+   "path": "public/og/solve.png",
+   "url": "/og/solve.png",
+   "width": 1200,
+   "height": 630,
+   "bytes": 55974,
+   "sha256": "55905e9368379bba5bd145765359511b17f1faada5a1d59b817ee3931b83b6cb"
+  }
+ ]
+}

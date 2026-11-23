@@ -1,0 +1,167 @@
+"use client";
+
+import * as React from "react";
+import { ArrowRight, Check } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/lib/cn";
+import { TOPICS, studyHref, type Topic } from "@/lib/site-data";
+import { useStoredString } from "@/lib/hooks";
+
+type Stat = { asked: number; correct: number; best: number; top?: number };
+// The same rule as statsWon in lib/study/progress.ts, kept here so the home page does not load the study data.
+const isMastered = (s: Stat) => (s.top !== undefined ? s.top >= 0.8 : s.best >= 0.8 && s.asked >= 8 && s.correct / s.asked >= 0.8);
+
+/** Reads the engine's saved progress (same origin as /study). */
+function useProgress(): Record<string, Stat> {
+  const raw = useStoredString("sigma");
+  return React.useMemo(() => {
+    try {
+      return raw ? (JSON.parse(raw).drill ?? {}) : {};
+    } catch {
+      return {};
+    }
+  }, [raw]);
+}
+
+function status(s?: Stat) {
+  if (!s || !s.asked) return { label: "Not started", won: false };
+  if (isMastered(s)) return { label: "Mastered", won: true };
+  return { label: `Best ${Math.round(s.best * 100)}%`, won: false };
+}
+
+/** The fourteen topics as a distribution: fourteen columns, this topic's column in clay. */
+function MiniPile({ n, className }: { n: number; className?: string }) {
+  const pmf = (k: number) => {
+    let c = 1;
+    for (let i = 1; i <= k; i++) c = (c * (TOPICS.length - 1 - k + i)) / i;
+    return c / 2 ** (TOPICS.length - 1);
+  };
+  return (
+    <svg viewBox="0 0 130 64" className={className} aria-hidden>
+      {Array.from({ length: TOPICS.length }, (_, k) => {
+        const dots = Math.max(1, Math.round(pmf(k) * 2 * TOPICS.length));
+        return Array.from({ length: dots }, (_, d) => (
+          <circle
+            key={`${k}-${d}`}
+            cx={5 + (k * 120) / (TOPICS.length - 1)}
+            cy={58 - d * 8}
+            r={3.4}
+            fill={k + 1 === n ? "var(--clay)" : "var(--line-strong)"}
+            opacity={k + 1 === n ? 1 : 0.55}
+          />
+        ));
+      })}
+    </svg>
+  );
+}
+
+function Preview({ t, stat }: { t: Topic; stat?: Stat }) {
+  const st = status(stat);
+  return (
+    <motion.div
+      key={t.id}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.24, ease: [0.2, 0.8, 0.2, 1] }}
+      className="flex h-full flex-col gap-5"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <span className="font-mono text-figure leading-none font-medium tracking-tight text-clay tabular">
+          {t.n}
+        </span>
+        <MiniPile n={t.n} className="mt-2 w-32" />
+      </div>
+      <div className="space-y-3">
+        <h3 className="font-display text-3xl font-semibold leading-tight" style={{ fontVariationSettings: "'wdth' 88" }}>
+          {t.name}
+        </h3>
+        <p className="text-base leading-relaxed text-ink-muted">{t.line}</p>
+      </div>
+      <p className="text-sm text-ink-muted">
+        {st.won ? <span className="text-clay-ink">Mastered</span> : st.label}
+      </p>
+      <div className="mt-auto flex flex-wrap gap-2">
+        <a
+          href={studyHref(`#learn/topics/${t.id}`)}
+          className="btn btn-primary btn-sm"
+        >
+          Learn it <ArrowRight className="size-4" />
+        </a>
+        <a
+          href={studyHref(`#practice/drill/topic/${t.id}`)}
+          className="btn btn-secondary btn-sm"
+        >
+          Drill it, 8 questions
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+export function TheDraw() {
+  const drill = useProgress();
+  const [active, setActive] = React.useState(TOPICS[8].id);
+  const t = TOPICS.find((x) => x.id === active) ?? TOPICS[0];
+  const won = TOPICS.filter((x) => status(drill[x.id]).won).length;
+
+  return (
+    <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <ol className="border-t border-ink lg:col-span-7">
+        {TOPICS.map((x) => {
+          const st = status(drill[x.id]);
+          const on = x.id === active;
+          return (
+            <li key={x.id} className="border-b border-line">
+              <a
+                href={studyHref(`#learn/topics/${x.id}`)}
+                onMouseEnter={() => setActive(x.id)}
+                onFocus={() => setActive(x.id)}
+                className={cn(
+                  "group grid min-h-14 grid-cols-[2.5rem_1fr_auto] items-center gap-3 py-3 pr-2 transition-colors",
+                  on && "lg:bg-sand",
+                )}
+              >
+                <span className={cn("pl-2 font-mono text-sm text-ink-muted tabular", on && "lg:text-clay-ink")}>
+                  {x.n}
+                </span>
+                <span
+                  className="font-display text-xl font-semibold leading-snug md:text-2xl"
+                  style={{ fontVariationSettings: "'wdth' 92" }}
+                >
+                  {x.short}
+                </span>
+                <span className="flex items-center gap-2 text-sm font-medium text-ink-muted">
+                  {st.won ? (
+                    <span className="inline-flex items-center gap-1 text-clay-ink">
+                      <Check className="size-3.5" /> Mastered
+                    </span>
+                  ) : (
+                    drill[x.id]?.asked ? <span className="hidden sm:inline">{st.label}</span> : null
+                  )}
+                  <ArrowRight className="size-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100" />
+                </span>
+              </a>
+            </li>
+          );
+        })}
+        <li className="flex items-center justify-between gap-3 py-2 pl-2 text-sm text-ink-muted">
+          <a href={studyHref("#practice/drill/mock")} className="inline-flex min-h-11 items-center gap-2 hover:text-ink">
+            Mock test, 20 questions <ArrowRight className="size-4" aria-hidden />
+          </a>
+          <span className="tabular">
+            {won} of {TOPICS.length} mastered
+          </span>
+        </li>
+      </ol>
+
+      <div className="hidden lg:col-span-5 lg:block">
+        <div className="sticky top-24 min-h-[440px] rounded-stage bg-sand p-8">
+          <AnimatePresence mode="wait">
+            <Preview t={t} stat={drill[t.id]} />
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}

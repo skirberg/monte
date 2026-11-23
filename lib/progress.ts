@@ -1,0 +1,419 @@
+"use client";
+
+/**
+ * One progress store for the whole site, saved in this browser only (no accounts).
+ *
+ * - XP rewards learning actions (a right answer, a finished drill, a card you knew), never page views.
+ * - A daily goal and a streak, with a freeze earned every 7 days so one missed day does not wipe it.
+ * - Monte chips: a play bankroll the games pay out from. Chips reward being well calibrated, not lucky,
+ *   and are never money.
+ * - Badges for real milestones.
+ *
+ * This is the only streak on the site: the study app, the games and /decide/ all move it by earning XP.
+ *
+ * Anything (study pages via lib/study/events.ts, games, /decide/) can award XP by dispatching
+ * `window.dispatchEvent(new CustomEvent("monte:xp", { detail: { xp, reason } }))`;
+ * <ProgressBridge /> listens and calls addXp. Every change fires "monte:progress".
+ */
+
+import * as React from "react";
+import { mergeMem } from "@/lib/study/memory";
+
+const KEY = "monte-progress";
+export const DAILY_GOAL = 50;
+export const START_CHIPS = 1000;
+/** Learning pays chips, so the games are fuelled by studying: XP measures learning and can't be spent; chips can. */
+export const CHIPS_FOR = { goal: 100, level: 250, badge: 100 };
+
+export type Progress = {
+  xp: number;
+  days: Record<string, number>;
+  streak: number;
+  lastDay: string | null;
+  freezes: number;
+  chips: number;
+  badges: string[];
+  counts: Record<string, number>;
+};
+
+export type ProgressEvent = { gained?: number; reason?: string; levelUp?: number; goalHit?: boolean; badge?: string; chips?: number };
+
+export const BADGES: Record<string, { name: string; how: string }> = {
+  "first-drill": { name: "First drill", how: "Finish a drill." },
+  "topic-won": { name: "Topic mastered", how: "Score 80% on an 8-question topic drill." },
+  expert: { name: "Expert", how: "Pass an Expert set: 10 questions in 6 minutes, 9 right." },
+  "all-topics": { name: "Every topic", how: "Master all 14 topics." },
+  "mock-pass": { name: "Test ready", how: "Score 80% on a mock test." },
+  "cards-50": { name: "Card shark", how: "Master 50 flashcards." },
+  "streak-7": { name: "Seven days", how: "Keep a 7-day streak." },
+  "goal-hit": { name: "Daily goal", how: `Earn ${DAILY_GOAL} XP in a day.` },
+  "calibrated": { name: "Well calibrated", how: "Finish 10 election calls with a Brier score under 0.2." },
+  "high-roller": { name: "High roller", how: `Grow your chips to ${(START_CHIPS * 2).toLocaleString()}.` },
+};
+
+/** Level n starts at 50·n·(n − 1) XP: 0, 100, 300, 600, 1,000 … each level a little longer than the last. */
+export function levelOf(xp: number) {
+  let n = 1;
+  while (50 * (n + 1) * n <= xp) n++;
+  const start = 50 * n * (n - 1);
+  const next = 50 * (n + 1) * n;
+  return { level: n, into: xp - start, span: next - start };
+}
+
+/** Local calendar day as YYYY-MM-DD, built by hand so no locale can change the format. */
+export function localDay(t = Date.now()) {
+  const d = new Date(t);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+/** The local day `by` calendar days from `t` (−1 is yesterday). Calendar arithmetic, so a 23- or
+ *  25-hour day at a clock change never skips or repeats a date. */
+export function shiftDay(t: number, by: number) {
+  const d = new Date(t);
+  d.setDate(d.getDate() + by);
+  return localDay(d.getTime());
+}
+const today = () => localDay();
+/** Whole days from a to b. Date-only strings parse as UTC midnight, so clock changes can't bend it. */
+const dayDiff = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+
+/** The streak as it stands on `day`: still alive if the last learning day was today or yesterday,
+ *  or the missed days in between are covered by freezes. Otherwise it shows 0 until the next action. */
+export function liveStreak(p: Pick<Progress, "streak" | "lastDay" | "freezes">, day = today()) {
+  if (!p.lastDay) return 0;
+  const gap = dayDiff(p.lastDay, day);
+  return gap <= 1 || gap - 1 <= p.freezes ? p.streak : 0;
+}
+
+function blank(): Progress {
+  return { xp: 0, days: {}, streak: 0, lastDay: null, freezes: 0, chips: START_CHIPS, badges: [], counts: {} };
+}
+
+const finiteOr = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? v : d);
+const rec = <T,>(v: unknown) => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, T>) : {});
+
+/**
+ * Every field checked for its type, so a stored or restored value of the wrong shape (a hand-edited backup, an old
+ * version) falls back to the default instead of crashing the header that reads it on every page.
+ */
+function normalize(x: unknown): Progress {
+  const o = rec<unknown>(x);
+  return {
+    xp: finiteOr(o.xp, 0),
+    days: Object.fromEntries(Object.entries(rec<unknown>(o.days)).filter(([, v]) => typeof v === "number" && Number.isFinite(v))) as Record<string, number>,
+    streak: finiteOr(o.streak, 0),
+    lastDay: typeof o.lastDay === "string" ? o.lastDay : null,
+    freezes: finiteOr(o.freezes, 0),
+    chips: finiteOr(o.chips, START_CHIPS),
+    badges: Array.isArray(o.badges) ? o.badges.filter((b): b is string => typeof b === "string") : [],
+    counts: Object.fromEntries(Object.entries(rec<unknown>(o.counts)).filter(([, v]) => typeof v === "number" && Number.isFinite(v))) as Record<string, number>,
+  };
+}
+
+export function getProgress(): Progress {
+  if (typeof window === "undefined") return blank();
+  try {
+    const raw = localStorage.getItem(KEY);
+    return raw ? normalize(JSON.parse(raw)) : blank();
+  } catch {
+    return blank();
+  }
+}
+
+function save(p: Progress, ev: ProgressEvent) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(p));
+  } catch {}
+  window.dispatchEvent(new CustomEvent<ProgressEvent>("monte:progress", { detail: ev }));
+}
+
+function giveBadge(p: Progress, id: string, ev: ProgressEvent) {
+  if (!BADGES[id] || p.badges.includes(id)) return;
+  p.badges.push(id);
+  p.chips += CHIPS_FOR.badge;
+  ev.badge = ev.badge ?? id;
+}
+
+/** Add XP for a learning action. Also moves the streak and checks the daily goal and level. */
+export function addXp(amount: number, reason = "") {
+  const p = getProgress();
+  const d = today();
+  const ev: ProgressEvent = { gained: amount, reason };
+  const before = levelOf(p.xp).level;
+  const hadGoal = (p.days[d] ?? 0) >= DAILY_GOAL;
+
+  if (p.lastDay !== d) {
+    const gap = p.lastDay ? dayDiff(p.lastDay, d) : 1;
+    if (gap <= 0) {
+      // The clock moved back (travel, a changed setting): keep the streak as it is.
+    } else if (gap === 1) p.streak += 1;
+    else if (gap - 1 <= p.freezes) {
+      // Each freeze covers one missed day.
+      p.freezes -= gap - 1;
+      p.streak += 1;
+    } else p.streak = 1;
+    if (gap > 0) {
+      p.lastDay = d;
+      // Only on a new day: a moved-back clock must not earn a freeze on every award that day.
+      if (p.streak > 0 && p.streak % 7 === 0) p.freezes = Math.min(2, p.freezes + 1);
+      if (p.streak >= 7) giveBadge(p, "streak-7", ev);
+    }
+  }
+
+  p.xp += amount;
+  p.days[d] = (p.days[d] ?? 0) + amount;
+  const after = levelOf(p.xp).level;
+  if (after > before) {
+    ev.levelUp = after;
+    p.chips += CHIPS_FOR.level * (after - before);
+  }
+  if (!hadGoal && p.days[d] >= DAILY_GOAL) {
+    ev.goalHit = true;
+    p.chips += CHIPS_FOR.goal;
+    giveBadge(p, "goal-hit", ev);
+  }
+  save(p, ev);
+}
+
+export function unlockBadge(id: string) {
+  const p = getProgress();
+  const ev: ProgressEvent = {};
+  giveBadge(p, id, ev);
+  if (ev.badge) save(p, ev);
+}
+
+/** Change the chip balance (never below 0) and return the new balance. */
+export function addChips(delta: number, reason = "") {
+  const p = getProgress();
+  p.chips = Math.max(0, Math.round(p.chips + delta));
+  const ev: ProgressEvent = { chips: delta, reason };
+  if (p.chips >= START_CHIPS * 2) giveBadge(p, "high-roller", ev);
+  save(p, ev);
+  return p.chips;
+}
+
+/** Out of chips? One refill a day back to the starting stack. */
+export function refillChips() {
+  const p = getProgress();
+  const d = today();
+  if (p.chips > 0 || p.counts[`refill:${d}`]) return false;
+  p.counts[`refill:${d}`] = 1;
+  p.chips = START_CHIPS;
+  save(p, { chips: START_CHIPS, reason: "refill" });
+  return true;
+}
+
+/** Live progress for React components. Null until mounted, so server HTML never depends on storage. */
+export function useProgress() {
+  const [p, setP] = React.useState<Progress | null>(null);
+  React.useEffect(() => {
+    const read = () => setP(getProgress());
+    read();
+    window.addEventListener("monte:progress", read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener("monte:progress", read);
+      window.removeEventListener("storage", read);
+    };
+  }, []);
+  return p;
+}
+
+/**
+ * Asks the browser to keep Monte's saved progress instead of clearing it under storage pressure (Safari clears
+ * script-written storage after weeks without a visit). Asked once something is worth keeping: the first badge.
+ */
+export function keepStorage() {
+  try {
+    void navigator.storage?.persisted().then((kept) => kept || navigator.storage.persist());
+  } catch {}
+}
+
+// ---------- Backup and move: progress lives in this browser, so let people carry it.
+/** Every key Monte writes: progress, study progress and preferences, the games' bests and history. */
+const KEYS = [KEY, "sigma", "sigmaTopic", "sigmaQuiz", "sigmaUntimed", "sigmaMode", "sigmaGuessR", "monteElectionCalls", "monteElectionStreak", "monte-start", "monteStartRun", "monte-drawit", "monte-daily", "monte-shuffle"];
+/** Keys made per tool, found by prefix (monte-decide:<tool> holds the day its XP was last paid). */
+const PREFIXES = ["monte-decide:"];
+export const isMonteKey = (k: string) => KEYS.includes(k) || PREFIXES.some((p) => k.startsWith(p));
+
+function monteKeys() {
+  const out = new Set(KEYS);
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && isMonteKey(k)) out.add(k);
+    }
+  } catch {}
+  return [...out];
+}
+
+/** Everything Monte saved in this browser, as one short code to paste on another device.
+ *  Version 2 keeps each value as the exact string stored, so plain strings (a topic id, a date) survive. */
+export function exportProgress() {
+  const data: Record<string, string> = {};
+  for (const k of monteKeys()) {
+    try {
+      const v = localStorage.getItem(k);
+      if (v != null) data[k] = v;
+    } catch {}
+  }
+  const json = JSON.stringify({ app: "monte", v: 2, at: new Date().toISOString(), data });
+  return btoa(unescape(encodeURIComponent(json)));
+}
+
+// ---------- Restoring onto a browser that already has progress: keep the best of both, never lose either side.
+type Json = Record<string, unknown>;
+const num = (x: unknown) => (typeof x === "number" && Number.isFinite(x) ? x : 0);
+const asObj = (x: unknown): Json => (x && typeof x === "object" && !Array.isArray(x) ? (x as Json) : {});
+/** Per key, the larger number. */
+const maxEach = (a: unknown, b: unknown) => {
+  const out: Record<string, number> = {};
+  for (const [k, v] of [...Object.entries(asObj(a)), ...Object.entries(asObj(b))]) out[k] = Math.max(out[k] ?? 0, num(v));
+  return out;
+};
+
+/** XP and chips are totals, not events, so the larger side wins; badges and days combine. */
+export function mergeProgress(a: Json, b: Json): Json {
+  const later = String(b.lastDay ?? "") > String(a.lastDay ?? "") ? b : a;
+  return {
+    ...a,
+    ...b,
+    xp: Math.max(num(a.xp), num(b.xp)),
+    days: maxEach(a.days, b.days),
+    streak: num(later.streak),
+    lastDay: later.lastDay ?? null,
+    freezes: Math.max(num(a.freezes), num(b.freezes)),
+    chips: Math.max(num(a.chips), num(b.chips)),
+    badges: [...new Set([...(Array.isArray(a.badges) ? a.badges : []), ...(Array.isArray(b.badges) ? b.badges : [])])],
+    counts: maxEach(a.counts, b.counts),
+  };
+}
+
+/** Both due lists, kept: each topic appears as many times as it does in whichever list has more of it. */
+function mergeDue(a: unknown[], b: unknown[]) {
+  const out = a.slice();
+  const left = [...a];
+  for (const x of b) {
+    const i = left.indexOf(x);
+    if (i >= 0) left.splice(i, 1);
+    else out.push(x);
+  }
+  return out.slice(-40);
+}
+
+/** Study progress (the `sigma` key): per topic the side with more answered, best scores and boxes kept. */
+/** Per key, the later of two YYYY-MM-DD dates. */
+function latestEach(a: unknown, b: unknown) {
+  const out: Record<string, string> = { ...(asObj(a) as Record<string, string>) };
+  for (const [k, v] of Object.entries(asObj(b))) if (String(v) > String(out[k] ?? "")) out[k] = String(v);
+  return out;
+}
+
+export function mergeStudy(a: Json, b: Json): Json {
+  const drill: Json = {};
+  for (const id of new Set([...Object.keys(asObj(a.drill)), ...Object.keys(asObj(b.drill))])) {
+    const x = asObj(asObj(a.drill)[id]), y = asObj(asObj(b.drill)[id]);
+    const top = x.top === undefined && y.top === undefined ? {} : { top: Math.max(num(x.top), num(y.top)) };
+    drill[id] = { ...(num(y.asked) > num(x.asked) ? y : x), best: Math.max(num(x.best), num(y.best)), ...top };
+  }
+  const due = (x: unknown) => (Array.isArray(x) ? x : []);
+  const cardXp: Record<string, string> = { ...(asObj(a.cardXp) as Record<string, string>) };
+  for (const [k, v] of Object.entries(asObj(b.cardXp))) if (String(v) > String(cardXp[k] ?? "")) cardXp[k] = String(v);
+  return {
+    ...a,
+    ...b,
+    drill,
+    due: mergeDue(due(a.due), due(b.due)),
+    mock: Math.max(num(a.mock), num(b.mock)),
+    math: maxEach(a.math, b.math),
+    cards: maxEach(a.cards, b.cards),
+    mem: mergeMem(a.mem, b.mem),
+    cardXp,
+    read: { ...asObj(a.read), ...asObj(b.read) },
+    lessons: { ...asObj(a.lessons), ...asObj(b.lessons) },
+    expert: { ...asObj(a.expert), ...asObj(b.expert) },
+    seen: latestEach(a.seen, b.seen),
+    // The first try on a day is the one that counts, so a day already played here keeps its score.
+    daily: { ...asObj(b.daily), ...asObj(a.daily) },
+    hw: { ...asObj(a.hw), ...asObj(b.hw) },
+  };
+}
+
+/** The day before a YYYY-MM-DD date. Date-only strings parse as UTC midnight, so clock changes can't bend it. */
+const prevDay = (day: string) => new Date(Date.parse(day) - 864e5).toISOString().slice(0, 10);
+
+/**
+ * The daily chart's store (`monte-daily`, shaped as in lib/play/daily.ts) from two copies: every day either one
+ * played, with this browser's result where both played the same day (the first try counts), and the streak the
+ * combined days show. Only two weeks of days are kept, so a longer streak a copy saved for the same last day wins.
+ * Written here, not in lib/play/daily.ts, so restoring progress never loads the chart data.
+ */
+export function mergeDaily(a: Json, b: Json): Json {
+  const days: Json = { ...asObj(b.days), ...asObj(a.days) };
+  const lastOf = (s: Json) => (typeof s.last === "string" ? s.last : "");
+  const last = [lastOf(a), lastOf(b)].sort().pop() || null;
+  let run = 0;
+  if (last) for (let d = last; days[d]; d = prevDay(d)) run++;
+  const saved = [a, b].filter((s) => last !== null && lastOf(s) === last).map((s) => num(s.streak));
+  const streak = Math.max(run, ...saved);
+  const kept = Object.keys(days).sort().slice(-14);
+  return { streak, best: Math.max(num(a.best), num(b.best), streak), last, days: Object.fromEntries(kept.map((k) => [k, days[k]])) };
+}
+
+// The Shuffle's store (`monte-shuffle`) has the daily chart's shape, so it merges the same way.
+const MERGE: Partial<Record<string, (a: Json, b: Json) => Json>> = { [KEY]: mergeProgress, sigma: mergeStudy, "monte-daily": mergeDaily, "monte-shuffle": mergeDaily };
+/** Merges a restored value into this browser's. When either side can't be read, the readable one wins, so a bad code never overwrites good local progress. */
+function mergeJson(local: string, incoming: string, merge: (a: Json, b: Json) => Json) {
+  const parse = (s: string) => {
+    try {
+      const v = JSON.parse(s);
+      return v && typeof v === "object" && !Array.isArray(v) ? (v as Json) : null;
+    } catch {
+      return null;
+    }
+  };
+  const a = parse(local), b = parse(incoming);
+  if (a && b) return JSON.stringify(merge(a, b));
+  return a ? local : incoming;
+}
+
+/** Restore from a code or a backup file's text. Returns false if it isn't a Monte backup.
+ *  Only Monte's own keys are written. Progress already in this browser is merged with the code's, not replaced. Version 1 codes held parsed JSON, so their values are re-encoded. */
+type Code = { app?: string; v?: number; data?: Record<string, unknown> };
+/** A pasted code, read but not applied; null when it isn't a Monte backup. */
+function readCode(text: string): Code | null {
+  const raw = text.trim();
+  let obj: Code | null = null;
+  try {
+    obj = JSON.parse(raw.startsWith("{") ? raw : decodeURIComponent(escape(atob(raw))));
+  } catch {
+    return null;
+  }
+  return obj && obj.app === "monte" && obj.data && typeof obj.data === "object" ? obj : null;
+}
+/** Whether a pasted code is a Monte backup, so the page can say so before asking to merge it. */
+export const isProgressCode = (text: string) => readCode(text) !== null;
+
+export function importProgress(text: string) {
+  const obj = readCode(text);
+  if (!obj || !obj.data) return false;
+  const asIs = (obj.v ?? 1) >= 2;
+  for (const [k, v] of Object.entries(obj.data)) {
+    if (!isMonteKey(k) || v === undefined) continue;
+    try {
+      const incoming = asIs && typeof v === "string" ? v : JSON.stringify(v);
+      const merge = MERGE[k], local = localStorage.getItem(k);
+      localStorage.setItem(k, merge && local ? mergeJson(local, incoming, merge) : incoming);
+    } catch {}
+  }
+  window.dispatchEvent(new CustomEvent("monte:progress", { detail: {} }));
+  return true;
+}
+
+/** What to say when a milestone lands, for the toast and screen readers. Empty when nothing did. */
+export function milestoneText(ev: ProgressEvent) {
+  const parts: string[] = [];
+  if (ev.levelUp) parts.push(`Level ${ev.levelUp} reached.`);
+  if (ev.goalHit) parts.push("Daily goal done.");
+  if (ev.badge && !(ev.goalHit && ev.badge === "goal-hit")) parts.push(`Badge earned: ${BADGES[ev.badge]?.name ?? ev.badge}.`);
+  return parts.join(" ");
+}

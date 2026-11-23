@@ -1,0 +1,51 @@
+# Keeps the site's real numbers current with nobody checking in.
+# Twice a day it runs scripts/fetch-drawit.ts (the daily chart and What happens next?, from Tickerz's public history files).
+# If the data file changed, it commits it and pushes to main; that push starts the usual Vercel deploy.
+# Two schedules, twelve hours apart: GitHub starts scheduled workflows late under load and can drop a run. Every
+# 12:07 run from Nov 14 to Nov 19 2026 started 6 to 10 hours late, and Nov 20's had not started by 18:00 UTC.
+# With a second chance at 00:37, one late or lost run can't leave the site stale.
+# A run that finds no new numbers changes nothing, and the concurrency group below keeps two runs from overlapping.
+name: Refresh data
+
+on:
+  schedule:
+    - cron: "7 12 * * *" # about 12:00 UTC, off the hour, when GitHub's queue is busiest
+    - cron: "37 0 * * *" # about 00:30 UTC, the second chance
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  drawit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch the What happens next? series
+        run: npx tsx scripts/fetch-drawit.ts
+
+      - name: Commit and push if the numbers changed
+        run: |
+          if git diff --quiet -- lib/play/data/drawit.json; then
+            echo "No new numbers."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/play/data/drawit.json
+          git commit -m "Refresh real numbers"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

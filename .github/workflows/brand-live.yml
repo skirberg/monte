@@ -1,0 +1,39 @@
+name: Brand kit on the live site
+# After a push to main, waits for the deploy, then checks the live site against its own brand kit: every file in
+# /brand/kit.json (the kit, the app icons, the favicon, every share card) must be served unchanged, and every icon the
+# manifest and the pages name must be one of them. Also runs every Monday, so a stale icon or card cannot sit unseen.
+# Read-only: it only fetches public pages (scripts/check-kit.ts, which needs nothing but Node).
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 9 * * 1" # Mondays, about 09:23 UTC
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Wait for the deploy
+        if: github.event_name == 'push'
+        run: sleep 240
+
+      - name: Check every icon, share card and kit file against kit.json
+        run: |
+          # A fresh deploy can take a few more minutes to reach every edge: try three times.
+          for i in 1 2 3; do
+            node scripts/check-kit.ts https://monte.markets && exit 0
+            sleep 120
+          done
+          exit 1

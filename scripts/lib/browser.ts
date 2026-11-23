@@ -1,0 +1,133 @@
+// Shared by qa.ts, shots.ts and smoke.ts: a static server for out/ (trailing-slash routes resolve to
+// index.html) and headless Chrome driven over the DevTools protocol in real time.
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
+import { spawn } from "node:child_process";
+import { rmSync } from "node:fs";
+import { mkdtemp, readFile, stat } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { extname, join, normalize } from "node:path";
+
+export const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+const TYPES: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".txt": "text/plain", ".md": "text/markdown; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".woff2": "font/woff2", ".webmanifest": "application/manifest+json", ".xml": "application/xml" };
+
+export async function serve(dir = join(process.cwd(), "out")) {
+  const server = createServer(async (req, res) => {
+    const clean = normalize(decodeURIComponent((req.url ?? "/").split("?")[0])).replace(/^(\.\.[/\\])+/, "");
+    const file = join(dir, clean.endsWith("/") ? `${clean}index.html` : clean);
+    try {
+      if (!(await stat(file)).isFile()) throw 0;
+    } catch {
+      res.writeHead(404, { "content-type": "text/html" });
+      res.end(await readFile(join(dir, "404.html")).catch(() => "Not found"));
+      return;
+    }
+    res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
+    res.end(await readFile(file));
+  });
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+  return { url: `http://127.0.0.1:${(server.address() as AddressInfo).port}`, close: () => server.close() };
+}
+
+/** A DevTools protocol message: a reply to a call (id) or an event (method). */
+export type CdpMessage = { id?: number; method?: string; params?: Record<string, unknown>; result?: Record<string, unknown>; error?: { message: string } };
+type EvalResult = { result: { value: unknown }; exceptionDetails?: { text: string; exception?: { description?: string } } };
+
+export async function launch() {
+  const profile = await mkdtemp(join(tmpdir(), "monte-chrome-"));
+  const chrome = spawn(process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", [
+    "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "--no-first-run", "--hide-scrollbars", "--mute-audio",
+    "--disable-background-timer-throttling", "--disable-renderer-backgrounding", "--disable-backgrounding-occluded-windows",
+    // Containers and CI often run as root, where Chrome will not start without this.
+    ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []),
+    "about:blank",
+  ], { stdio: ["ignore", "ignore", "pipe"] });
+  // Keep the end of Chrome's error output, so a failed start says why.
+  let errTail = "";
+  chrome.stderr?.on("data", (d: Buffer) => (errTail = (errTail + d.toString()).slice(-2000)));
+  let exited: number | null = null;
+  chrome.once("exit", (code) => (exited = code ?? -1));
+  // A missing or unrunnable binary: report it rather than crash on an unhandled error.
+  chrome.once("error", (e) => {
+    errTail += String(e);
+    exited = -1;
+  });
+  // A cold start on a busy CI runner can take well over 15 s, so wait up to a minute, but stop at once if Chrome exits.
+  let port: string | null = null;
+  for (let i = 0; i < 240 && !port && exited === null; i++) {
+    port = await readFile(join(profile, "DevToolsActivePort"), "utf8").then((t) => t.split("\n")[0]).catch(() => null);
+    if (!port) await sleep(250);
+  }
+  if (!port) {
+    chrome.kill();
+    throw new Error(`Chrome did not start (${exited === null ? "no debugging port after 60 s" : `it exited with code ${exited}`}).${errTail ? `\nChrome said:\n${errTail.trim()}` : ""}`);
+  }
+  const targets = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()) as { type: string; webSocketDebuggerUrl: string }[];
+  const target = targets.find((t) => t.type === "page")!;
+  const ws = new WebSocket(target.webSocketDebuggerUrl);
+  await new Promise((r) => (ws.onopen = r));
+  let seq = 0;
+  const pending = new Map<number, (m: CdpMessage) => void>();
+  const listeners = new Set<(m: CdpMessage) => void>();
+  ws.onmessage = (e: MessageEvent<string>) => {
+    const m = JSON.parse(e.data) as CdpMessage;
+    if (m.id && pending.has(m.id)) { pending.get(m.id)!(m); pending.delete(m.id); return; }
+    for (const fn of listeners) fn(m);
+  };
+  const send = <T = Record<string, unknown>>(method: string, params: Record<string, unknown> = {}) => new Promise<T>((resolve, reject) => {
+    const id = ++seq;
+    pending.set(id, (m) => (m.error ? reject(new Error(`${method}: ${m.error.message}`)) : resolve(m.result as T)));
+    ws.send(JSON.stringify({ id, method, params }));
+  });
+  await Promise.all([send("Page.enable"), send("Runtime.enable")]);
+  await send("Emulation.setFocusEmulationEnabled", { enabled: true });
+  const page = {
+    send,
+    on: (fn: (m: CdpMessage) => void) => listeners.add(fn),
+    // The caller states what the expression returns; the browser cannot check it.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    eval: async <T = any>(expression: string): Promise<T> => {
+      const r = await send<EvalResult>("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
+      if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description ?? r.exceptionDetails.text);
+      return r.result.value as T;
+    },
+    size: (width: number, height: number, { mobile = false, dpr = 1 } = {}) => send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: dpr, mobile }),
+    media: ({ scheme = "light", reduce = false } = {}) => send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: scheme }, { name: "prefers-reduced-motion", value: reduce ? "reduce" : "no-preference" }] }),
+    go: async (url: string, settle = 900) => {
+      // A hash-only change (/study/#a to /study/#b) navigates within the document and never fires
+      // loadEventFired, so accept either event, with a timeout as a backstop.
+      let fn: (m: CdpMessage) => void = () => {};
+      const loaded = new Promise<void>((r) => {
+        fn = (m) => { if (m.method === "Page.loadEventFired" || m.method === "Page.navigatedWithinDocument") r(); };
+        listeners.add(fn);
+      });
+      await send("Page.navigate", { url });
+      await Promise.race([loaded, sleep(15000)]);
+      listeners.delete(fn);
+      await sleep(settle);
+    },
+    png: async ({ full = false } = {}) => Buffer.from((await send<{ data: string }>("Page.captureScreenshot", { format: "png", captureBeyondViewport: full })).data, "base64"),
+  };
+  // Remove the throwaway profile once Chrome has exited; each one is about 60 MB.
+  // Chrome can still be writing as it exits; retry briefly, and never fail a run over cleanup.
+  const cleanup = () => {
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      // Cleanup is best effort.
+    }
+  };
+  return { page, close: () => { ws.close(); chrome.once("exit", cleanup); process.once("exit", cleanup); chrome.kill(); } };
+}
+
+// Every route worth checking.
+export const ROUTES = [
+  "/", "/study/", "/learn/", "/learn/data/", "/learn/normal/", "/learn/clt/", "/learn/test/",
+  "/learn/formulas/", "/learn/frameworks/", "/learn/start/", "/learn/terms/", "/practice/cards/",
+  "/practice/drill/", "/practice/math/", "/solve/tree/", "/solve/normal/", "/solve/samp/", "/solve/test/", "/solve/data/",
+  "/tools/excel/", "/tools/sql/", "/sources/",
+  "/play/", "/play/correlation/", "/play/monty-hall/", "/play/fake-coin/", "/play/serve/", "/play/house-edge/", "/play/odds/",
+  "/play/ab-test/", "/play/long-run/", "/play/options/", "/play/election/", "/story/", "/decide/",
+  "/decide/choose/", "/decide/warranty/", "/decide/bet/", "/decide/market/", "/decide/option/", "/decide/bayes/", "/decide/abtest/", "/decide/goal/", "/decide/staffing/",
+  "/built/", "/about/", "/daily/", "/shuffle/", "/privacy/", "/terms/", "/brand/", "/missing-page/",
+];

@@ -1,0 +1,29 @@
+/* Monte colour tokens (https://monte.markets/brand/). Light is the day court, dark the night session. */
+:root {
+  --clay: #cd5811; /* oklch(0.6 0.165 45) */
+  --clay-ink: #a63d02; /* oklch(0.5 0.15 42) */
+  --ink: #1b1511; /* oklch(0.2 0.012 50) */
+  --paper: #faf6f1; /* oklch(0.975 0.008 75) */
+  --sand: #f3ece1; /* oklch(0.945 0.016 75) */
+  --sand-2: #ece1d5; /* oklch(0.915 0.02 72) */
+  --ink-muted: #625952; /* oklch(0.47 0.016 55) */
+  --line: #dbd3c9; /* oklch(0.87 0.016 70) */
+  --line-strong: #90847a; /* oklch(0.62 0.02 60) */
+  --clay-tint: #fbe5d6; /* oklch(0.935 0.032 55) */
+  --danger: #b7162d; /* oklch(0.5 0.19 22) */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --clay: #ef8448; /* oklch(0.72 0.15 48) */
+    --clay-ink: #fa9d68; /* oklch(0.78 0.13 50) */
+    --ink: #f2eee7; /* oklch(0.95 0.01 75) */
+    --paper: #130e0c; /* oklch(0.17 0.01 50) */
+    --sand: #1e1815; /* oklch(0.215 0.012 50) */
+    --sand-2: #29211d; /* oklch(0.255 0.014 50) */
+    --ink-muted: #beb6ad; /* oklch(0.78 0.015 70) */
+    --line: #38312d; /* oklch(0.32 0.012 55) */
+    --line-strong: #6a615b; /* oklch(0.5 0.015 60) */
+    --clay-tint: #402315; /* oklch(0.29 0.05 45) */
+    --danger: #ff9492; /* oklch(0.78 0.13 22) */
+  }
+}

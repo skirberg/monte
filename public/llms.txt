@@ -1,0 +1,201 @@
+# Monte
+
+> Monte (https://monte.markets) is a free site for learning business statistics, one idea at a time. Fourteen topics from data and sampling to multiple regression, each with a plain explanation, a worked example, an interactive lab and timed drills. Games teach the same ideas with real data, and every formula is on one sheet with a worked example.
+
+The lesson content is also published as static JSON (no key needed). CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): reuse it with credit to monte.markets. Code: MIT. Updated 2026-11-19.
+
+Each content page (the home page, every topic and lesson, the formula sheet, the glossary, every decision, game and solver) is also plain Markdown at its path without the trailing slash, plus .md: /learn/normal/ is /learn/normal.md and the home page is /index.md. Each page names its twin with `<link rel="alternate" type="text/markdown">`, and the lists below link to the twins.
+
+## Start here
+
+- [Home](https://monte.markets/index.md): what the site is and where to begin
+- [Study](https://monte.markets/study/): learn, practice and solve, with progress kept in the browser
+- [All topics](https://monte.markets/learn/): the fourteen topics in teaching order
+- [Formula sheet](https://monte.markets/learn/formulas.md): every formula with a worked example
+- [Glossary](https://monte.markets/learn/terms.md): terms in plain words, each with an example
+- [The Shuffle](https://monte.markets/shuffle/): one statistics question a day under three cups, the same for everyone: follow the right answer through the shuffle, then see the work
+- [Daily chart](https://monte.markets/daily/): one real chart a day, the same for everyone: draw what happens next, then see the real line
+- [Play](https://monte.markets/play/): games that each hide one statistics idea
+- [Why statistics](https://monte.markets/story/): the case for learning it
+- [About](https://monte.markets/about/): where Monte began, what it promises and who makes it
+- [How it's built](https://monte.markets/built/): the stack, the data sources, the math and the credits
+
+## Topics
+
+- [Data and sampling](https://monte.markets/learn/data.md): Statistics is using data to make a decision. You can't check everyone, so you check a slice (the sample) and let it speak for the whole group (the population).
+- [Where is the middle](https://monte.markets/learn/center.md): Mean is the average. Median is the middle once sorted. Mode is the most common.
+- [How spread out is it](https://monte.markets/learn/spread.md): Range is biggest minus smallest. Standard deviation is the typical distance from the average; in finance, risk.
+- [Probability rules](https://monte.markets/learn/prob.md): Or: add, then subtract the overlap. And: multiply. Given: count only inside what you were told.
+- [Random variables and expected value](https://monte.markets/learn/rv.md): A random variable is a number that depends on chance. Its expected value is the long-run average, weighted by probability.
+- [Two variables: covariance, correlation, portfolios](https://monte.markets/learn/two.md): Covariance asks whether two things move together. Correlation rescales it from −1 to +1.
+- [Counting and the binomial](https://monte.markets/learn/count.md): Repeat a yes-or-no try n independent times with the same chance p: the count of yeses is binomial, mean np, variance np(1 − p).
+- [Poisson: counts per unit](https://monte.markets/learn/poisson.md): Poisson counts events in a fixed window when they arrive independently at a steady average rate λ.
+- [The normal curve and z](https://monte.markets/learn/normal.md): The normal is the bell. Measure in SDs from the mean, z = (y − μ) / σ, and any normal becomes the standard one.
+- [Sampling distributions and the CLT](https://monte.markets/learn/clt.md): Sample means have their own distribution. The Central Limit Theorem says it is near normal for big n, centered on μ, with spread σ / √n (the standard error).
+- [Confidence intervals and sample size](https://monte.markets/learn/ci.md): A confidence interval is your estimate plus or minus a margin: estimate ± critical value × standard error.
+- [Hypothesis tests](https://monte.markets/learn/test.md): A hypothesis test asks: would this data be surprising if nothing were going on?
+- [Simple regression](https://monte.markets/learn/reg.md): Regression fits the line with the smallest squared misses. Slope: how much y moves per unit of x.
+- [Multiple regression](https://monte.markets/learn/mreg.md): Several x's. Each coefficient is one x's effect holding the others fixed.
+
+## Lessons
+
+- [Data and sampling: The pot and the spoonful](https://monte.markets/learn/data/population-and-sample.md): The population is everyone the question is about. The sample is the part you actually measure.
+- [Data and sampling: Describe or infer](https://monte.markets/learn/data/describe-or-infer.md): Describing summarizes the data you have. Inferring uses a sample to say something about a bigger group you didn't fully see.
+- [Data and sampling: Fair picks](https://monte.markets/learn/data/random-sampling.md): A simple random sample gives everyone the same chance of being chosen.
+- [Data and sampling: Bigger isn't fairer](https://monte.markets/learn/data/bias.md): Bias is a sample that leans one way every time. More data from the same leaning source doesn't fix it. That's why a careful 1,000 beats a careless 80,000.
+- [Data and sampling: Labels and numbers](https://monte.markets/learn/data/kinds-of-data.md): Qualitative data are labels (zip code, team, color). Quantitative data are real amounts (price, height, minutes).
+- [Where is the middle: The mean is a balance point](https://monte.markets/learn/center/the-mean.md): The mean adds every value and divides by how many there are. Think of it as the balance point: put the values on a seesaw and the mean is where it balances.
+- [Where is the middle: The median is the middle person](https://monte.markets/learn/center/the-median.md): Sort the values. With an odd count, the median is the middle one. With an even count, it's the average of the two middle ones. Duplicates stay in the list.
+- [Where is the middle: One extreme value](https://monte.markets/learn/center/outliers.md): The median is resistant: extreme values barely move it. The mean is not. That's why house prices and incomes are usually reported as medians.
+- [Where is the middle: The mean chases the tail](https://monte.markets/learn/center/skew.md): Skew is a long tail on one side. In right-skewed data (income, house prices, wait times) the mean sits above the median. In left-skewed data it sits below.
+- [Where is the middle: The most common value](https://monte.markets/learn/center/mode.md): The mode is the most common value. It's the only center that works for labels, like the most popular color or flavor.
+- [How spread out is it: Same average, different ride](https://monte.markets/learn/spread/why-spread.md): The center says where the data sit. Spread says how far they wander. Two data sets can share a mean and feel completely different.
+- [How spread out is it: The range sees only the ends](https://monte.markets/learn/spread/range.md): The range is the largest value minus the smallest. It's quick, but it only looks at two values and ignores everything between them. The range is a first look.
+- [How spread out is it: The typical distance from the mean](https://monte.markets/learn/spread/standard-deviation.md): The standard deviation is the typical distance of a value from the mean.
+- [How spread out is it: Why a sample divides by n − 1](https://monte.markets/learn/spread/n-minus-one.md): The sample mean sits as close as possible to its own data, closer than the true mean does. So gaps measured from it come out a little small.
+- [How spread out is it: How many SDs away](https://monte.markets/learn/spread/z-scores.md): A z-score counts how many SDs a value is from the mean: z = (value − mean) ÷ SD. Positive is above the mean, negative below.
+- [Probability rules: A long-run share](https://monte.markets/learn/prob/what-probability-is.md): A probability is a number from 0 (never) to 1 (certain): the share of times an event happens if you could repeat the situation many times.
+- [Probability rules: Either one: don't count the overlap twice](https://monte.markets/learn/prob/or.md): Addition rule: P(A or B) = P(A) + P(B) − P(A and B). If A and B can't happen together (mutually exclusive), the overlap is 0 and you just add.
+- [Probability rules: Both happen: multiply](https://monte.markets/learn/prob/and.md): Multiplication rule: P(A and B) = P(A) × P(B given A). If A doesn't change the chances for B (independent), that's just P(A) × P(B). And means multiply.
+- [Probability rules: Given: shrink the world](https://monte.markets/learn/prob/given.md): Conditional probability P(A given B) means: only look at cases where B happened, and ask how often A happens there. P(A | B) = P(A and B) ÷ P(B).
+- [Probability rules: Independent or exclusive](https://monte.markets/learn/prob/independent.md): Independent means knowing one tells you nothing about the other: P(A and B) = P(A) × P(B). Mutually exclusive means they can't happen together.
+- [Random variables: A number from chance](https://monte.markets/learn/rv/random-variable.md): A random variable turns an outcome into a number: the face of a die, sales next week, the return on a stock.
+- [Random variables: The long-run average](https://monte.markets/learn/rv/expected-value.md): The expected value is each value times its chance, added up: E(X) = Σ x · P(x). It's the long-run average per try.
+- [Random variables: Is the bet fair?](https://monte.markets/learn/rv/fair-bets.md): Expected profit is the expected payout minus the cost. Casinos and insurers price every bet so this is negative for you and positive for them.
+- [Random variables: How much it swings](https://monte.markets/learn/rv/spread-of-a-random-variable.md): The variance of a random variable is the expected squared gap from its mean: Σ (x − μ)² · P(x). The SD is its square root, and it measures risk.
+- [Random variables: Adding and multiplying](https://monte.markets/learn/rv/shifting-and-scaling.md): Adding a constant c shifts the mean by c and leaves the SD alone.
+- [Two variables and portfolios: Do they move together?](https://monte.markets/learn/two/covariance.md): Covariance says whether two variables move together (positive), in opposite directions (negative), or neither (near zero).
+- [Two variables and portfolios: Correlation: direction and strength](https://monte.markets/learn/two/correlation.md): Correlation r is covariance scaled by both SDs: r = Cov(X, Y) ÷ (σx · σy). It has no units and runs from −1 to 1. Near ±1, the points hug a straight line.
+- [Two variables and portfolios: Together isn't because](https://monte.markets/learn/two/not-causation.md): Correlation shows that two things move together. It doesn't show that one causes the other. A hidden third factor often drives both.
+- [Two variables and portfolios: Mixing two investments](https://monte.markets/learn/two/portfolio-return.md): A portfolio's expected return is the weighted average of the parts: E(bX + cY) = b·E(X) + c·E(Y). The weights are the shares of money.
+- [Two variables and portfolios: Why mixing lowers risk](https://monte.markets/learn/two/diversification.md): Portfolio variance is b²V(X) + c²V(Y) + 2bc·Cov(X, Y).
+- [Counting and the binomial: How many ways](https://monte.markets/learn/count/counting-orders.md): When a choice is made in stages, multiply the number of options at each stage. Arranging n different things in order has n! ways (n × (n − 1) × ... × 1).
+- [Counting and the binomial: Choosing a group](https://monte.markets/learn/count/choose.md): When order doesn't matter, use combinations: C(n, k) = n! ÷ (k!(n − k)!), the number of ways to choose k things from n. People say "n choose k".
+- [Counting and the binomial: When the binomial fits](https://monte.markets/learn/count/binomial-setup.md): A binomial count needs four things: a fixed number of trials n, two outcomes each time (success or not), the same chance p every time, and trials that don't…
+- [Counting and the binomial: Exactly k successes](https://monte.markets/learn/count/binomial-probability.md): P(exactly k) = C(n, k) · p^k · (1 − p)^(n − k). The C(n, k) counts the orders; the rest is the chance of any one order.
+- [Counting and the binomial: At least one: use the complement](https://monte.markets/learn/count/at-least-one.md): At least one is the opposite of none: P(at least one) = 1 − P(none). It's almost always faster than adding up 1, 2, 3 and so on.
+- [Poisson: Counting events in a window](https://monte.markets/learn/poisson/counts-per-unit.md): A Poisson count is the number of events in a fixed window of time or space when they happen independently at a steady average rate, λ (lambda).
+- [Poisson: Match λ to the window](https://monte.markets/learn/poisson/rescaling.md): Poisson rates scale with the window: twice as long, twice the λ. The most common mistake is using the rate for the wrong window.
+- [Poisson: The chance of exactly k](https://monte.markets/learn/poisson/poisson-probability.md): P(exactly k) = e^(−λ) · λ^k ÷ k!. For k = 0 that's just e^(−λ), the chance of none. The chance of none, e^(−λ), is the one to remember.
+- [Poisson: Mean and variance match](https://monte.markets/learn/poisson/mean-equals-variance.md): A Poisson count has mean λ and variance λ, so SD = √λ. If real counts vary much more than their mean, the Poisson model doesn't fit. Mean λ, SD √λ.
+- [Poisson: Poisson or binomial?](https://monte.markets/learn/poisson/poisson-or-binomial.md): Binomial: fixed number of trials, count the successes. Poisson: no fixed number, count events in a window.
+- [The normal curve: The bell shape](https://monte.markets/learn/normal/the-bell.md): The normal distribution is the bell curve. It's set by two numbers: the mean (where the peak is) and the SD (how wide it is).
+- [The normal curve: 68, 95, 99.7](https://monte.markets/learn/normal/68-95-997.md): For normal data, about 68% fall within 1 SD of the mean, 95% within 2 SDs, and 99.7% within 3 SDs. Split the leftover evenly between the two tails.
+- [The normal curve: From z to a probability](https://monte.markets/learn/normal/z-and-the-table.md): To get a normal probability, convert to z, then look up Φ(z), the share of the curve below z. Φ(0) = 0.5, Φ(1) ≈ 0.84, Φ(2) ≈ 0.977. Φ gives the share below.
+- [The normal curve: Above, below and between](https://monte.markets/learn/normal/above-and-between.md): Below z: Φ(z). Above z: 1 − Φ(z). Between a and b: Φ(b) − Φ(a). Below a negative z: Φ(−z) = 1 − Φ(z), by symmetry.
+- [The normal curve: Going backwards: from a share to a value](https://monte.markets/learn/normal/backwards.md): To find a value from a share: find the z that cuts off that share (for example z = 1.96 for the top 2.5%), then value = mean + z × SD.
+- [Sampling and the CLT: One value versus an average](https://monte.markets/learn/clt/one-versus-average.md): A sample mean has its own distribution, the sampling distribution.
+- [Sampling and the CLT: The standard error](https://monte.markets/learn/clt/standard-error.md): The SD of a sample mean is the standard error: SE = σ ÷ √n. It shrinks with the square root of n, not n itself.
+- [Sampling and the CLT: The Central Limit Theorem](https://monte.markets/learn/clt/the-clt.md): The Central Limit Theorem: averages (and sums) of many independent values are close to normal, even when the values themselves aren't.
+- [Sampling and the CLT: Chances for an average](https://monte.markets/learn/clt/probability-for-an-average.md): For a question about an average, use the standard error in the z-score: z = (x̄ − μ) ÷ (σ ÷ √n). Then look up Φ as usual. One value: divide by σ.
+- [Sampling and the CLT: Proportions are averages too](https://monte.markets/learn/clt/proportions.md): A sample proportion p̂ is an average of 1s and 0s, so the CLT applies. Its SE is √(p(1 − p) ÷ n).
+- [Confidence intervals: An estimate and its margin](https://monte.markets/learn/ci/estimate-plus-margin.md): A confidence interval is estimate ± margin of error. The margin is a critical value times the standard error: for 95%, about 1.96 × SE.
+- [Confidence intervals: What 95% means](https://monte.markets/learn/ci/what-95-means.md): Take many samples, build an interval from each, and about 95 in 100 will contain the true value. That's what 95% confidence means.
+- [Confidence intervals: What makes an interval narrow](https://monte.markets/learn/ci/width.md): Margin = critical value × σ ÷ √n. It gets narrower with a bigger n or a lower confidence level, and wider with noisier data. Quadrupling n halves it.
+- [Confidence intervals: How many do you need?](https://monte.markets/learn/ci/sample-size.md): Sample size for a mean: n = (z × σ ÷ E)², where E is the margin you want. For a proportion: n = z² × p(1 − p) ÷ E², using p = 0.5 if you have no guess.
+- [Confidence intervals: When σ is unknown](https://monte.markets/learn/ci/t-intervals.md): When σ is unknown, use s and a t critical value with n − 1 degrees of freedom: x̄ ± t × s ÷ √n.
+- [Hypothesis tests: Is it real or luck?](https://monte.markets/learn/test/the-question.md): A hypothesis test asks: if nothing were going on, how surprising would this data be? The "nothing going on" claim is the null hypothesis, H₀.
+- [Hypothesis tests: The p-value](https://monte.markets/learn/test/the-p-value.md): The p-value is the chance of data at least as extreme as yours, assuming H₀ is true.
+- [Hypothesis tests: Deciding with α](https://monte.markets/learn/test/alpha-and-decisions.md): α is the cutoff you choose in advance, often 0.05. If p ≤ α, reject H₀. If p > α, fail to reject.
+- [Hypothesis tests: Two ways to be wrong](https://monte.markets/learn/test/two-errors.md): Type I error: reject H₀ when it's true (a false alarm), with chance α. Type II error: fail to reject H₀ when it's false (a miss), with chance β.
+- [Hypothesis tests: The test statistic](https://monte.markets/learn/test/the-test-statistic.md): A test statistic measures how far the data are from H₀ in standard errors: z = (x̄ − μ₀) ÷ (σ ÷ √n).
+- [Simple regression: The line through the points](https://monte.markets/learn/reg/the-line.md): Simple regression fits a straight line ŷ = b₀ + b₁x through the data. b₀ is the intercept (the prediction at x = 0) and b₁ is the slope.
+- [Simple regression: Residuals: what the line misses](https://monte.markets/learn/reg/residuals.md): A residual is actual minus predicted: e = y − ŷ. Positive means the line guessed too low.
+- [Simple regression: R²: how much the line explains](https://monte.markets/learn/reg/r-squared.md): R² is the share of the variation in y that the line explains, from 0 to 1. In simple regression, R² = r², the correlation squared. R² = r² in simple regression.
+- [Simple regression: Regression isn't symmetric](https://monte.markets/learn/reg/not-symmetric.md): The correlation between x and y is the same both ways. Regression lines aren't. Decide what you're predicting, and put it on the y side.
+- [Simple regression: Stay inside your data](https://monte.markets/learn/reg/extrapolation.md): Extrapolation means predicting outside the range of x you have data for. The pattern may change out there, so the prediction can be wildly wrong.
+- [Multiple regression: More than one predictor](https://monte.markets/learn/mreg/more-than-one-x.md): Multiple regression fits ŷ = b₀ + b₁x₁ + b₂x₂ + .... Each slope is the change in ŷ for one unit of that x, holding the other x's fixed.
+- [Multiple regression: Holding the others fixed](https://monte.markets/learn/mreg/holding-fixed.md): A coefficient in multiple regression is the change in ŷ for one unit of that x, with the other x's held fixed.
+- [Multiple regression: Fixed in the math, not the world](https://monte.markets/learn/mreg/not-a-promise.md): Holding other variables fixed is something the math does. In the world, things move together, and the model can't tell you what happens if you change one.
+- [Multiple regression: Adjusted R²](https://monte.markets/learn/mreg/adjusted-r-squared.md): R² rises with every variable you add, useful or not. Adjusted R² charges a penalty for each one, so it only rises if the new variable earns its place.
+- [Multiple regression: When predictors overlap](https://monte.markets/learn/mreg/multicollinearity.md): Multicollinearity is when predictors are strongly correlated with each other.
+
+## Decisions
+
+- [Monte Carlo calculator: which option should I choose?](https://monte.markets/decide/choose.md): Give each option a worst, likely and best case. We play out 10,000 futures and count which one wins.
+- [Is the extended warranty worth it?](https://monte.markets/decide/warranty.md): What each choice costs on average, and the chance where the plan starts to pay.
+- [Implied probability calculator: what do these odds say?](https://monte.markets/decide/bet.md): Turn a betting line into a chance, find the bookmaker's cut and a sensible stake.
+- [Prediction market calculator: what does 30¢ mean?](https://monte.markets/decide/market.md): A prediction market price is the crowd's chance. Compare it with yours, after fees.
+- [Option probability calculator: will the stock get there?](https://monte.markets/decide/option.md): The typical move, the chance of ending past the strike, and where you break even.
+- [Bayes' theorem calculator: is this test result real?](https://monte.markets/decide/bayes.md): How common the thing is changes what a yes means, often more than the test does.
+- [A/B test calculator: did my change really work?](https://monte.markets/decide/abtest.md): Two versions, two counts. Is the gap real or luck?
+- [Monte Carlo savings calculator: will I hit my goal?](https://monte.markets/decide/goal.md): A start, a monthly saving and a guess at returns. We play out 5,000 futures and count how often you get there.
+- [Staffing calculator: how many people do I need?](https://monte.markets/decide/staffing.md): Customers arrive at random. Find the fewest people that keep a swamped hour rare.
+
+## Games
+
+- [Guess the correlation](https://monte.markets/play/correlation.md): Ten scatter plots. Call r by eye. Within 0.10 keeps your streak alive.
+- [Monty Hall problem simulator](https://monte.markets/play/monty-hall.md): The Monty Hall problem fooled mathematicians. Play it, then run it 1,000 times.
+- [Can you fake a coin?](https://monte.markets/play/fake-coin.md): Type 50 flips that look random. The streaks will give you away.
+- [Serve math](https://monte.markets/play/serve.md): Real 2025 ATP hold rates. See how a small edge on serve points wins sets.
+- [Roulette simulator: the house edge](https://monte.markets/play/house-edge.md): Spin roulette a thousand times and see why the house never loses.
+- [Read the odds](https://monte.markets/play/odds.md): Turn betting lines and prediction market prices into probabilities, and find the bookmaker's cut.
+- [Don't peek](https://monte.markets/play/ab-test.md): Run an A/B test where nothing changed. Watch fake winners appear.
+- [S&P 500 simulator: the long run](https://monte.markets/play/long-run.md): 98 years of real S&P 500 returns, played out 2,000 ways.
+- [Monte Carlo option pricing](https://monte.markets/play/options.md): Simulate stock paths and watch the price close in on Black-Scholes.
+- [Election night](https://monte.markets/play/election.md): Call the race from polls, then see why a 2-point lead is close to a coin flip.
+
+## Solvers
+
+- [Probability tree diagram calculator](https://monte.markets/solve/tree.md): Branches, then an outcome. Leave branch 3 blank for two; a blank P(branch) fills in.
+- [Draws with and without replacement](https://monte.markets/solve/draws.md): Two draws, with or without putting the first back.
+- [Conditional probability calculator](https://monte.markets/solve/events.md): Give P(A), P(B) and P(A and B).
+- [Binomial probability calculator](https://monte.markets/solve/trials.md): Same chance each try: none, at least one, exactly k.
+- [Poisson distribution calculator](https://monte.markets/solve/poisson.md): A rate per unit. Scale it to the window first.
+- [Normal distribution calculator](https://monte.markets/solve/normal.md): Mean and SD, then any value or cutoff.
+- [Sampling distribution calculator](https://monte.markets/solve/samp.md): Every sample of size n from a small population.
+- [Confidence interval and sample size calculator](https://monte.markets/solve/ci.md): A mean or a proportion, then the sample size.
+- [Hypothesis test calculator](https://monte.markets/solve/test.md): z, t or proportion. The p-value and the decision.
+- [Birthday problem calculator](https://monte.markets/solve/bday.md): Chance two people in a room share a birthday.
+- [Descriptive statistics calculator](https://monte.markets/solve/data.md): Paste a list. Every summary, step by step.
+
+## Open data
+
+- [llms-full.txt](https://monte.markets/llms-full.txt): every topic and lesson, the formula sheet, the decisions, the games and the solvers as plain text in one file
+- [index.json](https://monte.markets/api/v1/index.json): the list of endpoints, the license and the date
+- [topics.json](https://monte.markets/api/v1/topics.json): every topic with its idea, why it matters, formulas, hook, trap and URL
+- [formulas.json](https://monte.markets/api/v1/formulas.json): the formula sheet by topic, with worked examples
+- [terms.json](https://monte.markets/api/v1/terms.json): the glossary
+- [sources.json](https://monte.markets/api/v1/sources.json): recommended free courses, books and videos
+
+## MCP server
+
+A remote MCP server (Streamable HTTP, no key, read-only) answers with the same code as the site: https://mcp.monte.markets/mcp
+
+- `list_topics`, `get_topic`: the fourteen topics, each with its idea, example, trap, formulas and lessons
+- `search_terms`: the glossary
+- `list_solvers`, `solve`: eleven solvers that return every answer with its working
+- `test_result`, `warranty`, `ab_test`: is this test result real, should I buy the warranty, did my change really work
+
+## About
+
+- [Privacy](https://monte.markets/privacy/): no accounts; progress stays in the browser
+- [Terms](https://monte.markets/terms/): free to use and reuse with a link
+- [Brand](https://monte.markets/brand/): the logo to download, the colours, the type, the voice and ready-to-paste descriptions
+- [Design tokens](https://monte.markets/brand/colors/monte.tokens.json): every colour (light, dark and high contrast), corner and duration the site is built from, in the W3C Design Tokens format
+
+## Cheat sheets
+
+Phone-sized images (1080 x 1920 PNG), one per topic plus every formula across a few pages.
+
+- [Data and sampling cheat sheet](https://monte.markets/cheatsheets/data.png)
+- [Where is the middle cheat sheet](https://monte.markets/cheatsheets/center.png)
+- [How spread out is it cheat sheet](https://monte.markets/cheatsheets/spread.png)
+- [Probability rules cheat sheet](https://monte.markets/cheatsheets/prob.png)
+- [Random variables and expected value cheat sheet](https://monte.markets/cheatsheets/rv.png)
+- [Two variables: covariance, correlation, portfolios cheat sheet](https://monte.markets/cheatsheets/two.png)
+- [Counting and the binomial cheat sheet](https://monte.markets/cheatsheets/count.png)
+- [Poisson: counts per unit cheat sheet](https://monte.markets/cheatsheets/poisson.png)
+- [The normal curve and z cheat sheet](https://monte.markets/cheatsheets/normal.png)
+- [Sampling distributions and the CLT cheat sheet](https://monte.markets/cheatsheets/clt.png)
+- [Confidence intervals and sample size cheat sheet](https://monte.markets/cheatsheets/ci.png)
+- [Hypothesis tests cheat sheet](https://monte.markets/cheatsheets/test.png)
+- [Simple regression cheat sheet](https://monte.markets/cheatsheets/reg.png)
+- [Multiple regression cheat sheet](https://monte.markets/cheatsheets/mreg.png)
+- [Every formula, page 1 of 7](https://monte.markets/cheatsheets/all-1.png)
+- [Every formula, page 2 of 7](https://monte.markets/cheatsheets/all-2.png)
+- [Every formula, page 3 of 7](https://monte.markets/cheatsheets/all-3.png)
+- [Every formula, page 4 of 7](https://monte.markets/cheatsheets/all-4.png)
+- [Every formula, page 5 of 7](https://monte.markets/cheatsheets/all-5.png)
+- [Every formula, page 6 of 7](https://monte.markets/cheatsheets/all-6.png)
+- [Every formula, page 7 of 7](https://monte.markets/cheatsheets/all-7.png)

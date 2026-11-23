@@ -1,0 +1,26 @@
+name: Something is wrong
+description: A wrong answer, a number that is off, or a sentence that confuses.
+labels: [bug]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The address of the page, or the topic and lesson.
+      placeholder: https://monte.markets/learn/normal/68-95-997/
+    validations:
+      required: true
+  - type: textarea
+    id: says
+    attributes:
+      label: What it says
+      description: Quote the sentence, number or answer.
+    validations:
+      required: true
+  - type: textarea
+    id: should
+    attributes:
+      label: What it should say
+      description: And why. A link to a source helps.
+    validations:
+      required: true

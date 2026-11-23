@@ -1,0 +1,39 @@
+# Weekly dependency updates. Minor and patch bumps arrive as one pull request per directory (the site, the MCP server);
+# a major version gets its own pull request, so a breaking change is never hidden in a batch. CI runs on each one.
+# Two majors are skipped on purpose: TypeScript until typescript-eslint supports the new major (its peer range stops
+# at 6), and @types/node, which follows the Node version the site and the MCP server run on (24), not the newest.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      site-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: npm
+    directory: /mcp
+    schedule:
+      interval: weekly
+    groups:
+      mcp-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

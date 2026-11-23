@@ -1,0 +1,86 @@
+import { TOOLS, isTopicId } from "./data";
+
+/**
+ * Every study page is a real route under /study/. The paths spell out what the old hash routes
+ * said (#learn/topics/normal is now /learn/normal/). Learn lives at the top level, so its links stay short.
+ */
+export const SOLVER_IDS = ["tree", "draws", "events", "trials", "poisson", "normal", "samp", "ci", "test", "bday", "data"] as const;
+export type SolverId = (typeof SOLVER_IDS)[number];
+export const isSolverId = (id: unknown): id is SolverId => SOLVER_IDS.includes(id as SolverId);
+
+export const study = {
+  today: "/study/",
+  learn: "/learn/",
+  topic: (id: string) => `/learn/${id}/`,
+  lesson: (id: string, slug: string) => `/learn/${id}/${slug}/`,
+  formulas: "/learn/formulas/",
+  terms: "/learn/terms/",
+  frameworks: "/learn/frameworks/",
+  /** "Same number, three questions": one value, an average, or a range for an unknown mean. */
+  start: "/learn/start/",
+  drill: "/practice/drill/",
+  /** Opens the drill page and starts a set right away. */
+  drillStart: (go: "start" | "mock" | "due" | "daily" | "review") => `/practice/drill/?go=${go}`,
+  /** A drill on one topic: 8 questions unless `n` says otherwise; `untimed` drops the clock for this set. */
+  drillTopic: (id: string, n?: number, untimed?: boolean) => `/practice/drill/?topic=${id}${n ? `&n=${n}` : ""}${untimed ? "&timer=off" : ""}`,
+  /** Expert mode on one topic: 10 questions, always on the clock (EXPERT in lib/study/progress.ts). */
+  drillExpert: (id: string) => `/practice/drill/?topic=${id}&expert=1`,
+  math: "/practice/math/",
+  cards: "/practice/cards/",
+  solve: (id: string = "tree") => `/solve/${id}/`,
+  tools: (id: string = "excel") => `/tools/${id}/`,
+  sources: "/sources/",
+} as const;
+
+/**
+ * Maps an old hash route (#learn/topics/normal, #practice/drill/mock, #solve/ci) to its page.
+ * Unknown ids fall back to the section's index, so a typed or stale hash never becomes a path.
+ */
+export function pathForHash(hash: string): string {
+  const p = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  const [page, view, item, extra] = p;
+  switch (page) {
+    case "learn":
+      if (view === "formulas") return study.formulas;
+      if (view === "terms") return study.terms;
+      if (view === "frameworks") return study.frameworks;
+      if (view === "start") return study.start;
+      if (view === "topics" && isTopicId(item)) return study.topic(item);
+      return study.learn;
+    case "practice":
+      if (view === "math") return study.math;
+      if (view === "cards") return study.cards;
+      if (item === "start" || item === "mock" || item === "daily") return study.drillStart(item);
+      if (item === "topic" && isTopicId(extra)) return study.drillTopic(extra);
+      return study.drill;
+    case "solve":
+      return study.solve(isSolverId(view) ? view : "tree");
+    case "tools":
+      return study.tools(TOOLS.some((t) => t.id === view) ? view : "excel");
+    case "sources":
+      return study.sources;
+    default:
+      return study.today;
+  }
+}
+
+/** Top-level sections, for the header, the phone tab bar and the ⌘K menu. */
+export const STUDY_SECTIONS = [
+  { page: "home", label: "Today", href: study.today },
+  { page: "learn", label: "Learn", href: study.learn },
+  { page: "practice", label: "Practice", href: study.drill },
+  { page: "solve", label: "Solve", href: study.solve() },
+  { page: "tools", label: "Tools", href: study.tools() },
+  { page: "sources", label: "Sources", href: study.sources },
+] as const;
+export type StudySection = (typeof STUDY_SECTIONS)[number]["page"];
+
+/** Which study section a pathname belongs to, or null outside the study app. */
+export function sectionFor(pathname: string | null): StudySection | null {
+  if (!pathname) return null;
+  // Study sections live at the top level (/learn/, /practice/, /solve/, /tools/, /sources/); /study/ is Today.
+  const top = pathname.split("/")[1];
+  if (top !== "study") return (STUDY_SECTIONS.find((s) => s.page === top && s.page !== "home")?.page ?? null) as StudySection | null;
+  const seg = pathname.replace(/^\/study\/?/, "").split("/")[0];
+  return (STUDY_SECTIONS.find((s) => s.page === seg)?.page ?? "home") as StudySection;
+}

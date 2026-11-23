@@ -1,0 +1,121 @@
+import { Wordmark } from "@/components/brand/logo";
+import { decideHref, playHref, studyHref } from "@/lib/site-data";
+import { StudyBottomNav } from "@/components/study/bottom-nav";
+
+/** Footer columns use the site's one vocabulary (DESIGN.md, "Navigation"). Play hides whole in Focus mode. */
+const COLUMNS: { title: string; className?: string; links: [string, string][] }[] = [
+  {
+    title: "Learn",
+    links: [
+      ["Topics", studyHref("#learn/topics")],
+      ["Terms", studyHref("#learn/terms")],
+      ["Formula sheet", studyHref("#learn/formulas")],
+      ["Which formula?", studyHref("#learn/frameworks")],
+      ["Excel, R, Python, SQL", studyHref("#tools")],
+      ["Free sources", studyHref("#sources")],
+      ["Why statistics", "/story/"],
+    ],
+  },
+  {
+    title: "Practice",
+    links: [
+      ["Drill", studyHref("#practice/drill")],
+      ["Flashcards", studyHref("#practice/cards")],
+      ["Mock test", studyHref("#practice/drill/mock")],
+      ["Quick math", studyHref("#practice/math")],
+    ],
+  },
+  {
+    title: "Solve",
+    links: [
+      ["All solvers", studyHref("#solve")],
+      ["Tree and Bayes", studyHref("#solve/tree")],
+      ["Normal distribution", studyHref("#solve/normal")],
+      ["Confidence intervals", studyHref("#solve/ci")],
+      ["Free workbook (.xlsx)", "/downloads/monte-statistics-workbook.xlsx"],
+    ],
+  },
+  {
+    title: "Decide",
+    links: [
+      ["All decisions", decideHref()],
+      ["Is this test result real?", decideHref("bayes")],
+      ["Should I buy the warranty?", decideHref("warranty")],
+      ["Did my change really work?", decideHref("abtest")],
+      ["Will I hit my goal?", decideHref("goal")],
+    ],
+  },
+  {
+    title: "Play",
+    className: "fun-only",
+    links: [
+      ["The Shuffle", "/shuffle/"],
+      ["Daily chart", "/daily/"],
+      ["All games", playHref()],
+      ["Three doors", playHref("monty-hall")],
+      ["Election night", playHref("election")],
+      ["The long run", playHref("long-run")],
+    ],
+  },
+];
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-line">
+      <div className="mx-auto grid w-full max-w-page gap-10 px-gutter py-block">
+        {/* Phones and tablets have the tab bar and its More sheet, so the sitemap columns show on wide screens only. */}
+        <nav aria-label="Footer" className="hidden lg:grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:[html[data-mode=focus]_&]:grid-cols-4">
+          {COLUMNS.map((col) => (
+            <div key={col.title} className={col.className}>
+              <p className="mb-2 text-sm font-semibold">{col.title}</p>
+              <ul className="grid text-sm text-ink-muted">
+                {col.links.map(([label, href]) => (
+                  <li key={label}>
+                    <a className="inline-flex min-h-11 items-center hover:text-ink" href={href}>
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+        <div className="flex items-center justify-between gap-4 lg:border-t lg:border-line lg:pt-6">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-5">
+            <Wordmark />
+            <a href="/about/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              About
+            </a>
+            <a href="/built/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              How it&rsquo;s built
+            </a>
+            <a href="/privacy/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              Privacy
+            </a>
+            <a href="/terms/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              Terms
+            </a>
+            <a href="/brand/" className="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-ink">
+              Brand
+            </a>
+          </div>
+          <a
+            href="https://github.com/skirberg"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Sami on GitHub"
+            className="grid size-11 shrink-0 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sand hover:text-ink"
+          >
+            {/* GitHub mark (Octicons, MIT) */}
+            <svg viewBox="0 0 16 16" className="size-5" fill="currentColor" aria-hidden>
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      {/* Phones: room for the tab bar so it never covers the footer. */}
+      <div aria-hidden className="h-[calc(57px+env(safe-area-inset-bottom,0px))] lg:hidden" />
+      <StudyBottomNav site />
+    </footer>
+  );
+}

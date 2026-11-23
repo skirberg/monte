@@ -1,0 +1,172 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://va.vercel-scripts.com; media-src 'self' blob:; worker-src 'self' blob:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self' https://samikirberg.com; upgrade-insecure-requests"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.md",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/markdown; charset=utf-8"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/practice",
+      "destination": "/practice/drill/",
+      "permanent": false
+    },
+    {
+      "source": "/practice/",
+      "destination": "/practice/drill/",
+      "permanent": false
+    },
+    {
+      "source": "/study/learn/topics/:topic/:lesson",
+      "destination": "/learn/:topic/:lesson/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/topics/:topic/:lesson/",
+      "destination": "/learn/:topic/:lesson/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/topics/:topic",
+      "destination": "/learn/:topic/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/topics/:topic/",
+      "destination": "/learn/:topic/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/topics",
+      "destination": "/learn/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/topics/",
+      "destination": "/learn/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn",
+      "destination": "/learn/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/",
+      "destination": "/learn/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/:path+",
+      "destination": "/learn/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/learn/:path+/",
+      "destination": "/learn/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/sources",
+      "destination": "/sources/",
+      "permanent": true
+    },
+    {
+      "source": "/study/sources/",
+      "destination": "/sources/",
+      "permanent": true
+    },
+    {
+      "source": "/study/practice/:path+",
+      "destination": "/practice/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/practice/:path+/",
+      "destination": "/practice/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/practice",
+      "destination": "/practice/drill/",
+      "permanent": true
+    },
+    {
+      "source": "/study/practice/",
+      "destination": "/practice/drill/",
+      "permanent": true
+    },
+    {
+      "source": "/study/solve/:path+",
+      "destination": "/solve/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/solve/:path+/",
+      "destination": "/solve/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/solve",
+      "destination": "/solve/",
+      "permanent": true
+    },
+    {
+      "source": "/study/solve/",
+      "destination": "/solve/",
+      "permanent": true
+    },
+    {
+      "source": "/study/tools/:path+",
+      "destination": "/tools/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/tools/:path+/",
+      "destination": "/tools/:path+/",
+      "permanent": true
+    },
+    {
+      "source": "/study/tools",
+      "destination": "/tools/",
+      "permanent": true
+    },
+    {
+      "source": "/study/tools/",
+      "destination": "/tools/",
+      "permanent": true
+    }
+  ]
+}

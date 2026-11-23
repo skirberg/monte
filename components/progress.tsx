@@ -1,0 +1,321 @@
+"use client";
+
+import * as React from "react";
+import { createPortal } from "react-dom";
+import { Flame, Snowflake, Trophy } from "lucide-react";
+import { track } from "@vercel/analytics";
+import { BADGES, DAILY_GOAL, addXp, exportProgress, getProgress, importProgress, isProgressCode, keepStorage, levelOf, liveStreak, localDay, milestoneText, shiftDay, unlockBadge, useProgress, type ProgressEvent } from "@/lib/progress";
+import { confetti } from "@/lib/fun";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+
+const TOAST_MS = 4000;
+
+/**
+ * Turns events from anywhere (study pages, games, /decide/) into progress, and celebrates real milestones.
+ * Confetti only plays in Fun mode without reduced motion, but every milestone is always said out loud
+ * (a polite live region) and shown as a small still toast, so Focus mode and screen readers get it too.
+ * A page can offer an in-flow spot for it (an element with data-milestone-slot, such as a finished lesson's
+ * summary): the note then sits there, in the text's own flow and without confetti, instead of over the text.
+ */
+export function ProgressBridge() {
+  const [toast, setToast] = React.useState<{ text: string; id: number; slot: Element | null } | null>(null);
+  React.useEffect(() => {
+    // A note in a page's slot stays: taking it away later would shift the text under the reader.
+    if (!toast || toast.slot) return;
+    const t = window.setTimeout(() => setToast(null), TOAST_MS);
+    return () => window.clearTimeout(t);
+  }, [toast]);
+  React.useEffect(() => {
+    const onXp = (e: Event) => {
+      const d = (e as CustomEvent<{ xp: number; reason?: string }>).detail;
+      if (d && d.xp > 0) addXp(d.xp, d.reason);
+      if (d?.reason === "daily") track("Daily finished");
+    };
+    const onBadge = (e: Event) => unlockBadge((e as CustomEvent<string>).detail);
+    const onProgress = (e: Event) => {
+      const d = (e as CustomEvent<ProgressEvent>).detail ?? {};
+      const text = milestoneText(d);
+      if (!text) return;
+      const slot = document.querySelector("[data-milestone-slot]");
+      setToast({ text, id: Date.now(), slot });
+      if (!slot) confetti(d.levelUp ? 70 : d.badge ? 40 : 50);
+      if (d.levelUp) track("Level up", { level: d.levelUp });
+      if (d.badge) {
+        track("Badge earned", { badge: d.badge });
+        keepStorage();
+      }
+    };
+    window.addEventListener("monte:xp", onXp);
+    window.addEventListener("monte:badge", onBadge);
+    window.addEventListener("monte:progress", onProgress);
+    return () => {
+      window.removeEventListener("monte:xp", onXp);
+      window.removeEventListener("monte:badge", onBadge);
+      window.removeEventListener("monte:progress", onProgress);
+    };
+  }, []);
+  // The live region is always in the page, so what lands in it is read out; the toast sits inside it.
+  return (
+    <>
+      <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-4 top-[84px] z-[61] flex justify-center print:hidden">
+        {toast &&
+          (toast.slot ? (
+            <span key={toast.id} className="sr-only">
+              {toast.text}
+            </span>
+          ) : (
+            <p key={toast.id} className="max-w-md rounded-card bg-ink px-4 py-2.5 text-center text-base font-medium text-paper shadow-[0_12px_32px_-12px_rgba(0,0,0,.35)]">
+              {toast.text}
+            </p>
+          ))}
+      </div>
+      {toast?.slot?.isConnected &&
+        createPortal(
+          <p key={toast.id} aria-hidden className="w-fit rounded-inner bg-sand px-3.5 py-2 text-sm font-medium text-ink">
+            {toast.text}
+          </p>,
+          toast.slot,
+        )}
+    </>
+  );
+}
+
+function Ring({ value, size = 28 }: { value: number; size?: number }) {
+  const r = size / 2 - 3;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden className="-rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth="3" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="var(--clay)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={c * (1 - Math.min(1, value))}
+        style={{ transition: "stroke-dashoffset 500ms cubic-bezier(.2,.8,.2,1)" }}
+      />
+    </svg>
+  );
+}
+
+/** Header button: today's goal ring and the streak. Opens the full picture. */
+export function ProgressButton() {
+  const p = useProgress();
+  const [open, setOpen] = React.useState(false);
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  // "Today" is read again whenever progress changes or the tab comes back, so a page left open past
+  // midnight shows the new day's ring and the right streak.
+  const [now, setNow] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const onVisible = () => document.visibilityState === "visible" && tick();
+    window.addEventListener("monte:progress", tick);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("monte:progress", tick);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
+  // Nothing to show before the first point: no empty ring and grey 0 for a brand-new visitor. Takes no space either,
+  // so the header's search and theme buttons sit together (an empty slot left a gap between them on phones).
+  if (!p || (p.xp === 0 && !p.badges.length)) return null;
+  const day = localDay(now);
+  const todayXp = p.days[day] ?? 0;
+  const lv = levelOf(p.xp);
+  const streak = liveStreak(p, day);
+  const last7 = Array.from({ length: 7 }, (_, i) => {
+    const d = shiftDay(now, i - 6);
+    return { d, xp: p.days[d] ?? 0, label: new Date(d + "T12:00").toLocaleDateString("en-US", { weekday: "narrow" }) };
+  });
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex h-11 items-center gap-1.5 rounded-full px-2 text-sm font-medium text-ink transition-colors hover:bg-sand"
+        aria-label={`Your progress: level ${lv.level}, ${todayXp} of ${DAILY_GOAL} XP today, ${streak} day streak`}
+      >
+        <Ring value={todayXp / DAILY_GOAL} />
+        <span className="flex items-center gap-0.5 tabular-nums">
+          <Flame className={streak ? "size-4 text-clay" : "size-4 text-ink-muted"} />
+          {streak}
+        </span>
+      </button>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side="right" initialFocus={titleRef} className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle ref={titleRef} tabIndex={-1} className="font-display text-2xl font-semibold outline-none">
+              Your progress
+            </SheetTitle>
+            <SheetDescription>Saved in this browser.</SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-6 px-4 pb-8">
+            <section className="grid gap-2">
+              <div className="flex items-baseline justify-between">
+                <p className="font-display text-3xl font-semibold">Level {lv.level}</p>
+                <p className="text-sm text-ink-muted tabular-nums">
+                  {lv.into} / {lv.span} XP
+                </p>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-sand-2">
+                <div className="h-full rounded-full bg-clay transition-[width] duration-500" style={{ width: `${(lv.into / lv.span) * 100}%` }} />
+              </div>
+              <p className="text-sm text-ink-muted tabular-nums">{p.xp.toLocaleString()} XP in total</p>
+            </section>
+
+            <section className="grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-card bg-sand p-3">
+                <p className="text-xs text-ink-muted">Today</p>
+                <p className="font-display text-2xl font-semibold tabular-nums">{todayXp}</p>
+                <p className="text-xs text-ink-muted">of {DAILY_GOAL} XP</p>
+              </div>
+              <div className="rounded-card bg-sand p-3">
+                <p className="text-xs text-ink-muted">Streak</p>
+                <p className="flex items-center justify-center gap-1 font-display text-2xl font-semibold tabular-nums">
+                  <Flame className="size-5 text-clay" /> {streak}
+                </p>
+                <p className="flex items-center justify-center gap-1 text-xs text-ink-muted">
+                  <Snowflake className="size-3" /> {p.freezes} freeze{p.freezes === 1 ? "" : "s"}
+                </p>
+              </div>
+              <div className="rounded-card bg-sand p-3">
+                <p className="text-xs text-ink-muted">Monte chips</p>
+                <p className="font-display text-2xl font-semibold tabular-nums">{p.chips.toLocaleString()}</p>
+                <p className="text-xs text-ink-muted">play money</p>
+              </div>
+            </section>
+
+            <section className="grid gap-2">
+              <h3 className="text-sm font-semibold">Last 7 days</h3>
+              <div className="flex items-end gap-2" role="img" aria-label={last7.map((x) => `${x.d}: ${x.xp} XP`).join(", ")}>
+                {last7.map((x) => (
+                  <div key={x.d} className="flex flex-1 flex-col items-center gap-1">
+                    <div className="flex h-16 w-full items-end overflow-hidden rounded-md bg-sand-2">
+                      <div
+                        className={x.xp >= DAILY_GOAL ? "w-full bg-clay" : "w-full bg-line-strong"}
+                        style={{ height: `${Math.min(100, (x.xp / DAILY_GOAL) * 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-ink-muted">{x.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-ink-muted">Full bar: daily goal. 7 days in a row earns a freeze.</p>
+            </section>
+
+            <section className="grid gap-2">
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold">
+                <Trophy className="size-4" /> Badges, {p.badges.length} of {Object.keys(BADGES).length}
+              </h3>
+              <ul className="grid grid-cols-2 gap-2">
+                {Object.entries(BADGES).map(([id, b]) => {
+                  const got = p.badges.includes(id);
+                  return (
+                    <li key={id} className={got ? "rounded-card border border-clay bg-clay-tint p-3" : "rounded-card border border-line p-3 opacity-70"}>
+                      <p className="text-sm font-semibold">{b.name}</p>
+                      <p className="text-xs text-ink-muted">{got ? "Earned" : b.how}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+
+            <BackupCard />
+
+            <section className="grid gap-1 text-sm text-ink-muted">
+              <details>
+                <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold text-ink">How XP works</summary>
+                <p>
+                  Right answer 10 · a try 2 · lesson done 10 (once) · Daily 15 · drill done 20 · flashcard up a box 3 · topic read 5 · quick math 2 · election call 5 to 10.
+                  Chips are play money for Election night.
+                </p>
+              </details>
+              <button
+                type="button"
+                className="mt-2 inline-flex min-h-11 items-center self-start text-sm text-ink underline-offset-4 underline decoration-line-strong hover:decoration-ink"
+                onClick={() => {
+                  if (window.confirm("Reset XP, streak, chips and badges in this browser? Lessons and mastered topics stay.")) {
+                    try {
+                      localStorage.removeItem("monte-progress");
+                    } catch {}
+                    window.dispatchEvent(new CustomEvent("monte:progress", { detail: {} }));
+                    void getProgress();
+                  }
+                }}
+              >
+                Reset XP and badges
+              </button>
+            </section>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+}
+
+function BackupCard() {
+  const [msg, setMsg] = React.useState("");
+  const [code, setCode] = React.useState("");
+  return (
+    <section className="grid gap-2">
+      <h3 className="text-sm font-semibold">Back up or move your progress</h3>
+      <p className="text-xs text-ink-muted">
+        Move it to another device with a code or a file.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(exportProgress());
+              setMsg("Code copied. Paste it on your other device.");
+            } catch {
+              setMsg("Could not copy. Use Download instead.");
+            }
+          }}
+        >
+          Copy code
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={() => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([exportProgress()], { type: "text/plain" }));
+            a.download = `monte-progress-${localDay()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            // Some browsers cancel the download if the address is revoked at once.
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+          }}
+        >
+          Download backup
+        </button>
+      </div>
+      <form
+        className="grid grid-cols-[1fr_auto] gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!code.trim()) return;
+          // Check the code before asking to merge it.
+          if (!isProgressCode(code)) return setMsg("That code didn't work. Copy it again from your other device.");
+          if (!window.confirm("Add the pasted progress to this browser? Nothing here is lost: the best of both is kept.")) return;
+          const ok = importProgress(code);
+          setMsg(ok ? "Restored. Reloading." : "That code didn't work. Copy it again from your other device.");
+          if (ok) setTimeout(() => location.reload(), 600);
+        }}
+      >
+        <label className="sr-only" htmlFor="restore-code">Paste a progress code</label>
+        <input id="restore-code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Paste a code to restore" className="h-11 min-w-0 rounded-xl border border-line-strong bg-paper px-3 text-base" />
+        <button type="submit" className="btn btn-primary btn-sm">Restore</button>
+      </form>
+      <p className="text-xs text-ink-muted" aria-live="polite">{msg}</p>
+    </section>
+  );
+}

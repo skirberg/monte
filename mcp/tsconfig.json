@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "incremental": false, "plugins": [], "types": ["node"] },
+  "include": ["src/**/*.ts", "build.ts", "test.ts"],
+  "exclude": ["node_modules", ".local", ".vercel"]
+}

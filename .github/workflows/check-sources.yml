@@ -1,0 +1,53 @@
+# Keeps the Sources page honest with nobody checking in.
+# Once a week it opens every source link (scripts/check-sources.ts). If any is gone, it opens one issue named
+# "Broken source links", or adds the new report to it if it is already open; when every link answers again, it closes it.
+# It never edits a source's "Checked" date: that date means a person read the page.
+name: Check source links
+
+on:
+  schedule:
+    - cron: "17 9 * * 1" # Mondays, about 09:15 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Open every source link
+        id: check
+        continue-on-error: true
+        run: npx tsx scripts/check-sources.ts --report report.md
+
+      - name: Open, update or close the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.check.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [ -f report.md ] || echo "The check stopped before it could write a report." > report.md
+          printf '\n[Run log](%s)\n' "$RUN_URL" >> report.md
+          title="Broken source links"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -n1)
+          if [ "$OUTCOME" = "failure" ]; then
+            if [ -n "$open" ]; then gh issue comment "$open" --body-file report.md; else gh issue create --title "$title" --body-file report.md; fi
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "$(cat report.md)"
+          else
+            cat report.md
+          fi

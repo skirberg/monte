@@ -1,0 +1,108 @@
+{
+  "note": "Saved snapshot of the 2026 midterms: the last prices and poll averages before the vote, and the settled results. Prices shown as probabilities to teach, never as betting advice.",
+  "sources": [
+    {
+      "id": "polymarket",
+      "name": "Polymarket",
+      "asOf": "2026-11-03T19:28:39.331Z",
+      "asOfText": "Nov 3, 2026, 2:28 PM ET",
+      "house": {
+        "dem": 0.945,
+        "rep": 0.055
+      },
+      "senate": {
+        "dem": 0.755,
+        "rep": 0.245
+      }
+    }
+  ],
+  "polls": {
+    "asOf": "2026-11-10T19:41:06.435Z",
+    "asOfText": "Nov 10, 2026, 2:41 PM ET",
+    "lead": 8.6,
+    "leader": "Democrats",
+    "averages": [
+      {
+        "name": "Decision Desk HQ",
+        "updated": "November 3, 2026",
+        "dem": 51.4,
+        "rep": 42.8,
+        "lead": 8.6
+      },
+      {
+        "name": "FiftyPlusOne",
+        "updated": "November 3, 2026",
+        "dem": 52.8,
+        "rep": 44.1,
+        "lead": 8.7
+      },
+      {
+        "name": "NBC News",
+        "updated": "November 3, 2026",
+        "dem": 52,
+        "rep": 44,
+        "lead": 8
+      },
+      {
+        "name": "RealClearPolitics",
+        "updated": "November 3, 2026",
+        "dem": 52.1,
+        "rep": 43.3,
+        "lead": 8.8
+      },
+      {
+        "name": "Silver Bulletin",
+        "updated": "November 3, 2026",
+        "dem": 51.8,
+        "rep": 43,
+        "lead": 8.8
+      }
+    ],
+    "raw": {
+      "count": 5,
+      "newest": "2026-11-02",
+      "latest": [
+        {
+          "end": "2026-11-02",
+          "pollster": "Ipsos",
+          "n": 1212,
+          "d": 52,
+          "r": 44
+        },
+        {
+          "end": "2026-10-04",
+          "pollster": "Pew Research Center",
+          "n": 3917,
+          "d": 44,
+          "r": 36
+        },
+        {
+          "end": "2026-10-02",
+          "pollster": "YouGov - CBS News",
+          "n": 1572,
+          "d": 54,
+          "r": 45
+        },
+        {
+          "end": "2026-09-28",
+          "pollster": "HarrisX/Harris",
+          "n": null,
+          "d": 51,
+          "r": 49
+        },
+        {
+          "end": "2026-09-22",
+          "pollster": "The Argument/Verasight",
+          "n": null,
+          "d": 55,
+          "r": 45
+        }
+      ]
+    },
+    "credit": "Averages as listed on Wikipedia (CC BY-SA); raw polls from VoteHub"
+  },
+  "results": {
+    "house": "dem",
+    "senate": "dem"
+  }
+}

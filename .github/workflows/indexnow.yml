@@ -1,0 +1,31 @@
+name: Tell search engines what changed
+# After a push to main, waits for the deploy, reads the live sitemap and submits every address through IndexNow
+# (Bing, which also feeds ChatGPT search and Copilot, plus Yandex, Seznam and Naver). Google reads the sitemap named
+# in robots.txt by itself. The key is public by design: it only proves this site asked (public/327628f9d8fbd22406fb70afdaa8e746.txt).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions: {}
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for the deploy
+        run: sleep 240
+      - name: Submit the sitemap's addresses
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://monte.markets/sitemap.xml" -o sitemap.xml
+          python3 - <<'PY'
+          import json, re, urllib.request
+          host, key = "monte.markets", "327628f9d8fbd22406fb70afdaa8e746"
+          urls = re.findall(r"<loc>([^<]+)</loc>", open("sitemap.xml").read())
+          urls = [u for u in urls if u.startswith(f"https://{host}/")][:10000]
+          body = json.dumps({"host": host, "key": key, "keyLocation": f"https://{host}/{key}.txt", "urlList": urls}).encode()
+          req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body, headers={"Content-Type": "application/json; charset=utf-8"})
+          with urllib.request.urlopen(req, timeout=30) as r:
+              print(f"submitted {len(urls)} addresses: HTTP {r.status}")
+          PY

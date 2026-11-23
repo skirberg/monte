@@ -1,0 +1,481 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------
+   Monte tokens. Colours, corners and motion come from tokens/monte.tokens.json (W3C Design Tokens format)
+   through app/tokens.css, which scripts/make-tokens.ts writes (npm run tokens). Never set a colour here.
+   Clay means the number. Ink means the action. DESIGN.md has the rest.
+   --------------------------------------------------------------- */
+:root {
+  /* shadcn mapping: the kit's names for Monte's tokens */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sand);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--sand);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--clay);
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-display: var(--font-bricolage), var(--font-geologica), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geologica), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-num), var(--font-geologica), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+}
+
+/* ---------------------------------------------------------------
+   Type scale. The only sizes, weights and letter-spacing the site uses
+   (DESIGN.md, "Type scale"; scripts/scale-check.ts fails the check on anything else).
+   Fixed steps for reading and UI; fluid steps for headings and big numbers,
+   which grow smoothly from a 390 px phone to a 1440 px desktop.
+   Modeled on IBM Carbon (fixed productive set plus fluid expressive set, three weights)
+   and Material 3 (named roles, no near-duplicate sizes).
+   --------------------------------------------------------------- */
+@theme {
+  /* Fixed: label and caption, secondary, body, lead body, small titles */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+
+  /* Fluid: headings and figures */
+  --text-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-lead--line-height: 1.4;
+  --text-heading: clamp(1.375rem, 1.1rem + 1.1vw, 2.25rem);
+  --text-heading--line-height: 1.12;
+  --text-headline: clamp(2rem, 1.35rem + 2.6vw, 3.5rem);
+  --text-headline--line-height: 1.02;
+  --text-title: clamp(2.25rem, 1.4rem + 3.6vw, 4.375rem);
+  --text-title--line-height: 0.98;
+  --text-display: clamp(2.75rem, 1.6rem + 5vw, 5.5rem);
+  --text-display--line-height: 0.94;
+  --text-figure: clamp(2.5rem, 1.75rem + 3.5vw, 5.5rem);
+  --text-figure--line-height: 1;
+  --text-hero: clamp(4rem, 2rem + 10vw, 10rem);
+  --text-hero--line-height: 0.9;
+
+  /* Inline symbols drawn beside running text (x̄, p̂): relative to their line */
+  --text-symbol: 0.92em;
+
+  /* Three weights: regular for reading, medium for UI, semibold for headings and figures */
+  --font-weight-semibold: 650;
+
+  /* Display type carries -0.02em through font-display; figures use tight */
+  --tracking-tight: -0.025em;
+}
+
+/* ---------------------------------------------------------------
+   Layout. One page width, one gutter, one rhythm between sections and one
+   between a heading and its content (DESIGN.md, "Layout"). Fluid like the
+   type: each grows smoothly from a 390 px phone to a 1440 px desktop.
+   Use them as px-gutter, gap-x-gutter, py-section, mb-block, max-w-page;
+   sections come from components/layout/section.tsx, not hand-set padding.
+   --------------------------------------------------------------- */
+@theme {
+  --container-page: 75rem;
+  --container-content: 61.25rem;
+  --spacing-gutter: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+  /* Careful: this token also turns the class inline-block into inline-size: var(--spacing-block). Use block w-fit or inline-flex. */
+  --spacing-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  --spacing-section: clamp(4rem, 2.5rem + 5vw, 7rem);
+  /* Measure: how long a line of reading runs (DESIGN.md, "Measure"). ch follows the text's own size, so these hold
+     at any size: in Geologica 1ch is about 1.4 average letters, so 50ch is about 70 characters and 44ch about 61. max-w-measure for reading text and folds,
+     max-w-measure-short where a line is set short on purpose (a lead beside a picture, an error page).
+     scripts/scale-check.ts fails on a hand-set one. */
+  --container-measure: 50ch;
+  --container-measure-short: 44ch;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  /* No one-word last lines: headings even out their lines, paragraphs avoid a lone last word. */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p, li, dd {
+    text-wrap: pretty;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    /* Native feel: no grey flash on tap; the press state below does that job. */
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Taps fire at once (no double-tap zoom wait), and a long press never selects a button's label. */
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Scrolling inside a sheet or dialog never drags the page behind it, or pulls to refresh. */
+  [data-slot="sheet-content"],
+  [data-slot="dialog-content"],
+  [data-slot="command-list"],
+  [data-slot="dropdown-menu-content"] {
+    overscroll-behavior: contain;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01" on;
+  }
+  ::selection {
+    background: var(--clay);
+    color: var(--paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Buttons. The only two the site uses (DESIGN.md, "Buttons"); scripts/scale-check.ts
+   fails on a hand-built pill. Tactile, like a learning app's (Brilliant, Duolingo):
+   a solid pill standing on a 3px edge of its own darker color; pressing pushes it
+   down onto the edge. Ink means the action, so the main button is ink, never clay.
+     btn btn-primary            the one action that matters on a screen
+     btn btn-secondary          everything else that is a button, not a link
+     btn-sm                     the smaller size, for actions inside a tool
+   --------------------------------------------------------------- */
+@layer components {
+  .btn {
+    --lip: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 3rem;
+    padding-inline: 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    white-space: nowrap;
+    box-shadow: 0 3px 0 0 var(--lip);
+    translate: 0 0;
+    transition: background-color var(--duration-ui) ease-out, border-color var(--duration-ui) ease-out, box-shadow var(--duration-press) ease-out, translate var(--duration-press) ease-out;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .btn-sm {
+    height: 2.75rem;
+    padding-inline: 1.25rem;
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+  .btn-primary {
+    --lip: var(--ink-lip);
+    background: var(--btn);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--btn-hover);
+  }
+  .btn-secondary {
+    --lip: var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover {
+    background: var(--sand);
+  }
+  .btn:active:not(:disabled):not([aria-disabled="true"]) {
+    translate: 0 3px;
+    box-shadow: 0 0 0 0 var(--lip);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover {
+    background: var(--btn);
+  }
+  .btn-secondary:disabled:hover {
+    background: var(--paper);
+  }
+
+  /* An answer you can tap (lessons, Find your level). Pressable, so it stands on the same 3px edge as a
+     button and sinks when pressed; once answered, the result colours the tile itself, edge included:
+     data-state="right" (clay, the --success token) or "wrong". Static cards stay flat. */
+  .choice {
+    --lip: var(--line-strong);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius-inner);
+    background: var(--paper);
+    color: var(--ink);
+    text-align: left;
+    font-weight: 500;
+    box-shadow: 0 3px 0 0 var(--lip);
+    translate: 0 0;
+    transition: background-color var(--duration-ui) ease-out, border-color var(--duration-ui) ease-out, box-shadow var(--duration-press) ease-out, translate var(--duration-press) ease-out;
+  }
+  .choice:enabled:hover {
+    background: var(--sand);
+  }
+  .choice:enabled:active {
+    translate: 0 3px;
+    box-shadow: 0 0 0 0 var(--lip);
+  }
+  /* A sideways-scrolling row (components/study/fade-row.tsx): the edge with more to see fades out. */
+  .fade-x[data-more="end"] {
+    mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
+  }
+  .fade-x[data-more="start"] {
+    mask-image: linear-gradient(to left, black calc(100% - 2.5rem), transparent);
+  }
+  .fade-x[data-more="both"] {
+    mask-image: linear-gradient(to right, transparent, black 2.5rem, black calc(100% - 2.5rem), transparent);
+  }
+  .choice:disabled {
+    cursor: default;
+  }
+  /* Answered: the tiles you did not pick settle and fade back, so the right one stands out. */
+  .choice:disabled:not([data-state]) {
+    --lip: transparent;
+    color: var(--ink-muted);
+  }
+  .choice[data-state="right"] {
+    --lip: var(--success);
+    border-color: var(--success);
+    background: var(--clay-tint);
+  }
+  .choice[data-state="wrong"] {
+    --lip: var(--danger);
+    border-color: var(--danger);
+    background: color-mix(in oklch, var(--danger) 7%, var(--paper));
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The court baseline: a hairline that anchors a section, like a court line. */
+@utility baseline {
+  background-image: linear-gradient(var(--line), var(--line));
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   View transitions (DESIGN.md, "Motion"). A mark that is on both pages travels between them: a game's drawing from
+   its card on Play (or the home page) into the game's header, a decision's from the list into its page. Play's cards
+   are plain links, so that one is a cross-document transition (the @view-transition rule, and a
+   view-transition-name on both drawings, set as it starts by lib/view-transition-script.ts); the decisions are in-app
+   links, so React's <ViewTransition> runs it.
+   Other full page loads crossfade. Browsers without view transitions change the page as before, and reduced motion turns
+   them off.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-group(*) {
+  animation-duration: var(--duration-move);
+  animation-timing-function: var(--ease-settle);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-enter);
+}
+/* Taps during a transition reach the page, not the overlay. */
+::view-transition {
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Forced colours (Windows contrast themes) repaint everything in system colours and drop backgrounds and shadows,
+   so a button or an answer that is only a filled pill on an edge would lose its outline. Give it a real one. */
+@media (forced-colors: active) {
+  .btn,
+  .choice {
+    border: 1px solid ButtonText;
+    box-shadow: none;
+  }
+  .choice[data-state] {
+    border-width: 3px;
+  }
+}
+
+/*
+ * Press feedback: buttons and pill links settle in a touch when pressed, --duration-tap (120 ms) ease-out.
+ * Unlayered on purpose: inside @layer base it would lose to the transition-colors utility most buttons carry.
+ * Uses the `scale` property, so it never fights translate or transform utilities, and keeps the color fades.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  button:not(:disabled):not(.btn),
+  [role="button"]:not([aria-disabled="true"]):not(.btn),
+  a.rounded-full:not(.btn) {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, scale, translate, rotate, transform;
+    transition-timing-function: ease-out;
+    transition-duration: var(--duration-tap);
+  }
+  button:not(:disabled):not(.btn):active,
+  [role="button"]:not([aria-disabled="true"]):not(.btn):active,
+  a.rounded-full:not(.btn):active {
+    scale: 0.97;
+  }
+}
+
+/* Above-the-fold entrance runs in CSS, so it never waits on JavaScript. Position only: text is readable on the
+   first frame, so a slow phone paints the headline at once instead of after the fade. */
+@keyframes rise {
+  from { transform: translateY(14px); }
+  to { transform: none; }
+}
+.rise { animation: rise 0.6s var(--ease-settle) both; }
+
+/* The loader (components/brand/loader.tsx): the logo's curve rises like a pile and settles back. It ends on the
+   full curve, so the reduced-motion rule above (one 0.01 ms run) leaves the whole shape showing. */
+@keyframes monte-pile {
+  from { transform: scaleY(0.08); }
+  to { transform: none; }
+}
+.monte-pile {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: monte-pile 0.9s var(--ease-settle) infinite alternate;
+}
+
+/* A lesson finished clean (components/study/lesson-player.tsx): one grain per right answer drops into its own row
+   beside the score and settles, so nothing flies over the text. Ends at rest, so reduced motion shows the row still. */
+@keyframes grain-drop {
+  from { transform: translateY(-16px); opacity: 0; }
+  60% { transform: translateY(1px); opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+.grain-drop { animation: grain-drop 0.5s var(--ease-settle) both; }
+
+/* The Shuffle's work, drawn (components/play/shuffle-work.tsx): a label keeps a paper halo, so a line under it never cuts a number. */
+.sw text { paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
+
+/* Game and decision marks (components/play/game-art.tsx, components/decide/tool-mark.tsx). Each part of a drawing
+   has one move. It plays while its card is hovered, focused or pressed, and once when a game's own page opens
+   (.ga-play). --i staggers the parts. At rest every mark is the finished drawing, so reduced motion shows it still. */
+.ga .ga-draw { stroke-dasharray: 1; }
+.ga :is(.ga-pop, .ga-flip, .ga-grow, .ga-grow-l, .ga-swing, .ga-hop, .ga-spin, .ga-spin-back, .ga-tilt, .ga-rise) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.ga :is(.ga-grow-l, .ga-swing) { transform-origin: left center; }
+.ga :is(.ga-tilt, .ga-rise) { transform-origin: center bottom; }
+@media (prefers-reduced-motion: no-preference) {
+  :is(.group:hover, .group:focus-visible, .group:active) .ga :is(.ga-draw, .ga-pop, .ga-flip, .ga-grow, .ga-grow-l, .ga-swing, .ga-hop, .ga-fade, .ga-tilt, .ga-rise),
+  .ga-play :is(.ga-draw, .ga-pop, .ga-flip, .ga-grow, .ga-grow-l, .ga-swing, .ga-hop, .ga-fade, .ga-tilt, .ga-rise) {
+    animation-duration: 0.8s;
+    animation-timing-function: var(--ease-settle);
+    animation-fill-mode: both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-draw, .ga-play .ga-draw { animation-name: ga-draw; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-pop, .ga-play .ga-pop { animation-name: ga-pop; animation-duration: 0.45s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-flip, .ga-play .ga-flip { animation-name: ga-flip; animation-duration: 0.5s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga :is(.ga-grow, .ga-grow-l), .ga-play :is(.ga-grow, .ga-grow-l) { animation-name: ga-grow; animation-duration: 0.55s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-swing, .ga-play .ga-swing { animation-name: ga-swing; animation-duration: 1.4s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-hop, .ga-play .ga-hop { animation-name: ga-hop; animation-duration: 0.7s; animation-delay: 0.55s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-fade, .ga-play .ga-fade { animation-name: ga-fade; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-tilt, .ga-play .ga-tilt { animation-name: ga-tilt; animation-duration: 1s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-rise, .ga-play .ga-rise { animation-name: ga-rise; animation-duration: 0.55s; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-spin, .ga-play .ga-spin { animation: ga-spin 1.6s var(--ease-settle) both; }
+  :is(.group:hover, .group:focus-visible, .group:active) .ga .ga-spin-back, .ga-play .ga-spin-back { animation: ga-spin-back 1.6s var(--ease-settle) both; }
+}
+@keyframes ga-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes ga-pop { from { scale: 0; opacity: 0; } 70% { scale: 1.25; opacity: 1; } to { scale: 1; } }
+@keyframes ga-flip { 50% { scale: 0 1; } }
+@keyframes ga-grow { from { scale: 0 1; } to { scale: 1 1; } }
+@keyframes ga-swing { 35%, 70% { scale: 0.12 1; } }
+@keyframes ga-hop { 35% { translate: 0 -9px; } 60% { translate: 0 0; } 75% { translate: 0 -3px; } }
+@keyframes ga-fade { from { opacity: 0; } }
+@keyframes ga-tilt { 30% { rotate: -14deg; } 60% { rotate: 8deg; } }
+@keyframes ga-rise { from { scale: 1 0; } }
+@keyframes ga-spin { to { rotate: 360deg; } }
+@keyframes ga-spin-back { to { rotate: -540deg; } }
+
+/* Fun or Focus (lib/mode.ts). Fun-only extras disappear in Focus, and the reverse. */
+html[data-mode="focus"] .fun-only { display: none !important; }
+html:not([data-mode="focus"]) .focus-only { display: none !important; }

@@ -1,0 +1,16 @@
+name: An idea
+description: A topic, a game, a decision or a feature you would like to see.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What would you like Monte to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What would it help you understand or decide?
