@@ -131,8 +131,8 @@
   {
    "path": "kit.zip",
    "url": "/brand/kit.zip",
-   "bytes": 1323154,
-   "sha256": "e0c5ad44f8fcd577b18973c018221ef7aaa7396c5bccc4ea0399946d07e1e391"
+   "bytes": 1327778,
+   "sha256": "24974eb5d8679ead2c0dfa93c47ea7f9f5e0d5f0c5915bd34bd773274bd37526"
   },
   {
    "path": "logo/monte-logo-black-1024.png",
@@ -899,8 +899,8 @@
    "url": "/og/decide-abtest.png",
    "width": 1200,
    "height": 630,
-   "bytes": 57062,
-   "sha256": "f04bcc2b6a120f8762210a64161a7d2d54d81aaeeac35b4d1f47417593c16b4d"
+   "bytes": 57021,
+   "sha256": "ae56c48f661b69fa79e6761bc52df25112eefc4d5f306c8fdd1fad429d68ec92"
   },
   {
    "path": "public/og/decide-bayes.png",
@@ -939,8 +939,8 @@
    "url": "/og/decide-market.png",
    "width": 1200,
    "height": 630,
-   "bytes": 63292,
-   "sha256": "956da4760c4145d414abf892688c29c7a3e21369e6ea5ab4b0e444aa87b103c7"
+   "bytes": 63070,
+   "sha256": "299ba367ceebee9dacca17f05639148526d36bbbae48f7196acce517599812dd"
   },
   {
    "path": "public/og/decide-option.png",
@@ -1027,8 +1027,8 @@
    "url": "/og/odds.png",
    "width": 1200,
    "height": 630,
-   "bytes": 58346,
-   "sha256": "36efe991af83df4686f7774f992c116572d04e336496503733eae1c643484754"
+   "bytes": 58401,
+   "sha256": "7727e979b063991bd8905fd25ece44c7001dd1df7d60bad6f672f551796f4e74"
   },
   {
    "path": "public/og/options.png",
