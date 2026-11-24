@@ -13,8 +13,9 @@ on:
     - cron: "37 0 * * *" # about 00:30 UTC, the second chance
   workflow_dispatch:
 
+# Read-only by default; only the job that commits the data file can write.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: refresh-data
@@ -24,6 +25,8 @@ jobs:
   drawit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 

@@ -11,6 +11,10 @@ on:
     paths: [server.json]
   workflow_dispatch:
 
+# Read-only by default; the publish job adds only the OIDC token it needs.
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest

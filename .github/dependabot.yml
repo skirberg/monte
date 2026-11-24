@@ -2,12 +2,16 @@
 # a major version gets its own pull request, so a breaking change is never hidden in a batch. CI runs on each one.
 # Two majors are skipped on purpose: TypeScript until typescript-eslint supports the new major (its peer range stops
 # at 6), and @types/node, which follows the Node version the site and the MCP server run on (24), not the newest.
+# Cooldown: a version update is only offered once the release is 7 days old (GitHub's default is 3 days), so a bad or
+# hijacked release has time to be pulled first. It applies to version updates only, never to security updates.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     groups:
       site-minor-and-patch:
         update-types: [minor, patch]
@@ -21,6 +25,8 @@ updates:
     directory: /mcp
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     groups:
       mcp-minor-and-patch:
         update-types: [minor, patch]
@@ -34,6 +40,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     groups:
       actions:
         patterns: ["*"]
